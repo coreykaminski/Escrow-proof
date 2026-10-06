@@ -6,3 +6,6 @@ node_modules/
 *.log
 .DS_Store
 coverage/
+
+# Eval response caches (re-creatable; may contain model output)
+evals/**/.cache/

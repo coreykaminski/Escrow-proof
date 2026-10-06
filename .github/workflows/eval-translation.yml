@@ -1,0 +1,32 @@
+name: Translation verifier eval
+
+# Runs the full model-based eval against the golden set. It calls the Anthropic API (costs money),
+# so it only runs when triggered by hand. The free deterministic gate runs in CI on every push.
+on:
+  workflow_dispatch:
+    inputs:
+      sample:
+        description: "Stratified sample size (empty = all 300 items)"
+        required: false
+        default: "60"
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Run eval
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: npm run eval:translation -- ${{ inputs.sample && format('--sample {0}', inputs.sample) || '' }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: translation-eval
+          path: evals/translation/runs/

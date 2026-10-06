@@ -66,7 +66,8 @@ export type Decision =
 
 export interface VerificationReport {
   engine_version: string;
-  languages: { source: Lang; target: Lang };
+  /** target is null when the deliverable isn't in any identifiable target language. */
+  languages: { source: Lang; target: Lang | null };
   findings: Finding[];
   criteria: CriterionResult[];
   decision: Decision;

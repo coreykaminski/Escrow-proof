@@ -23,7 +23,8 @@
     "eval:spec:score": "tsx evals/spec-engine/score.ts",
     "golden:base": "tsx evals/translation/build-base.ts",
     "golden:corrupt": "tsx evals/translation/build-corruptions.ts",
-    "golden:build": "tsx evals/translation/build-golden.ts"
+    "golden:build": "tsx evals/translation/build-golden.ts",
+    "eval:translation": "tsx evals/translation/run.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",
