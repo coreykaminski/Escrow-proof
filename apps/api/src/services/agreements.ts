@@ -47,14 +47,20 @@ export function snapshotOf(row: AgreementRow): AgreementSnapshot {
   };
 }
 
-function specColumns(spec: Spec) {
+/**
+ * Spec columns for a write. `inputs` is never taken from the caller's spec: it always reflects
+ * the source files actually stored (see services/inputs.ts), so a spec can't claim other inputs.
+ */
+export function specColumns(spec: Spec, inputs: Spec["inputs"] = undefined) {
+  const { inputs: _callerInputs, ...rest } = spec;
+  const stored: Spec = inputs?.length ? { ...rest, inputs } : rest;
   return {
-    spec,
-    specHash: specHash(spec),
-    amountValue: spec.amount.value,
-    currency: spec.amount.currency,
-    deliveryDueAt: new Date(spec.delivery_due_at),
-    appealWindowHours: spec.appeal_window_hours,
+    spec: stored,
+    specHash: specHash(stored),
+    amountValue: stored.amount.value,
+    currency: stored.amount.currency,
+    deliveryDueAt: new Date(stored.delivery_due_at),
+    appealWindowHours: stored.appeal_window_hours,
   };
 }
 
@@ -145,7 +151,7 @@ export async function replaceSpec(
     const [row] = await tx
       .update(schema.agreements)
       .set({
-        ...specColumns(spec),
+        ...specColumns(spec, current.spec.inputs),
         specSource: editedSource(current.specSource),
         version: current.version + 1,
         updatedAt: now,
@@ -167,7 +173,7 @@ export async function replaceSpec(
   });
 }
 
-async function lockAgreement(tx: Tx, id: string, scope: Scope): Promise<AgreementRow> {
+export async function lockAgreement(tx: Tx, id: string, scope: Scope): Promise<AgreementRow> {
   const [row] = await tx
     .select()
     .from(schema.agreements)

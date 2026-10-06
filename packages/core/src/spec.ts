@@ -34,6 +34,20 @@ export const SpecSchema = z
     /** Normalized to UTC ISO so "...+00:00" and "...Z" hash the same. */
     delivery_due_at: z.iso.datetime({ offset: true }).transform((s) => new Date(s).toISOString()),
     appeal_window_hours: z.number().int().min(0).max(720).default(72),
+    /**
+     * Source material the deliverable is judged against (e.g. the document to translate),
+     * by hash, so approving the spec also locks the inputs. Content is stored separately.
+     */
+    inputs: z
+      .array(
+        z.object({
+          name: z.string().min(1).max(255),
+          media_type: z.string().min(1).max(100),
+          sha256: z.string().regex(/^[0-9a-f]{64}$/),
+        }),
+      )
+      .max(20)
+      .optional(),
   })
   .superRefine((spec, ctx) => {
     const seen = new Set<string>();

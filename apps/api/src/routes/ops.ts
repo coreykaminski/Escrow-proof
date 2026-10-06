@@ -1,16 +1,17 @@
 import { verifyLedger } from "@proofdesk/db";
 import { Hono } from "hono";
 import type { AppDeps, AppEnv } from "../env.ts";
-import { agreementJson } from "../serialize.ts";
+import { agreementJson, verificationJson } from "../serialize.ts";
 import { applyEvent, getAgreement } from "../services/agreements.ts";
+import { listVerifications, verifyAgreement } from "../services/verification.ts";
 import { DecideBody, ResolveDisputeBody, SettleBody } from "./schemas.ts";
 
 /**
  * Internal Proof Desk operations (keys with the "ops" scope). These act on any account's
- * agreements. Until the verification engine (Part 3) and payment rails (Part 4) exist, ops
- * drives verification, human decisions and settlement by hand through these endpoints.
+ * agreements: run the automated verifier, make human decisions on escalations and disputes,
+ * and settle (by hand until the payment rails in Part 4).
  */
-export function opsRoutes({ db, now }: AppDeps) {
+export function opsRoutes({ db, now, verifier }: AppDeps) {
   const r = new Hono<AppEnv>();
   const all = {};
   const opsActor = (apiKeyId: string) => ({ role: "ops" as const, ref: apiKeyId });
@@ -28,6 +29,16 @@ export function opsRoutes({ db, now }: AppDeps) {
       now: now(),
     });
     return c.json(agreementJson(row));
+  });
+
+  /** Runs the automated verifier on the latest delivery, then decides or escalates. */
+  r.post("/agreements/:id/verify", async (c) => {
+    const result = await verifyAgreement(db, verifier, { agreementId: c.req.param("id"), now });
+    const [latest] = await listVerifications(db, result.agreement.id);
+    return c.json({
+      agreement: agreementJson(result.agreement),
+      verification: latest ? verificationJson(latest) : null,
+    });
   });
 
   r.post("/agreements/:id/decide", async (c) => {

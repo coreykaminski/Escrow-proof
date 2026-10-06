@@ -1,5 +1,6 @@
 import { TransitionError, type TransitionErrorCode } from "@proofdesk/core";
 import { MandateError, SpecDraftError, type SpecDraftErrorCode } from "@proofdesk/spec-engine";
+import { ModelCallError, VerificationInputError } from "@proofdesk/verifier";
 import type { Context } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { ZodError } from "zod";
@@ -43,6 +44,18 @@ export function toApiError(err: unknown): ApiError {
   if (err instanceof ApiError) return err;
   if (err instanceof SpecDraftError) {
     const [status, code] = DRAFT_ERRORS[err.code];
+    return new ApiError(status, code, err.message);
+  }
+  if (err instanceof VerificationInputError) {
+    return new ApiError(422, "verification_input_invalid", err.message);
+  }
+  if (err instanceof ModelCallError) {
+    const [status, code]: [ContentfulStatusCode, string] =
+      err.code === "refused"
+        ? [422, "verification_refused"]
+        : err.code === "unavailable"
+          ? [503, "verifier_unavailable"]
+          : [502, "verification_failed"];
     return new ApiError(status, code, err.message);
   }
   if (err instanceof MandateError) {

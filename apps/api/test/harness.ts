@@ -2,6 +2,7 @@ import { createDb, type DbHandle } from "@proofdesk/db";
 import { FakeSpecDrafter, type SpecDrafter } from "@proofdesk/spec-engine";
 import { createAccountWithKey } from "../src/accounts.ts";
 import { createApp } from "../src/app.ts";
+import type { TranslationVerifier } from "../src/services/verification.ts";
 
 export const T0 = new Date("2026-10-06T12:00:00.000Z");
 export const HOUR = 3_600_000;
@@ -24,7 +25,7 @@ export interface Harness {
 
 /** `drafter: undefined` simulates a server without an Anthropic key. */
 export async function createHarness(
-  opts: { drafter?: SpecDrafter | undefined } = {},
+  opts: { drafter?: SpecDrafter | undefined; verifier?: TranslationVerifier } = {},
 ): Promise<Harness> {
   const handle = createDb("memory://");
   await handle.migrate();
@@ -44,7 +45,12 @@ export async function createHarness(
   ]);
 
   const drafter = "drafter" in opts ? opts.drafter : new FakeSpecDrafter();
-  const app = createApp({ db: handle.db, now: () => clock.now, drafter });
+  const app = createApp({
+    db: handle.db,
+    now: () => clock.now,
+    drafter,
+    ...(opts.verifier ? { verifier: opts.verifier } : {}),
+  });
 
   return {
     handle,

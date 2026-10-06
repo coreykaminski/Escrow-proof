@@ -1,8 +1,8 @@
 import { serve } from "@hono/node-server";
 import { createDb } from "@proofdesk/db";
 import { createApp } from "./app.ts";
-import { drafterFromEnv } from "./drafter.ts";
 import { loadEnv } from "./load-env.ts";
+import { drafterFromEnv, verifierFromEnv } from "./models.ts";
 
 loadEnv();
 
@@ -13,8 +13,9 @@ const handle = createDb(databaseUrl);
 await handle.migrate();
 
 const drafter = drafterFromEnv();
-if (!drafter) console.warn("ANTHROPIC_API_KEY not set: spec drafting endpoints will return 503.");
-const app = createApp({ db: handle.db, now: () => new Date(), drafter });
+const verifier = verifierFromEnv();
+if (!drafter) console.warn("ANTHROPIC_API_KEY not set: drafting and verification will return 503.");
+const app = createApp({ db: handle.db, now: () => new Date(), drafter, verifier });
 const server = serve({ fetch: app.fetch, port }, (info) => {
   console.log(`Proof Desk API listening on http://localhost:${info.port} (${handle.driver})`);
 });

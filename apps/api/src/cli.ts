@@ -3,8 +3,8 @@ import { lintSpec, VERTICALS, type Vertical } from "@proofdesk/core";
 import { createDb, type DbHandle, verifyLedger } from "@proofdesk/db";
 import { SpecDraftError, type SpecDrafter } from "@proofdesk/spec-engine";
 import { createAccountWithKey } from "./accounts.ts";
-import { drafterFromEnv } from "./drafter.ts";
 import { loadEnv } from "./load-env.ts";
+import { drafterFromEnv } from "./models.ts";
 
 const USAGE = `Usage: npm run cli -- <command> [options]
 

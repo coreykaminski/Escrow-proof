@@ -3,7 +3,13 @@ import { importMandate } from "@proofdesk/spec-engine";
 import { Hono } from "hono";
 import type { AppDeps, AppEnv } from "../env.ts";
 import { ApiError } from "../errors.ts";
-import { agreementJson, deliveryJson, ledgerEntryJson } from "../serialize.ts";
+import {
+  agreementJson,
+  deliveryJson,
+  inputJson,
+  ledgerEntryJson,
+  verificationJson,
+} from "../serialize.ts";
 import {
   applyEvent,
   createAgreement,
@@ -13,7 +19,9 @@ import {
   replaceSpec,
   submitDelivery,
 } from "../services/agreements.ts";
+import { listInputs, replaceInputs } from "../services/inputs.ts";
 import { draftAgreement, resolveMandateAmount } from "../services/spec-drafts.ts";
+import { listVerifications } from "../services/verification.ts";
 import {
   ApproveSpecBody,
   CancelBody,
@@ -23,6 +31,7 @@ import {
   FromMandateBody,
   FromRequestBody,
   FundBody,
+  InputsBody,
   ListQuery,
   ReplaceSpecBody,
 } from "./schemas.ts";
@@ -115,6 +124,29 @@ export function agreementRoutes({ db, now, drafter }: AppDeps) {
     const scope = { accountId: c.get("auth").accountId };
     const row = await replaceSpec(db, c.req.param("id"), scope, spec, now());
     return c.json(agreementJson(row));
+  });
+
+  /** Source material (e.g. the document to translate); draft only, locked by the spec hash. */
+  r.put("/:id/inputs", async (c) => {
+    const { inputs } = InputsBody.parse(await c.req.json());
+    const scope = { accountId: c.get("auth").accountId };
+    const row = await replaceInputs(db, c.req.param("id"), scope, inputs, now());
+    return c.json(agreementJson(row));
+  });
+
+  r.get("/:id/inputs", async (c) => {
+    const id = c.req.param("id");
+    await getAgreement(db, id, { accountId: c.get("auth").accountId });
+    const includeContent = c.req.query("include_content") === "true";
+    const rows = await listInputs(db, id);
+    return c.json({ object: "list", data: rows.map((r) => inputJson(r, includeContent)) });
+  });
+
+  r.get("/:id/verifications", async (c) => {
+    const id = c.req.param("id");
+    await getAgreement(db, id, { accountId: c.get("auth").accountId });
+    const rows = await listVerifications(db, id);
+    return c.json({ object: "list", data: rows.map(verificationJson) });
   });
 
   r.post("/:id/approve-spec", async (c) => {

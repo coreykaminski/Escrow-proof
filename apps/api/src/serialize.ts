@@ -65,3 +65,34 @@ export function ledgerEntryJson(row: typeof schema.ledgerEntries.$inferSelect) {
     entry_hash: row.entryHash,
   };
 }
+
+export function inputJson(
+  row: typeof schema.agreementInputs.$inferSelect,
+  includeContent: boolean,
+) {
+  return {
+    id: row.id,
+    object: "input",
+    name: row.name,
+    media_type: row.mediaType,
+    sha256: row.sha256,
+    created_at: iso(row.createdAt),
+    ...(includeContent ? { content: row.content } : {}),
+  };
+}
+
+export function verificationJson(row: typeof schema.verifications.$inferSelect) {
+  return {
+    id: row.id,
+    object: "verification",
+    agreement_id: row.agreementId,
+    delivery_id: row.deliveryId,
+    engine_version: row.engineVersion,
+    action: row.action,
+    outcome: row.outcome ? outcomeToJson(row.outcome) : null,
+    confidence: row.confidence,
+    report_hash: row.reportHash,
+    report: row.report,
+    created_at: iso(row.createdAt),
+  };
+}

@@ -65,6 +65,18 @@ export const DeliveryBody = z.object({
     .max(20),
 });
 
+export const InputsBody = z.object({
+  inputs: z
+    .array(
+      z.object({
+        name: z.string().min(1).max(255),
+        media_type: z.string().min(1).max(100),
+        content: z.string().max(1_000_000),
+      }),
+    )
+    .max(20),
+});
+
 export const DisputeBody = z.object({ opened_by: z.enum(["buyer", "seller"]), reason });
 
 export const OutcomeBody = z

@@ -1,5 +1,6 @@
 import type { ApiScope, Db } from "@proofdesk/db";
 import type { SpecDrafter } from "@proofdesk/spec-engine";
+import type { TranslationVerifier } from "./services/verification.ts";
 
 export interface AppDeps {
   db: Db;
@@ -7,6 +8,8 @@ export interface AppDeps {
   now: () => Date;
   /** Drafts criteria from plain-language requests. Absent → drafting endpoints return 503. */
   drafter?: SpecDrafter;
+  /** Automated translation verifier. Absent → POST /v1/ops/agreements/:id/verify returns 503. */
+  verifier?: TranslationVerifier;
 }
 
 export interface AuthContext {

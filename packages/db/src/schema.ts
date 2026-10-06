@@ -121,6 +121,46 @@ export const deliveries = pgTable(
   (t) => [index("deliveries_agreement_idx").on(t.agreementId)],
 );
 
+/** Source material attached to an agreement; listed by hash in spec.inputs. */
+export const agreementInputs = pgTable(
+  "agreement_inputs",
+  {
+    id: text("id").primaryKey(),
+    agreementId: text("agreement_id")
+      .notNull()
+      .references(() => agreements.id),
+    name: text("name").notNull(),
+    mediaType: text("media_type").notNull(),
+    content: text("content").notNull(),
+    sha256: text("sha256").notNull(),
+    createdAt: ts("created_at").notNull(),
+  },
+  (t) => [index("agreement_inputs_agreement_idx").on(t.agreementId)],
+);
+
+/** One run of the automated verifier on one delivery; the full report is kept for audit. */
+export const verifications = pgTable(
+  "verifications",
+  {
+    id: text("id").primaryKey(),
+    agreementId: text("agreement_id")
+      .notNull()
+      .references(() => agreements.id),
+    deliveryId: text("delivery_id")
+      .notNull()
+      .references(() => deliveries.id),
+    engineVersion: text("engine_version").notNull(),
+    report: jsonb("report").notNull(),
+    reportHash: text("report_hash").notNull(),
+    action: text("action").$type<"decide" | "escalate">().notNull(),
+    outcome: jsonb("outcome").$type<Outcome>(),
+    confidence: real("confidence").notNull(),
+    costUsd: real("cost_usd").notNull(),
+    createdAt: ts("created_at").notNull(),
+  },
+  (t) => [index("verifications_agreement_idx").on(t.agreementId)],
+);
+
 export const decisions = pgTable(
   "decisions",
   {
