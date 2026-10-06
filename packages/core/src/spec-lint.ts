@@ -58,8 +58,11 @@ const CONCRETE_ANCHOR =
 
 const MAX_DESCRIPTION = 400;
 
+/** Fixed phrases that contain a vague word but aren't vague ("proper names"). */
+const NOT_VAGUE = /\bproper (names?|nouns?)\b/g;
+
 function vagueTermsIn(text: string): string[] {
-  const lower = text.toLowerCase();
+  const lower = text.toLowerCase().replace(NOT_VAGUE, "");
   return VAGUE_TERMS.filter((t) => new RegExp(`(^|[^a-z])${t}([^a-z]|$)`).test(lower));
 }
 

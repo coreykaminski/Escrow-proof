@@ -61,6 +61,18 @@ describe("lintSpec", () => {
     ).not.toContain("vague_wording");
   });
 
+  it("doesn't treat 'proper names' as vague (eval run 2026-10-06, tr-18)", () => {
+    expect(
+      codes([
+        crit({
+          description:
+            "The translation is written entirely in English, with Spanish retained only for proper names",
+        }),
+      ]),
+    ).not.toContain("vague_wording");
+    expect(codes([crit({ description: "Uses proper formatting" })])).toContain("vague_wording");
+  });
+
   it("asks non-deterministic criteria to say how they're checked", () => {
     expect(codes([crit({ check: "judge" })])).toContain("no_verification");
     expect(
