@@ -4,8 +4,8 @@ Conditional payments + verification for agent purchases: money is held, the deli
 checked against the approved spec, then released or refunded. Every decision goes on a
 tamper-evident ledger. See [MASTER_PLAN.md](MASTER_PLAN.md) for the strategy and build plan.
 
-**Status:** Part 1 (Foundation) and Part 2 (Spec Engine) are built. Part 2's eval has run (50/50
-valid specs); its gate (≥90% of criteria human-rated testable) still needs the human rating. Verification
+**Status:** Part 1 (Foundation) and Part 2 (Spec Engine) are built. Part 2's eval passed its gate:
+50/50 valid specs, 96.8% of criteria rated testable (AI-rated; see docs/daily/2026-10-06.md). Verification
 is driven manually through ops endpoints until Part 3; only the `test` payment rail exists until
 Part 4.
 
