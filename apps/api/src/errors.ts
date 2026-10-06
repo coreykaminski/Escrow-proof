@@ -1,4 +1,5 @@
 import { TransitionError, type TransitionErrorCode } from "@proofdesk/core";
+import { MandateError, SpecDraftError, type SpecDraftErrorCode } from "@proofdesk/spec-engine";
 import type { Context } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { ZodError } from "zod";
@@ -30,8 +31,23 @@ const TRANSITION_STATUS: Record<TransitionErrorCode, ContentfulStatusCode> = {
   invalid_outcome: 400,
 };
 
+/** Drafting failures: the model's refusal is final for that request; the rest can be retried. */
+const DRAFT_ERRORS: Record<SpecDraftErrorCode, [ContentfulStatusCode, string]> = {
+  refused: [422, "spec_draft_refused"],
+  unavailable: [503, "spec_engine_unavailable"],
+  failed: [502, "spec_draft_failed"],
+  invalid_draft: [502, "spec_draft_invalid"],
+};
+
 export function toApiError(err: unknown): ApiError {
   if (err instanceof ApiError) return err;
+  if (err instanceof SpecDraftError) {
+    const [status, code] = DRAFT_ERRORS[err.code];
+    return new ApiError(status, code, err.message);
+  }
+  if (err instanceof MandateError) {
+    return new ApiError(err.code === "mandate_expired" ? 409 : 400, err.code, err.message);
+  }
   if (err instanceof TransitionError) {
     return new ApiError(TRANSITION_STATUS[err.code], err.code, err.message);
   }

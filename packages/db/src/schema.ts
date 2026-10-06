@@ -42,6 +42,21 @@ export const apiKeys = pgTable(
 
 export type ApiScope = "platform" | "ops";
 
+/** Provenance of an agreement's current spec; snake_case because it's returned as-is. */
+export type SpecSource =
+  | { kind: "manual" }
+  | {
+      kind: "drafted";
+      model: string;
+      prompt_version: string;
+      /** Ambiguities the drafter wanted the buyer to resolve before approving. */
+      open_questions: string[];
+      /** True once the spec was replaced after drafting. */
+      edited?: boolean;
+      /** Set when the request came from an AP2 mandate. */
+      mandate?: { type: "intent" | "cart"; hash: string; signature_verified: boolean };
+    };
+
 export const agreements = pgTable(
   "agreements",
   {
@@ -57,6 +72,8 @@ export const agreements = pgTable(
     status: text("status").$type<AgreementState>().notNull(),
     spec: jsonb("spec").$type<Spec>().notNull(),
     specHash: text("spec_hash").notNull(),
+    /** Where the current spec came from (manual, drafted, AP2 mandate). Null before Part 2. */
+    specSource: jsonb("spec_source").$type<SpecSource>(),
     specApprovedAt: ts("spec_approved_at"),
     amountValue: bigint("amount_value", { mode: "number" }).notNull(),
     currency: text("currency").notNull(),

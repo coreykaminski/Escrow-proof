@@ -11,7 +11,14 @@ import {
   type TransitionResult,
   transition,
 } from "@proofdesk/core";
-import { type Artifact, appendLedgerEntry, type Db, schema, type Tx } from "@proofdesk/db";
+import {
+  type Artifact,
+  appendLedgerEntry,
+  type Db,
+  type SpecSource,
+  schema,
+  type Tx,
+} from "@proofdesk/db";
 import { and, desc, eq, type SQL } from "drizzle-orm";
 import { ApiError, notFound } from "../errors.ts";
 
@@ -59,10 +66,12 @@ export async function createAgreement(
     buyerRef: string;
     sellerRef: string;
     spec: Spec;
+    specSource?: SpecSource;
     metadata: Record<string, string>;
     now: Date;
   },
 ): Promise<AgreementRow> {
+  const specSource = input.specSource ?? { kind: "manual" };
   const id = newId("agreement", input.now.getTime());
   return db.transaction(async (tx) => {
     const [row] = await tx
@@ -75,6 +84,7 @@ export async function createAgreement(
         sellerRef: input.sellerRef,
         status: "draft",
         metadata: input.metadata,
+        specSource,
         createdAt: input.now,
         updatedAt: input.now,
         ...specColumns(input.spec),
@@ -88,6 +98,7 @@ export async function createAgreement(
         to: "draft",
         actor: { role: "platform", ref: input.accountId },
         spec_hash: row.specHash,
+        spec_source: specSourceSummary(specSource),
         buyer_ref: row.buyerRef,
         seller_ref: row.sellerRef,
         livemode: row.livemode,
@@ -96,6 +107,22 @@ export async function createAgreement(
     });
     return row;
   });
+}
+
+/** Provenance for the ledger: who/what drafted the spec, without the open questions. */
+function specSourceSummary(source: SpecSource): Record<string, unknown> {
+  if (source.kind === "manual") return { kind: "manual" };
+  return {
+    kind: "drafted",
+    model: source.model,
+    prompt_version: source.prompt_version,
+    ...(source.mandate ? { mandate: source.mandate } : {}),
+  };
+}
+
+/** A drafted spec stays "drafted" after edits, flagged so we can measure how often buyers edit. */
+function editedSource(source: SpecSource | null): SpecSource {
+  return source?.kind === "drafted" ? { ...source, edited: true } : { kind: "manual" };
 }
 
 /** Specs are editable only while in draft; each edit changes the hash the buyer must approve. */
@@ -117,7 +144,12 @@ export async function replaceSpec(
     }
     const [row] = await tx
       .update(schema.agreements)
-      .set({ ...specColumns(spec), version: current.version + 1, updatedAt: now })
+      .set({
+        ...specColumns(spec),
+        specSource: editedSource(current.specSource),
+        version: current.version + 1,
+        updatedAt: now,
+      })
       .where(eq(schema.agreements.id, id))
       .returning();
     if (!row) throw notFound("agreement");

@@ -1,4 +1,5 @@
 import { listLedgerForAgreement } from "@proofdesk/db";
+import { importMandate } from "@proofdesk/spec-engine";
 import { Hono } from "hono";
 import type { AppDeps, AppEnv } from "../env.ts";
 import { ApiError } from "../errors.ts";
@@ -12,12 +13,15 @@ import {
   replaceSpec,
   submitDelivery,
 } from "../services/agreements.ts";
+import { draftAgreement, resolveMandateAmount } from "../services/spec-drafts.ts";
 import {
   ApproveSpecBody,
   CancelBody,
   CreateAgreementBody,
   DeliveryBody,
   DisputeBody,
+  FromMandateBody,
+  FromRequestBody,
   FundBody,
   ListQuery,
   ReplaceSpecBody,
@@ -28,7 +32,7 @@ import {
  * agreements; the actor role is fixed by the endpoint, or stated in the body where either
  * party could act.
  */
-export function agreementRoutes({ db, now }: AppDeps) {
+export function agreementRoutes({ db, now, drafter }: AppDeps) {
   const r = new Hono<AppEnv>();
 
   r.post("/", async (c) => {
@@ -42,6 +46,55 @@ export function agreementRoutes({ db, now }: AppDeps) {
       spec: body.spec,
       metadata: body.metadata,
       now: now(),
+    });
+    return c.json(agreementJson(row), 201);
+  });
+
+  /** Drafts the spec from a plain-language request; the agreement starts in draft for review. */
+  r.post("/from-request", async (c) => {
+    const body = FromRequestBody.parse(await c.req.json());
+    const auth = c.get("auth");
+    const row = await draftAgreement(db, drafter, {
+      accountId: auth.accountId,
+      livemode: auth.mode === "live",
+      buyerRef: body.buyer_ref,
+      sellerRef: body.seller_ref,
+      terms: {
+        request: body.request,
+        title: body.title,
+        vertical: body.vertical,
+        amount: body.amount,
+        delivery_due_at: body.delivery_due_at,
+        appeal_window_hours: body.appeal_window_hours,
+      },
+      metadata: body.metadata,
+      now: now(),
+    });
+    return c.json(agreementJson(row), 201);
+  });
+
+  /** Same, with "what was asked" (and, for a cart, the price) taken from an AP2 mandate. */
+  r.post("/from-mandate", async (c) => {
+    const body = FromMandateBody.parse(await c.req.json());
+    const auth = c.get("auth");
+    const at = now();
+    const mandate = importMandate(body.mandate_type, body.mandate, at);
+    const row = await draftAgreement(db, drafter, {
+      accountId: auth.accountId,
+      livemode: auth.mode === "live",
+      buyerRef: body.buyer_ref,
+      sellerRef: body.seller_ref,
+      terms: {
+        request: mandate.request,
+        title: body.title,
+        vertical: body.vertical,
+        amount: resolveMandateAmount(mandate, body.amount),
+        delivery_due_at: body.delivery_due_at,
+        appeal_window_hours: body.appeal_window_hours,
+      },
+      metadata: body.metadata,
+      mandate,
+      now: at,
     });
     return c.json(agreementJson(row), 201);
   });

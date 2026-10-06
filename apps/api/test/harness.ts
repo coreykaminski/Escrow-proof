@@ -1,4 +1,5 @@
 import { createDb, type DbHandle } from "@proofdesk/db";
+import { FakeSpecDrafter, type SpecDrafter } from "@proofdesk/spec-engine";
 import { createAccountWithKey } from "../src/accounts.ts";
 import { createApp } from "../src/app.ts";
 
@@ -9,6 +10,7 @@ export interface Harness {
   handle: DbHandle;
   clock: { now: Date; advance(ms: number): void };
   keys: { platformA: string; platformB: string; ops: string; live: string };
+  drafter: SpecDrafter | undefined;
   call(
     key: string | null,
     method: string,
@@ -20,7 +22,10 @@ export interface Harness {
   close(): Promise<void>;
 }
 
-export async function createHarness(): Promise<Harness> {
+/** `drafter: undefined` simulates a server without an Anthropic key. */
+export async function createHarness(
+  opts: { drafter?: SpecDrafter | undefined } = {},
+): Promise<Harness> {
   const handle = createDb("memory://");
   await handle.migrate();
 
@@ -38,7 +43,8 @@ export async function createHarness(): Promise<Harness> {
     createAccountWithKey(handle.db, { name: "Live Platform", mode: "live" }),
   ]);
 
-  const app = createApp({ db: handle.db, now: () => clock.now });
+  const drafter = "drafter" in opts ? opts.drafter : new FakeSpecDrafter();
+  const app = createApp({ db: handle.db, now: () => clock.now, drafter });
 
   return {
     handle,
@@ -49,6 +55,7 @@ export async function createHarness(): Promise<Harness> {
       ops: ops.apiKey,
       live: live.apiKey,
     },
+    drafter,
     async call(key, method, path, body, headers = {}) {
       const res = await app.request(path, {
         method,

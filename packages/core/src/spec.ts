@@ -5,21 +5,26 @@ import { hashValue } from "./hash.ts";
  * An agreement's spec: what was asked, the checkable acceptance criteria, and the money terms.
  * Its hash is locked on approval, so every later decision can prove which spec it judged against.
  * Keys are snake_case because this exact document is what the API returns and the buyer approves.
- * (Part 2 adds the Spec Engine that drafts criteria from a plain-language request.)
+ * The Spec Engine (packages/spec-engine) drafts criteria from a plain-language request.
  */
 export const CriterionSchema = z.object({
   id: z.string().regex(/^[a-z0-9][a-z0-9_-]{0,63}$/, "lowercase id, 1-64 chars"),
   description: z.string().min(3).max(2000),
+  /** How a checker decides pass/fail. Optional, and omitted from the hash when absent. */
+  verification: z.string().min(3).max(2000).optional(),
   check: z.enum(["deterministic", "domain", "judge"]),
   critical: z.boolean().default(false),
 });
+
+export const VERTICALS = ["translation", "code", "data", "general"] as const;
+export type Vertical = (typeof VERTICALS)[number];
 
 export const SpecSchema = z
   .object({
     version: z.literal(1),
     title: z.string().min(1).max(200),
     request: z.string().min(1).max(20_000),
-    vertical: z.enum(["translation", "code", "data", "general"]),
+    vertical: z.enum(VERTICALS),
     criteria: z.array(CriterionSchema).min(1).max(50),
     amount: z.object({
       /** Integer minor units (cents for usd, 1e-6 for usdc). */

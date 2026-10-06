@@ -1,4 +1,4 @@
-import { appealWindowEndsAt } from "@proofdesk/core";
+import { appealWindowEndsAt, lintSpec } from "@proofdesk/core";
 import type { schema } from "@proofdesk/db";
 import { type AgreementRow, outcomeToJson, snapshotOf } from "./services/agreements.ts";
 
@@ -14,6 +14,9 @@ export function agreementJson(row: AgreementRow) {
     seller_ref: row.sellerRef,
     spec: row.spec,
     spec_hash: row.specHash,
+    spec_source: row.specSource,
+    /** Advisory: criteria a verifier would struggle to decide. Recomputed on every read. */
+    spec_warnings: lintSpec(row.spec),
     spec_approved_at: iso(row.specApprovedAt),
     amount: { value: row.amountValue, currency: row.currency },
     delivery_due_at: iso(row.deliveryDueAt),
