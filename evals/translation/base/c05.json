@@ -1,0 +1,40 @@
+{
+  "id": "c05",
+  "domain": "contract",
+  "title": "SaaS Subscription Order Form",
+  "parties": ["Nimbus Ledger Software Ltd.", "Castellan Logistics GmbH", "Helena Marsh"],
+  "paragraphs": {
+    "en": [
+      "This Order Form is entered into on March 15, 2026 between Nimbus Ledger Software Ltd. (the \"Provider\") and Castellan Logistics GmbH (the \"Customer\") and is governed by the Provider's Master Subscription Agreement. In the event of any conflict between this Order Form and the Master Subscription Agreement, this Order Form shall prevail.",
+      "The Customer subscribes to the Professional plan for 150 named user seats. The initial subscription term begins on April 1, 2026 and ends on March 31, 2027.",
+      "The annual subscription fee is EUR 42,750.00, calculated at EUR 285.00 per seat, exclusive of VAT. The Provider shall invoice the full annual fee in advance, and the Customer shall pay each invoice within 30 days of the invoice date.",
+      "The Customer may add seats at any time during the term at the same per-seat rate, prorated for the remainder of the current term. The number of seats may not be reduced below 150 before the end of the initial term.",
+      "The subscription shall renew automatically for successive periods of 12 months unless either party gives written notice of non-renewal at least 60 days before the end of the then-current term. Upon each renewal, the Provider may increase the per-seat fee by no more than 5% compared with the preceding term.",
+      "Late payments shall bear interest at 1.5% per month on the outstanding amount. This Order Form is signed on behalf of the Customer by Helena Marsh, Chief Operating Officer."
+    ],
+    "es": [
+      "El presente Formulario de Pedido se celebra el 15 de marzo de 2026 entre Nimbus Ledger Software Ltd. (el \"Proveedor\") y Castellan Logistics GmbH (el \"Cliente\") y se rige por el Contrato Marco de Suscripción del Proveedor. En caso de contradicción entre el presente Formulario de Pedido y el Contrato Marco de Suscripción, prevalecerá el presente Formulario de Pedido.",
+      "El Cliente suscribe el plan Professional para 150 licencias de usuario nominativas. El período inicial de suscripción comienza el 1 de abril de 2026 y finaliza el 31 de marzo de 2027.",
+      "La cuota anual de suscripción asciende a 42.750,00 EUR, calculada a razón de 285,00 EUR por licencia, IVA no incluido. El Proveedor facturará la totalidad de la cuota anual por adelantado y el Cliente abonará cada factura en un plazo de 30 días a partir de la fecha de factura.",
+      "El Cliente podrá añadir licencias en cualquier momento durante la vigencia al mismo precio por licencia, prorrateado por el resto del período en curso. El número de licencias no podrá reducirse por debajo de 150 antes de la finalización del período inicial.",
+      "La suscripción se renovará automáticamente por períodos sucesivos de 12 meses, salvo que cualquiera de las partes notifique por escrito su voluntad de no renovar con una antelación mínima de 60 días a la finalización del período vigente en ese momento. En cada renovación, el Proveedor podrá incrementar la cuota por licencia en un máximo del 5 % respecto del período anterior.",
+      "Los pagos atrasados devengarán intereses del 1,5 % mensual sobre el importe pendiente. El presente Formulario de Pedido es firmado en nombre del Cliente por Helena Marsh, Directora de Operaciones."
+    ],
+    "fr": [
+      "Le présent Bon de commande est conclu le 15 mars 2026 entre Nimbus Ledger Software Ltd. (le « Fournisseur ») et Castellan Logistics GmbH (le « Client ») et est régi par le Contrat-cadre d'abonnement du Fournisseur. En cas de contradiction entre le présent Bon de commande et le Contrat-cadre d'abonnement, le présent Bon de commande prévaudra.",
+      "Le Client souscrit à l'offre Professional pour 150 licences utilisateurs nominatives. La période initiale d'abonnement commence le 1 avril 2026 et prend fin le 31 mars 2027.",
+      "La redevance annuelle d'abonnement s'élève à 42 750,00 EUR, calculée sur la base de 285,00 EUR par licence, hors TVA. Le Fournisseur facturera l'intégralité de la redevance annuelle à l'avance et le Client réglera chaque facture dans un délai de 30 jours à compter de la date de facture.",
+      "Le Client peut ajouter des licences à tout moment pendant la durée de l'abonnement au même tarif par licence, calculé au prorata de la durée restante de la période en cours. Le nombre de licences ne peut être réduit en deçà de 150 avant la fin de la période initiale.",
+      "L'abonnement sera renouvelé automatiquement pour des périodes successives de 12 mois, sauf si l'une des parties notifie par écrit son intention de ne pas renouveler au moins 60 jours avant la fin de la période alors en cours. Lors de chaque renouvellement, le Fournisseur pourra augmenter la redevance par licence de 5 % au maximum par rapport à la période précédente.",
+      "Tout retard de paiement portera intérêt au taux de 1,5 % par mois sur le montant restant dû. Le présent Bon de commande est signé pour le compte du Client par Helena Marsh, Directrice des opérations."
+    ],
+    "de": [
+      "Dieses Bestellformular wird am 15. März 2026 zwischen Nimbus Ledger Software Ltd. (der „Anbieter“) und Castellan Logistics GmbH (der „Kunde“) geschlossen und unterliegt dem Rahmenabonnementvertrag des Anbieters. Im Falle eines Widerspruchs zwischen diesem Bestellformular und dem Rahmenabonnementvertrag hat dieses Bestellformular Vorrang.",
+      "Der Kunde abonniert den Professional-Tarif für 150 namentlich benannte Benutzerlizenzen. Die anfängliche Abonnementlaufzeit beginnt am 1. April 2026 und endet am 31. März 2027.",
+      "Die jährliche Abonnementgebühr beträgt 42.750,00 EUR, berechnet mit 285,00 EUR pro Lizenz, zuzüglich Mehrwertsteuer. Der Anbieter stellt die gesamte Jahresgebühr im Voraus in Rechnung, und der Kunde zahlt jede Rechnung innerhalb von 30 Tagen ab Rechnungsdatum.",
+      "Der Kunde kann während der Laufzeit jederzeit weitere Lizenzen zum gleichen Preis pro Lizenz hinzufügen, anteilig berechnet für die Restdauer der laufenden Laufzeit. Die Anzahl der Lizenzen darf vor Ablauf der anfänglichen Laufzeit nicht unter 150 reduziert werden.",
+      "Das Abonnement verlängert sich automatisch um jeweils weitere 12 Monate, sofern nicht eine der Parteien spätestens 60 Tage vor Ablauf der jeweils laufenden Laufzeit schriftlich mitteilt, dass sie keine Verlängerung wünscht. Bei jeder Verlängerung kann der Anbieter die Gebühr pro Lizenz um höchstens 5 % gegenüber der vorangegangenen Laufzeit erhöhen.",
+      "Verspätete Zahlungen werden mit 1,5 % pro Monat auf den ausstehenden Betrag verzinst. Dieses Bestellformular wird im Namen des Kunden von Helena Marsh, Chief Operating Officer, unterzeichnet."
+    ]
+  }
+}

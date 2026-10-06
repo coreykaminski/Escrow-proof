@@ -1,0 +1,36 @@
+{
+  "id": "m05",
+  "domain": "marketing",
+  "title": "Spring Newsletter: Seasonal Sale and Workshop Dates",
+  "parties": ["Velo Corner Bikes", "Maria Lindqvist", "Tom Harper"],
+  "paragraphs": {
+    "en": [
+      "Dear cyclists, spring has arrived and Velo Corner Bikes is celebrating the new season with our biggest sale of the year. From March 14, 2026 to March 29, 2026, all road and gravel bikes are reduced by 20%.",
+      "Accessories, including helmets, lights and locks, are discounted by 15% during the same period. Customers who spend more than €500.00 in a single purchase will also receive a free basic service worth €45.00.",
+      "Our head mechanic, Maria Lindqvist, will host a hands-on repair workshop on April 4, 2026. The session lasts 3 hours and is limited to 12 participants, so we recommend booking early.",
+      "A second workshop on bike fitting and riding posture will be led by Tom Harper on April 18, 2026. The participation fee for each workshop is €25.00, which will be credited towards any purchase made within 30 days.",
+      "To reserve your place, please visit our shop or reply to this newsletter. We look forward to seeing you on the road this spring."
+    ],
+    "es": [
+      "Estimados ciclistas: ha llegado la primavera y Velo Corner Bikes celebra la nueva temporada con nuestras mayores rebajas del año. Del 14 de marzo de 2026 al 29 de marzo de 2026, todas las bicicletas de carretera y de gravel tienen un descuento del 20 %.",
+      "Los accesorios, incluidos cascos, luces y candados, tienen un descuento del 15 % durante el mismo período. Además, los clientes que gasten más de 500,00 € en una sola compra recibirán una revisión básica gratuita valorada en 45,00 €.",
+      "Nuestra jefa de mecánicos, Maria Lindqvist, impartirá un taller práctico de reparación el 4 de abril de 2026. La sesión dura 3 horas y está limitada a 12 participantes, por lo que recomendamos reservar con antelación.",
+      "Tom Harper dirigirá un segundo taller sobre ajuste de la bicicleta y postura de conducción el 18 de abril de 2026. La cuota de participación de cada taller es de 25,00 €, que se descontará de cualquier compra realizada en un plazo de 30 días.",
+      "Para reservar su plaza, visite nuestra tienda o responda a este boletín. Esperamos verle en la carretera esta primavera."
+    ],
+    "fr": [
+      "Chers cyclistes, le printemps est arrivé et Velo Corner Bikes célèbre la nouvelle saison avec ses plus grandes soldes de l'année. Du 14 mars 2026 au 29 mars 2026, tous les vélos de route et de gravel bénéficient d'une remise de 20 %.",
+      "Les accessoires, notamment les casques, les éclairages et les antivols, bénéficient d'une remise de 15 % pendant la même période. Les clients qui dépensent plus de 500,00 € en un seul achat recevront en outre un entretien de base gratuit d'une valeur de 45,00 €.",
+      "Notre mécanicienne en chef, Maria Lindqvist, animera un atelier pratique de réparation le 4 avril 2026. La séance dure 3 heures et est limitée à 12 participants ; nous vous recommandons donc de réserver rapidement.",
+      "Un second atelier consacré au réglage du vélo et à la posture de conduite sera animé par Tom Harper le 18 avril 2026. Les frais de participation à chaque atelier s'élèvent à 25,00 €, montant qui sera déduit de tout achat effectué dans un délai de 30 jours.",
+      "Pour réserver votre place, rendez-vous dans notre magasin ou répondez à cette newsletter. Nous avons hâte de vous retrouver sur la route ce printemps."
+    ],
+    "de": [
+      "Liebe Radfahrerinnen und Radfahrer, der Frühling ist da, und Velo Corner Bikes feiert die neue Saison mit unserem größten Sale des Jahres. Vom 14. März 2026 bis zum 29. März 2026 sind alle Rennräder und Gravelbikes um 20 % reduziert.",
+      "Zubehör, darunter Helme, Beleuchtung und Schlösser, ist im selben Zeitraum um 15 % reduziert. Kundinnen und Kunden, die bei einem einzigen Einkauf mehr als 500,00 € ausgeben, erhalten zusätzlich eine kostenlose Basisinspektion im Wert von 45,00 €.",
+      "Unsere Werkstattleiterin Maria Lindqvist veranstaltet am 4. April 2026 einen praktischen Reparatur-Workshop. Die Veranstaltung dauert 3 Stunden und ist auf 12 Teilnehmende begrenzt, daher empfehlen wir eine frühzeitige Buchung.",
+      "Ein zweiter Workshop zu Fahrradanpassung und Sitzposition wird am 18. April 2026 von Tom Harper geleitet. Die Teilnahmegebühr beträgt je Workshop 25,00 € und wird auf jeden Einkauf innerhalb von 30 Tagen angerechnet.",
+      "Um Ihren Platz zu reservieren, besuchen Sie bitte unser Geschäft oder antworten Sie auf diesen Newsletter. Wir freuen uns darauf, Sie in diesem Frühling auf der Straße zu sehen."
+    ]
+  }
+}

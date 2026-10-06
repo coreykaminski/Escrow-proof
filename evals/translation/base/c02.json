@@ -1,0 +1,40 @@
+{
+  "id": "c02",
+  "domain": "contract",
+  "title": "Software Development Services Agreement",
+  "parties": ["Northbridge Analytics Ltd.", "Kestrel Code Labs GmbH", "Daniel Moreau"],
+  "paragraphs": {
+    "en": [
+      "This Software Development Services Agreement is entered into on March 3, 2026 between Northbridge Analytics Ltd. (the \"Client\") and Kestrel Code Labs GmbH (the \"Developer\"). Under this Agreement, the Developer shall design, build and deliver a web-based inventory management platform in accordance with the specifications attached hereto.",
+      "The total fee for the services is EUR 84,000.00, excluding VAT, payable in 3 milestone instalments. The first instalment of 30% (EUR 25,200.00) becomes due upon acceptance of the working prototype, which the Developer shall deliver no later than April 15, 2026.",
+      "The second instalment of 40% (EUR 33,600.00) becomes due upon acceptance of the beta version, scheduled for delivery by July 31, 2026. The final instalment of 30% (EUR 25,200.00) becomes due upon acceptance of the production release and completion of the data migration.",
+      "The Client shall review each deliverable within 10 business days of receipt and shall either accept it in writing or provide a detailed list of defects. Invoices shall be paid within 30 days of the invoice date, and late payments shall bear interest at 1.5% per month.",
+      "The Developer warrants that the delivered software will perform materially in accordance with the specifications for 90 days following final acceptance and shall correct any reported defects free of charge during that period. Upon full payment, all intellectual property rights in the custom code shall vest in the Client.",
+      "Either party may terminate this Agreement upon 60 days' written notice, in which case the Client shall pay for all work completed up to the termination date. All communications regarding this Agreement shall be addressed, on behalf of the Client, to its project director, Daniel Moreau."
+    ],
+    "es": [
+      "El presente Contrato de Servicios de Desarrollo de Software se celebra el 3 de marzo de 2026 entre Northbridge Analytics Ltd. (el «Cliente») y Kestrel Code Labs GmbH (el «Desarrollador»). En virtud del presente Contrato, el Desarrollador diseñará, construirá y entregará una plataforma web de gestión de inventario conforme a las especificaciones adjuntas al mismo.",
+      "Los honorarios totales por los servicios ascienden a 84.000,00 EUR, IVA excluido, pagaderos en 3 plazos vinculados a hitos. El primer plazo del 30 % (25.200,00 EUR) será exigible tras la aceptación del prototipo funcional, que el Desarrollador deberá entregar a más tardar el 15 de abril de 2026.",
+      "El segundo plazo del 40 % (33.600,00 EUR) será exigible tras la aceptación de la versión beta, cuya entrega está prevista a más tardar el 31 de julio de 2026. El último plazo del 30 % (25.200,00 EUR) será exigible tras la aceptación de la versión de producción y la finalización de la migración de datos.",
+      "El Cliente revisará cada entregable en un plazo de 10 días hábiles desde su recepción y lo aceptará por escrito o facilitará una lista detallada de defectos. Las facturas se abonarán en un plazo de 30 días desde la fecha de factura, y los pagos atrasados devengarán intereses del 1,5 % mensual.",
+      "El Desarrollador garantiza que el software entregado funcionará sustancialmente conforme a las especificaciones durante 90 días a partir de la aceptación final y corregirá gratuitamente cualquier defecto notificado durante dicho período. Una vez efectuado el pago íntegro, todos los derechos de propiedad intelectual sobre el código personalizado corresponderán al Cliente.",
+      "Cualquiera de las partes podrá resolver el presente Contrato mediante preaviso por escrito de 60 días, en cuyo caso el Cliente abonará todos los trabajos realizados hasta la fecha de resolución. Todas las comunicaciones relativas al presente Contrato se dirigirán, en nombre del Cliente, a su director de proyecto, Daniel Moreau."
+    ],
+    "fr": [
+      "Le présent Contrat de prestation de services de développement logiciel est conclu le 3 mars 2026 entre Northbridge Analytics Ltd. (le « Client ») et Kestrel Code Labs GmbH (le « Développeur »). En vertu du présent Contrat, le Développeur concevra, réalisera et livrera une plateforme web de gestion des stocks conformément aux spécifications jointes en annexe.",
+      "Le prix total des prestations s'élève à 84 000,00 EUR hors TVA, payable en 3 versements liés à des jalons. Le premier versement de 30 % (25 200,00 EUR) devient exigible à la réception du prototype fonctionnel, que le Développeur devra livrer au plus tard le 15 avril 2026.",
+      "Le deuxième versement de 40 % (33 600,00 EUR) devient exigible à la réception de la version bêta, dont la livraison est prévue au plus tard le 31 juillet 2026. Le dernier versement de 30 % (25 200,00 EUR) devient exigible à la réception de la version de production et à l'achèvement de la migration des données.",
+      "Le Client examinera chaque livrable dans un délai de 10 jours ouvrés à compter de sa réception et soit l'acceptera par écrit, soit fournira une liste détaillée des défauts. Les factures sont payables dans un délai de 30 jours à compter de leur date d'émission, et tout retard de paiement portera intérêt au taux de 1,5 % par mois.",
+      "Le Développeur garantit que le logiciel livré fonctionnera pour l'essentiel conformément aux spécifications pendant 90 jours à compter de la réception définitive et corrigera gratuitement tout défaut signalé pendant cette période. Dès le paiement intégral, l'ensemble des droits de propriété intellectuelle sur le code développé sur mesure sera acquis au Client.",
+      "Chaque partie peut résilier le présent Contrat moyennant un préavis écrit de 60 jours, auquel cas le Client paiera l'ensemble des travaux réalisés jusqu'à la date de résiliation. Toutes les communications relatives au présent Contrat seront adressées, pour le compte du Client, à son directeur de projet, Daniel Moreau."
+    ],
+    "de": [
+      "Dieser Vertrag über Softwareentwicklungsleistungen wird am 3. März 2026 zwischen Northbridge Analytics Ltd. (der „Auftraggeber“) und Kestrel Code Labs GmbH (der „Entwickler“) geschlossen. Nach diesem Vertrag wird der Entwickler eine webbasierte Plattform für die Bestandsverwaltung gemäß den beigefügten Spezifikationen konzipieren, erstellen und liefern.",
+      "Die Gesamtvergütung für die Leistungen beträgt 84.000,00 EUR zuzüglich Umsatzsteuer und ist in 3 meilensteinbezogenen Raten zahlbar. Die erste Rate in Höhe von 30 % (25.200,00 EUR) wird mit Abnahme des funktionsfähigen Prototyps fällig, den der Entwickler spätestens am 15. April 2026 zu liefern hat.",
+      "Die zweite Rate in Höhe von 40 % (33.600,00 EUR) wird mit Abnahme der Beta-Version fällig, deren Lieferung bis spätestens 31. Juli 2026 vorgesehen ist. Die letzte Rate in Höhe von 30 % (25.200,00 EUR) wird mit Abnahme der Produktivversion und Abschluss der Datenmigration fällig.",
+      "Der Auftraggeber prüft jedes Liefergegenstand innerhalb von 10 Werktagen nach Erhalt und nimmt ihn entweder schriftlich ab oder übermittelt eine detaillierte Mängelliste. Rechnungen sind innerhalb von 30 Tagen ab Rechnungsdatum zu bezahlen, und verspätete Zahlungen werden mit 1,5 % pro Monat verzinst.",
+      "Der Entwickler gewährleistet, dass die gelieferte Software für 90 Tage nach der Endabnahme im Wesentlichen den Spezifikationen entspricht, und wird gemeldete Mängel während dieses Zeitraums kostenlos beheben. Mit vollständiger Zahlung gehen sämtliche Rechte des geistigen Eigentums am individuell entwickelten Code auf den Auftraggeber über.",
+      "Jede Partei kann diesen Vertrag mit einer Frist von 60 Tagen schriftlich kündigen; in diesem Fall vergütet der Auftraggeber alle bis zum Kündigungsdatum erbrachten Arbeiten. Sämtliche Mitteilungen im Zusammenhang mit diesem Vertrag sind auf Seiten des Auftraggebers an dessen Projektleiter, Daniel Moreau, zu richten."
+    ]
+  }
+}

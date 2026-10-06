@@ -1,0 +1,198 @@
+[
+  {
+    "type": "meaning",
+    "paragraph": 0,
+    "text": "This Order Form is entered into on March 15, 2026 between Nimbus Ledger Software Ltd. (the \"Provider\") and Castellan Logistics GmbH (the \"Customer\") and is governed by the Provider's Master Subscription Agreement. In the event of any conflict between this Order Form and the Master Subscription Agreement, the Master Subscription Agreement shall prevail.",
+    "description": "The order of precedence is reversed. The original says this Order Form prevails in a conflict; the rewrite says the Master Subscription Agreement prevails.",
+    "lang": "en"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 3,
+    "text": "The Customer may add seats at any time during the term at the same per-seat rate, prorated for the remainder of the current term. The number of seats may be reduced below 150 before the end of the initial term.",
+    "description": "The negation is removed. \"May not be reduced below 150\" becomes \"may be reduced below 150\", so the minimum seat commitment no longer exists.",
+    "lang": "en"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 1,
+    "text": "The Customer subscribes to the Professional plan for 150 concurrent user seats. The initial subscription term begins on April 1, 2026 and ends on March 31, 2027.",
+    "description": "\"Named user seats\" becomes \"concurrent user seats\". This is a different licensing model: seats assigned to specific individuals versus a limit on simultaneous use.",
+    "lang": "en"
+  },
+  {
+    "type": "addition",
+    "paragraph": 4,
+    "text": "The subscription shall renew automatically for successive periods of 12 months unless either party gives written notice of non-renewal at least 60 days before the end of the then-current term. Upon each renewal, the Provider may increase the per-seat fee by no more than 5% compared with the preceding term. The Provider shall notify the Customer in writing of any such increase before the start of the renewal term.",
+    "description": "A new final sentence is added. It obliges the Provider to give written notice of any price increase before renewal, which the original does not require.",
+    "lang": "en"
+  },
+  {
+    "type": "omission",
+    "paragraph": 2,
+    "text": "The annual subscription fee is EUR 42,750.00, calculated at EUR 285.00 per seat, exclusive of VAT. The Customer shall pay each invoice within 30 days of the invoice date.",
+    "description": "The clause stating that the Provider shall invoice the full annual fee in advance is removed. The upfront annual billing term is lost.",
+    "lang": "en"
+  },
+  {
+    "type": "minor",
+    "paragraph": 5,
+    "text": "Interest at 1.5% per month on the outstanding amount shall accrue on late payments. This Order Form is signed on behalf of the Customer by Helena Marsh, Chief Operating Officer.",
+    "description": "The first sentence is restructured (\"interest shall accrue on late payments\" instead of \"late payments shall bear interest\"). The rate, base and meaning are identical, so this is not an error.",
+    "lang": "en"
+  },
+  {
+    "type": "minor",
+    "paragraph": 1,
+    "text": "The Customer subscribes to the Professional plan for 150 named user seats. The initial subscription term commences on April 1, 2026 and ends on March 31, 2027.",
+    "description": "\"Begins\" is replaced with its synonym \"commences\". The meaning is identical, so this is not an error.",
+    "lang": "en"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 0,
+    "text": "El presente Formulario de Pedido se celebra el 15 de marzo de 2026 entre Nimbus Ledger Software Ltd. (el \"Proveedor\") y Castellan Logistics GmbH (el \"Cliente\") y se rige por el Contrato Marco de Suscripción del Proveedor. En caso de contradicción entre el presente Formulario de Pedido y el Contrato Marco de Suscripción, prevalecerá el Contrato Marco de Suscripción.",
+    "description": "The order of precedence is reversed. The Master Subscription Agreement (Contrato Marco de Suscripción) now prevails in a conflict instead of the Order Form.",
+    "lang": "es"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 3,
+    "text": "El Cliente podrá añadir licencias en cualquier momento durante la vigencia al mismo precio por licencia, prorrateado por el resto del período en curso. El número de licencias podrá reducirse por debajo de 150 antes de la finalización del período inicial.",
+    "description": "The negation is removed. \"No podrá reducirse\" (may not be reduced) becomes \"podrá reducirse\" (may be reduced), so the 150-seat minimum disappears.",
+    "lang": "es"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 1,
+    "text": "El Cliente suscribe el plan Professional para 150 licencias de usuario concurrentes. El período inicial de suscripción comienza el 1 de abril de 2026 y finaliza el 31 de marzo de 2027.",
+    "description": "\"Licencias de usuario nominativas\" (named user seats) becomes \"licencias de usuario concurrentes\" (concurrent user seats). This is a different licensing model.",
+    "lang": "es"
+  },
+  {
+    "type": "addition",
+    "paragraph": 4,
+    "text": "La suscripción se renovará automáticamente por períodos sucesivos de 12 meses, salvo que cualquiera de las partes notifique por escrito su voluntad de no renovar con una antelación mínima de 60 días a la finalización del período vigente en ese momento. En cada renovación, el Proveedor podrá incrementar la cuota por licencia en un máximo del 5 % respecto del período anterior. El Proveedor notificará por escrito al Cliente cualquier incremento de este tipo antes del inicio del período de renovación.",
+    "description": "A new sentence is added. It requires the Provider to give written notice of any price increase before renewal, which is not in the original.",
+    "lang": "es"
+  },
+  {
+    "type": "omission",
+    "paragraph": 2,
+    "text": "La cuota anual de suscripción asciende a 42.750,00 EUR, calculada a razón de 285,00 EUR por licencia, IVA no incluido. El Cliente abonará cada factura en un plazo de 30 días a partir de la fecha de factura.",
+    "description": "The clause that the Provider will invoice the full annual fee in advance (\"El Proveedor facturará la totalidad de la cuota anual por adelantado\") is removed.",
+    "lang": "es"
+  },
+  {
+    "type": "minor",
+    "paragraph": 5,
+    "text": "Los pagos con retraso devengarán intereses del 1,5 % mensual sobre el importe pendiente. El presente Formulario de Pedido es firmado en nombre del Cliente por Helena Marsh, Directora de Operaciones.",
+    "description": "\"Pagos atrasados\" is replaced with the synonymous \"pagos con retraso\" (late payments). The meaning is identical, so this is not an error.",
+    "lang": "es"
+  },
+  {
+    "type": "minor",
+    "paragraph": 1,
+    "text": "El Cliente suscribe el plan Professional para 150 licencias de usuario nominativas. El período inicial de suscripción se inicia el 1 de abril de 2026 y finaliza el 31 de marzo de 2027.",
+    "description": "\"Comienza\" is replaced with the synonym \"se inicia\" (begins). The meaning is unchanged, so this is not an error.",
+    "lang": "es"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 0,
+    "text": "Le présent Bon de commande est conclu le 15 mars 2026 entre Nimbus Ledger Software Ltd. (le « Fournisseur ») et Castellan Logistics GmbH (le « Client ») et est régi par le Contrat-cadre d'abonnement du Fournisseur. En cas de contradiction entre le présent Bon de commande et le Contrat-cadre d'abonnement, le Contrat-cadre d'abonnement prévaudra.",
+    "description": "The order of precedence is reversed. The Master Subscription Agreement (Contrat-cadre d'abonnement) now prevails instead of the Order Form.",
+    "lang": "fr"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 3,
+    "text": "Le Client peut ajouter des licences à tout moment pendant la durée de l'abonnement au même tarif par licence, calculé au prorata de la durée restante de la période en cours. Le nombre de licences peut être réduit en deçà de 150 avant la fin de la période initiale.",
+    "description": "The negation is removed. \"Ne peut être réduit\" (may not be reduced) becomes \"peut être réduit\" (may be reduced), so the minimum seat commitment is eliminated.",
+    "lang": "fr"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 1,
+    "text": "Le Client souscrit à l'offre Professional pour 150 licences utilisateurs simultanées. La période initiale d'abonnement commence le 1 avril 2026 et prend fin le 31 mars 2027.",
+    "description": "\"Licences utilisateurs nominatives\" (named user seats) becomes \"licences utilisateurs simultanées\" (concurrent user seats). This is a different licensing model.",
+    "lang": "fr"
+  },
+  {
+    "type": "addition",
+    "paragraph": 4,
+    "text": "L'abonnement sera renouvelé automatiquement pour des périodes successives de 12 mois, sauf si l'une des parties notifie par écrit son intention de ne pas renouveler au moins 60 jours avant la fin de la période alors en cours. Lors de chaque renouvellement, le Fournisseur pourra augmenter la redevance par licence de 5 % au maximum par rapport à la période précédente. Le Fournisseur notifiera par écrit au Client toute augmentation de ce type avant le début de la période de renouvellement.",
+    "description": "A new sentence is added. It obliges the Provider to notify the Customer in writing of any price increase before renewal, which is absent from the original.",
+    "lang": "fr"
+  },
+  {
+    "type": "omission",
+    "paragraph": 2,
+    "text": "La redevance annuelle d'abonnement s'élève à 42 750,00 EUR, calculée sur la base de 285,00 EUR par licence, hors TVA. Le Client réglera chaque facture dans un délai de 30 jours à compter de la date de facture.",
+    "description": "The clause that the Provider will invoice the full annual fee in advance (\"Le Fournisseur facturera l'intégralité de la redevance annuelle à l'avance\") is removed.",
+    "lang": "fr"
+  },
+  {
+    "type": "minor",
+    "paragraph": 5,
+    "text": "Tout paiement tardif portera intérêt au taux de 1,5 % par mois sur le montant restant dû. Le présent Bon de commande est signé pour le compte du Client par Helena Marsh, Directrice des opérations.",
+    "description": "\"Retard de paiement\" is replaced with the synonymous \"paiement tardif\" (late payment). The meaning is identical, so this is not an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "minor",
+    "paragraph": 1,
+    "text": "Le Client souscrit à l'offre Professional pour 150 licences utilisateurs nominatives. La période initiale d'abonnement débute le 1 avril 2026 et prend fin le 31 mars 2027.",
+    "description": "\"Commence\" is replaced with the synonym \"débute\" (begins). The meaning is unchanged, so this is not an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 0,
+    "text": "Dieses Bestellformular wird am 15. März 2026 zwischen Nimbus Ledger Software Ltd. (der „Anbieter“) und Castellan Logistics GmbH (der „Kunde“) geschlossen und unterliegt dem Rahmenabonnementvertrag des Anbieters. Im Falle eines Widerspruchs zwischen diesem Bestellformular und dem Rahmenabonnementvertrag hat der Rahmenabonnementvertrag Vorrang.",
+    "description": "The order of precedence is reversed. The Master Subscription Agreement (Rahmenabonnementvertrag) now takes precedence instead of the Order Form.",
+    "lang": "de"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 3,
+    "text": "Der Kunde kann während der Laufzeit jederzeit weitere Lizenzen zum gleichen Preis pro Lizenz hinzufügen, anteilig berechnet für die Restdauer der laufenden Laufzeit. Die Anzahl der Lizenzen darf vor Ablauf der anfänglichen Laufzeit unter 150 reduziert werden.",
+    "description": "The negation \"nicht\" is removed. Reducing seats below 150 is now permitted instead of prohibited.",
+    "lang": "de"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 1,
+    "text": "Der Kunde abonniert den Professional-Tarif für 150 gleichzeitige Benutzerlizenzen. Die anfängliche Abonnementlaufzeit beginnt am 1. April 2026 und endet am 31. März 2027.",
+    "description": "\"Namentlich benannte Benutzerlizenzen\" (named user seats) becomes \"gleichzeitige Benutzerlizenzen\" (concurrent user seats). This is a different licensing model.",
+    "lang": "de"
+  },
+  {
+    "type": "addition",
+    "paragraph": 4,
+    "text": "Das Abonnement verlängert sich automatisch um jeweils weitere 12 Monate, sofern nicht eine der Parteien spätestens 60 Tage vor Ablauf der jeweils laufenden Laufzeit schriftlich mitteilt, dass sie keine Verlängerung wünscht. Bei jeder Verlängerung kann der Anbieter die Gebühr pro Lizenz um höchstens 5 % gegenüber der vorangegangenen Laufzeit erhöhen. Der Anbieter teilt dem Kunden jede solche Erhöhung vor Beginn der Verlängerungslaufzeit schriftlich mit.",
+    "description": "A new sentence is added. It requires the Provider to notify the Customer in writing of any price increase before renewal, which is not in the original.",
+    "lang": "de"
+  },
+  {
+    "type": "omission",
+    "paragraph": 2,
+    "text": "Die jährliche Abonnementgebühr beträgt 42.750,00 EUR, berechnet mit 285,00 EUR pro Lizenz, zuzüglich Mehrwertsteuer. Der Kunde zahlt jede Rechnung innerhalb von 30 Tagen ab Rechnungsdatum.",
+    "description": "The clause that the Provider invoices the full annual fee in advance (\"Der Anbieter stellt die gesamte Jahresgebühr im Voraus in Rechnung\") is removed.",
+    "lang": "de"
+  },
+  {
+    "type": "minor",
+    "paragraph": 5,
+    "text": "Auf verspätete Zahlungen werden Zinsen in Höhe von 1,5 % pro Monat auf den ausstehenden Betrag erhoben. Dieses Bestellformular wird im Namen des Kunden von Helena Marsh, Chief Operating Officer, unterzeichnet.",
+    "description": "The first sentence is rephrased (\"interest is charged on late payments\" instead of \"late payments bear interest\"). The rate and base are the same and the meaning is identical, so this is not an error.",
+    "lang": "de"
+  },
+  {
+    "type": "minor",
+    "paragraph": 1,
+    "text": "Der Kunde abonniert den Professional-Tarif für 150 namentlich benannte Benutzerlizenzen. Die anfängliche Abonnementlaufzeit läuft vom 1. April 2026 bis zum 31. März 2027.",
+    "description": "\"Beginnt am ... und endet am\" is rephrased as \"läuft vom ... bis zum\" (runs from ... to). The dates and meaning are identical, so this is not an error.",
+    "lang": "de"
+  }
+]

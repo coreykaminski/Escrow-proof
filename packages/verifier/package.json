@@ -1,0 +1,13 @@
+{
+  "name": "@proofdesk/verifier",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@proofdesk/core": "*",
+    "zod": "^4.6.5"
+  }
+}

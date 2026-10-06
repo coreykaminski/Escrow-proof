@@ -1,0 +1,40 @@
+{
+  "id": "p07",
+  "domain": "policy",
+  "title": "Subscription Billing Terms",
+  "parties": ["Nordwell Analytics Ltd.", "Brightpath Logistics GmbH", "Helena Marsh"],
+  "paragraphs": {
+    "en": [
+      "These subscription billing terms govern the use of the CloudLedger platform provided by Nordwell Analytics Ltd. to Brightpath Logistics GmbH, effective from March 3, 2026. They apply to all subscription plans ordered through the customer portal.",
+      "Each new subscription begins with a free trial period of 14 days, during which no fees are charged. If the subscriber does not cancel before the trial ends, the subscription automatically converts into a paid monthly plan.",
+      "The standard monthly fee is EUR 1,250.00 for up to 25 user accounts, invoiced in advance on the first day of each billing period. Invoices are payable within 30 days of the invoice date.",
+      "Nordwell Analytics Ltd. may change its prices by giving at least 60 days' written notice. Price increases shall not exceed 7% in any 12-month period, and the first adjustment may take effect no earlier than January 1, 2027.",
+      "If the subscriber does not accept a price change, it may terminate the subscription by notifying Nordwell Analytics Ltd. before the new price takes effect. Otherwise, either party may terminate the subscription with 30 days' notice to the end of a billing period.",
+      "Late payments accrue interest at 1.5% per month on the outstanding amount. Questions about these terms should be addressed to the account manager, Helena Marsh."
+    ],
+    "es": [
+      "Las presentes condiciones de facturación de la suscripción rigen el uso de la plataforma CloudLedger que Nordwell Analytics Ltd. presta a Brightpath Logistics GmbH, con efectos a partir del 3 de marzo de 2026. Se aplican a todos los planes de suscripción contratados a través del portal de clientes.",
+      "Cada nueva suscripción comienza con un periodo de prueba gratuito de 14 días, durante el cual no se cobra ninguna tarifa. Si el suscriptor no cancela antes de que finalice el periodo de prueba, la suscripción se convierte automáticamente en un plan mensual de pago.",
+      "La tarifa mensual estándar es de 1.250,00 EUR para un máximo de 25 cuentas de usuario y se factura por adelantado el primer día de cada periodo de facturación. Las facturas deberán abonarse en un plazo de 30 días a partir de la fecha de factura.",
+      "Nordwell Analytics Ltd. podrá modificar sus precios mediante un preaviso por escrito de al menos 60 días. Los incrementos de precio no podrán superar el 7 % en ningún periodo de 12 meses, y el primer ajuste no podrá surtir efecto antes del 1 de enero de 2027.",
+      "Si el suscriptor no acepta una modificación de precio, podrá resolver la suscripción notificándolo a Nordwell Analytics Ltd. antes de que el nuevo precio entre en vigor. En los demás casos, cualquiera de las partes podrá resolver la suscripción con un preaviso de 30 días al final de un periodo de facturación.",
+      "Los pagos atrasados devengarán intereses del 1,5 % mensual sobre el importe pendiente. Las consultas sobre estas condiciones deberán dirigirse a la gestora de cuenta, Helena Marsh."
+    ],
+    "fr": [
+      "Les présentes conditions de facturation de l'abonnement régissent l'utilisation de la plateforme CloudLedger fournie par Nordwell Analytics Ltd. à Brightpath Logistics GmbH, à compter du 3 mars 2026. Elles s'appliquent à toutes les formules d'abonnement commandées via le portail client.",
+      "Chaque nouvel abonnement débute par une période d'essai gratuite de 14 jours, pendant laquelle aucun frais n'est facturé. Si l'abonné ne résilie pas avant la fin de la période d'essai, l'abonnement est automatiquement converti en formule mensuelle payante.",
+      "Le tarif mensuel standard s'élève à 1 250,00 EUR pour un maximum de 25 comptes utilisateurs, facturé d'avance le premier jour de chaque période de facturation. Les factures sont payables dans un délai de 30 jours à compter de la date de facturation.",
+      "Nordwell Analytics Ltd. peut modifier ses prix moyennant un préavis écrit d'au moins 60 jours. Les augmentations de prix ne peuvent excéder 7 % sur toute période de 12 mois, et le premier ajustement ne peut prendre effet avant le 1er janvier 2027.",
+      "Si l'abonné n'accepte pas une modification de prix, il peut résilier l'abonnement en le notifiant à Nordwell Analytics Ltd. avant l'entrée en vigueur du nouveau prix. Dans les autres cas, chaque partie peut résilier l'abonnement moyennant un préavis de 30 jours pour la fin d'une période de facturation.",
+      "Les retards de paiement donnent lieu à des intérêts de 1,5 % par mois sur le montant impayé. Toute question relative aux présentes conditions doit être adressée à la responsable de compte, Helena Marsh."
+    ],
+    "de": [
+      "Diese Abrechnungsbedingungen für Abonnements regeln die Nutzung der Plattform CloudLedger, die Nordwell Analytics Ltd. der Brightpath Logistics GmbH bereitstellt, mit Wirkung ab dem 3. März 2026. Sie gelten für alle über das Kundenportal bestellten Abonnementpläne.",
+      "Jedes neue Abonnement beginnt mit einem kostenlosen Testzeitraum von 14 Tagen, in dem keine Gebühren berechnet werden. Kündigt der Abonnent nicht vor Ablauf des Testzeitraums, wird das Abonnement automatisch in einen kostenpflichtigen Monatsplan umgewandelt.",
+      "Die monatliche Standardgebühr beträgt 1.250,00 EUR für bis zu 25 Benutzerkonten und wird am ersten Tag jedes Abrechnungszeitraums im Voraus in Rechnung gestellt. Rechnungen sind innerhalb von 30 Tagen ab Rechnungsdatum zahlbar.",
+      "Nordwell Analytics Ltd. kann ihre Preise mit einer schriftlichen Ankündigungsfrist von mindestens 60 Tagen ändern. Preiserhöhungen dürfen innerhalb eines Zeitraums von 12 Monaten 7 % nicht überschreiten, und die erste Anpassung darf frühestens am 1. Januar 2027 wirksam werden.",
+      "Akzeptiert der Abonnent eine Preisänderung nicht, kann er das Abonnement durch Mitteilung an Nordwell Analytics Ltd. vor Inkrafttreten des neuen Preises kündigen. Im Übrigen kann jede Partei das Abonnement mit einer Frist von 30 Tagen zum Ende eines Abrechnungszeitraums kündigen.",
+      "Für verspätete Zahlungen fallen Zinsen in Höhe von 1,5 % pro Monat auf den ausstehenden Betrag an. Fragen zu diesen Bedingungen sind an die Kundenbetreuerin Helena Marsh zu richten."
+    ]
+  }
+}

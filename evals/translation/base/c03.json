@@ -1,0 +1,40 @@
+{
+  "id": "c03",
+  "domain": "contract",
+  "title": "Commercial Office Lease Agreement",
+  "parties": ["Harbourview Properties Ltd.", "Lindqvist Consulting GmbH", "Margaret Ellison"],
+  "paragraphs": {
+    "en": [
+      "This Commercial Office Lease Agreement is entered into on February 12, 2026 between Harbourview Properties Ltd., as landlord, and Lindqvist Consulting GmbH, as tenant, for the lease of office premises with a floor area of 420 square metres on the 5th floor of the building at 18 Quayside Road.",
+      "The lease shall have a term of 3 years, commencing on April 1, 2026 and ending on March 31, 2029, unless terminated earlier in accordance with this Agreement.",
+      "The tenant shall pay a monthly base rent of EUR 9,450.00, payable in advance no later than the 5th day of each calendar month. On each anniversary of the commencement date, the base rent shall increase by 3.5% over the rent payable in the preceding year.",
+      "Upon signing this Agreement, the tenant shall provide a security deposit of EUR 28,350.00, which the landlord shall return within 30 days after the end of the lease, less any amounts lawfully deducted for unpaid rent or damage beyond normal wear and tear.",
+      "If any payment of rent is more than 10 days overdue, the tenant shall pay a late charge equal to 1.5% of the outstanding amount for each month or part thereof until payment in full.",
+      "The tenant may not sublet the premises or assign this Agreement without the prior written consent of the landlord. All notices under this Agreement shall be sent to the landlord's property manager, Margaret Ellison, or to such other person as the landlord designates in writing."
+    ],
+    "es": [
+      "El presente Contrato de Arrendamiento de Oficinas se celebra el 12 de febrero de 2026 entre Harbourview Properties Ltd., en calidad de arrendador, y Lindqvist Consulting GmbH, en calidad de arrendatario, para el arrendamiento de un local de oficinas con una superficie de 420 metros cuadrados situado en la 5.ª planta del edificio sito en 18 Quayside Road.",
+      "El arrendamiento tendrá una duración de 3 años, comenzando el 1 de abril de 2026 y finalizando el 31 de marzo de 2029, salvo que se resuelva anticipadamente de conformidad con el presente Contrato.",
+      "El arrendatario abonará una renta base mensual de 9.450,00 EUR, pagadera por anticipado a más tardar el día 5 de cada mes natural. En cada aniversario de la fecha de inicio, la renta base se incrementará en un 3,5 % respecto de la renta pagadera en el año anterior.",
+      "A la firma del presente Contrato, el arrendatario constituirá una fianza de 28.350,00 EUR, que el arrendador devolverá dentro de los 30 días siguientes a la finalización del arrendamiento, previa deducción de las cantidades legítimamente retenidas por rentas impagadas o por daños que excedan el desgaste normal por uso.",
+      "Si algún pago de la renta se retrasa más de 10 días, el arrendatario abonará un recargo por demora equivalente al 1,5 % del importe pendiente por cada mes o fracción hasta su pago íntegro.",
+      "El arrendatario no podrá subarrendar el local ni ceder el presente Contrato sin el consentimiento previo y por escrito del arrendador. Todas las notificaciones derivadas del presente Contrato se enviarán a la administradora del inmueble del arrendador, Margaret Ellison, o a cualquier otra persona que el arrendador designe por escrito."
+    ],
+    "fr": [
+      "Le présent Contrat de bail de bureaux commerciaux est conclu le 12 février 2026 entre Harbourview Properties Ltd., en qualité de bailleur, et Lindqvist Consulting GmbH, en qualité de preneur, pour la location de locaux à usage de bureaux d'une surface de 420 mètres carrés situés au 5e étage de l'immeuble sis 18 Quayside Road.",
+      "Le bail est consenti pour une durée de 3 ans, prenant effet le 1er avril 2026 et expirant le 31 mars 2029, sauf résiliation anticipée conformément au présent Contrat.",
+      "Le preneur versera un loyer de base mensuel de 9 450,00 EUR, payable d'avance au plus tard le 5e jour de chaque mois civil. À chaque date anniversaire de la prise d'effet, le loyer de base sera augmenté de 3,5 % par rapport au loyer dû au titre de l'année précédente.",
+      "À la signature du présent Contrat, le preneur versera un dépôt de garantie de 28 350,00 EUR, que le bailleur restituera dans un délai de 30 jours suivant la fin du bail, déduction faite des sommes légitimement retenues au titre des loyers impayés ou des dommages excédant l'usure normale.",
+      "Si un paiement de loyer accuse un retard de plus de 10 jours, le preneur sera redevable d'une pénalité de retard égale à 1,5 % du montant impayé pour chaque mois ou fraction de mois jusqu'au paiement intégral.",
+      "Le preneur ne peut sous-louer les locaux ni céder le présent Contrat sans le consentement préalable et écrit du bailleur. Toutes les notifications au titre du présent Contrat seront adressées à la gestionnaire immobilière du bailleur, Margaret Ellison, ou à toute autre personne désignée par écrit par le bailleur."
+    ],
+    "de": [
+      "Dieser Gewerbemietvertrag über Büroräume wird am 12. Februar 2026 zwischen Harbourview Properties Ltd. als Vermieter und Lindqvist Consulting GmbH als Mieter über die Anmietung von Büroflächen mit einer Fläche von 420 Quadratmetern im 5. Obergeschoss des Gebäudes 18 Quayside Road geschlossen.",
+      "Das Mietverhältnis hat eine Laufzeit von 3 Jahren, beginnt am 1. April 2026 und endet am 31. März 2029, sofern es nicht vorzeitig gemäß diesem Vertrag beendet wird.",
+      "Der Mieter zahlt eine monatliche Grundmiete von 9.450,00 EUR, die im Voraus spätestens bis zum 5. Tag jedes Kalendermonats fällig ist. An jedem Jahrestag des Mietbeginns erhöht sich die Grundmiete um 3,5 % gegenüber der im Vorjahr zu zahlenden Miete.",
+      "Bei Unterzeichnung dieses Vertrags leistet der Mieter eine Mietkaution von 28.350,00 EUR, die der Vermieter innerhalb von 30 Tagen nach Ende des Mietverhältnisses zurückzahlt, abzüglich etwaiger rechtmäßig einbehaltener Beträge für Mietrückstände oder Schäden, die über die normale Abnutzung hinausgehen.",
+      "Ist eine Mietzahlung mehr als 10 Tage überfällig, zahlt der Mieter einen Verspätungszuschlag in Höhe von 1,5 % des ausstehenden Betrags für jeden angefangenen Monat bis zur vollständigen Zahlung.",
+      "Der Mieter darf die Räume ohne vorherige schriftliche Zustimmung des Vermieters weder untervermieten noch diesen Vertrag übertragen. Sämtliche Mitteilungen im Rahmen dieses Vertrags sind an die Hausverwalterin des Vermieters, Margaret Ellison, oder an eine andere vom Vermieter schriftlich benannte Person zu richten."
+    ]
+  }
+}

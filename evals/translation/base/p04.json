@@ -1,0 +1,40 @@
+{
+  "id": "p04",
+  "domain": "policy",
+  "title": "Shipping Policy",
+  "parties": ["Nordwind Home Goods Ltd.", "Swiftline Logistics GmbH", "Clara Bennett"],
+  "paragraphs": {
+    "en": [
+      "This Shipping Policy of Nordwind Home Goods Ltd. applies to all orders placed through its online shop on or after March 3, 2026 and replaces the version dated October 15, 2025.",
+      "Standard delivery within the European Union takes 3 to 5 business days and costs EUR 4.95 per order. Express delivery takes 1 to 2 business days and costs EUR 12.90 per order.",
+      "Orders with a total value of EUR 75.00 or more, after discounts and including VAT, qualify for free standard shipping. The free shipping threshold does not apply to express delivery, for which a reduced fee of EUR 6.50 is charged on such orders.",
+      "All parcels are shipped by Swiftline Logistics GmbH, which provides a tracking number by email within 24 hours of dispatch. Parcels weighing more than 30 kg are subject to a surcharge of 15% of the standard shipping fee.",
+      "Orders with a value exceeding EUR 1,500.00 are delivered by freight carrier within 7 to 10 business days, and delivery appointments are arranged in advance by telephone.",
+      "If a parcel has not arrived within 14 days of dispatch, customers should contact Clara Bennett, Customer Service Manager, who will initiate an investigation with the carrier. Where the parcel is confirmed lost, Nordwind Home Goods Ltd. will send a replacement or issue a full refund, including any shipping costs paid."
+    ],
+    "es": [
+      "La presente Política de Envíos de Nordwind Home Goods Ltd. se aplica a todos los pedidos realizados a través de su tienda en línea a partir del 3 de marzo de 2026, inclusive, y sustituye a la versión de fecha 15 de octubre de 2025.",
+      "La entrega estándar dentro de la Unión Europea tarda de 3 a 5 días hábiles y cuesta 4,95 EUR por pedido. La entrega urgente tarda de 1 a 2 días hábiles y cuesta 12,90 EUR por pedido.",
+      "Los pedidos con un valor total de 75,00 EUR o más, una vez aplicados los descuentos e IVA incluido, tienen derecho a envío estándar gratuito. El umbral de envío gratuito no se aplica a la entrega urgente, por la que se cobra una tarifa reducida de 6,50 EUR en dichos pedidos.",
+      "Todos los paquetes se envían a través de Swiftline Logistics GmbH, que facilita un número de seguimiento por correo electrónico en un plazo de 24 horas desde la expedición. Los paquetes que pesen más de 30 kg están sujetos a un recargo del 15 % de la tarifa de envío estándar.",
+      "Los pedidos cuyo valor supere 1.500,00 EUR se entregan mediante transportista de mercancías en un plazo de 7 a 10 días hábiles, y las citas de entrega se acuerdan previamente por teléfono.",
+      "Si un paquete no ha llegado en un plazo de 14 días desde la expedición, los clientes deben ponerse en contacto con Clara Bennett, Responsable de Atención al Cliente, quien iniciará una investigación con el transportista. Si se confirma la pérdida del paquete, Nordwind Home Goods Ltd. enviará un producto de sustitución o efectuará el reembolso íntegro, incluidos los gastos de envío abonados."
+    ],
+    "fr": [
+      "La présente Politique d'expédition de Nordwind Home Goods Ltd. s'applique à toutes les commandes passées sur sa boutique en ligne à compter du 3 mars 2026 inclus et remplace la version datée du 15 octobre 2025.",
+      "La livraison standard au sein de l'Union européenne prend de 3 à 5 jours ouvrés et coûte 4,95 EUR par commande. La livraison express prend de 1 à 2 jours ouvrés et coûte 12,90 EUR par commande.",
+      "Les commandes d'une valeur totale de 75,00 EUR ou plus, après remises et TVA incluse, bénéficient de la livraison standard gratuite. Le seuil de livraison gratuite ne s'applique pas à la livraison express, pour laquelle des frais réduits de 6,50 EUR sont facturés sur ces commandes.",
+      "Tous les colis sont expédiés par Swiftline Logistics GmbH, qui communique un numéro de suivi par e-mail dans les 24 heures suivant l'expédition. Les colis pesant plus de 30 kg sont soumis à un supplément de 15 % des frais d'expédition standard.",
+      "Les commandes d'une valeur supérieure à 1 500,00 EUR sont livrées par un transporteur de fret dans un délai de 7 à 10 jours ouvrés, et les rendez-vous de livraison sont fixés au préalable par téléphone.",
+      "Si un colis n'est pas arrivé dans les 14 jours suivant l'expédition, les clients doivent contacter Clara Bennett, responsable du service client, qui ouvrira une enquête auprès du transporteur. Lorsque la perte du colis est confirmée, Nordwind Home Goods Ltd. enverra un article de remplacement ou procédera à un remboursement intégral, y compris les frais d'expédition payés."
+    ],
+    "de": [
+      "Diese Versandrichtlinie der Nordwind Home Goods Ltd. gilt für alle Bestellungen, die ab dem 3. März 2026 über ihren Onlineshop aufgegeben werden, und ersetzt die Fassung vom 15. Oktober 2025.",
+      "Die Standardlieferung innerhalb der Europäischen Union dauert 3 bis 5 Werktage und kostet 4,95 EUR pro Bestellung. Die Expresslieferung dauert 1 bis 2 Werktage und kostet 12,90 EUR pro Bestellung.",
+      "Bestellungen mit einem Gesamtwert von 75,00 EUR oder mehr, nach Abzug von Rabatten und einschließlich Mehrwertsteuer, werden kostenlos per Standardversand geliefert. Die Schwelle für den kostenlosen Versand gilt nicht für die Expresslieferung, für die bei solchen Bestellungen eine ermäßigte Gebühr von 6,50 EUR berechnet wird.",
+      "Alle Pakete werden von der Swiftline Logistics GmbH versandt, die innerhalb von 24 Stunden nach dem Versand eine Sendungsnummer per E-Mail übermittelt. Für Pakete mit einem Gewicht von mehr als 30 kg wird ein Zuschlag von 15 % der Standardversandgebühr erhoben.",
+      "Bestellungen mit einem Wert von über 1.500,00 EUR werden innerhalb von 7 bis 10 Werktagen per Speditionsunternehmen geliefert, und die Liefertermine werden vorab telefonisch vereinbart.",
+      "Ist ein Paket nicht innerhalb von 14 Tagen nach dem Versand eingetroffen, sollten sich Kunden an Clara Bennett, Leiterin des Kundendienstes, wenden, die eine Nachforschung beim Versanddienstleister einleitet. Wird der Verlust des Pakets bestätigt, sendet Nordwind Home Goods Ltd. eine Ersatzlieferung oder erstattet den vollen Betrag einschließlich etwaiger gezahlter Versandkosten."
+    ]
+  }
+}

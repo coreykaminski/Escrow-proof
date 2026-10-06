@@ -1,0 +1,198 @@
+[
+  {
+    "type": "meaning",
+    "paragraph": 5,
+    "text": "The Borrower may prepay all or part of the loan at any time without penalty, provided that the Lender gives the Borrower at least 15 days' prior written notice.",
+    "description": "The notice obligation has been reversed. The original requires the Borrower to give the Lender 15 days' notice; the rewrite makes the Lender give notice to the Borrower. This is an error.",
+    "lang": "en"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 3,
+    "text": "The Borrower shall repay the loan in 6 equal monthly instalments of EUR 14,500.00 each, excluding interest, with the first instalment due on March 31, 2026, and the final instalment due on August 31, 2026.",
+    "description": "\"including principal and interest\" has become \"excluding interest\". This means interest is now payable on top of the instalments, which changes the repayment scope. This is an error.",
+    "lang": "en"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 1,
+    "text": "The Lender agrees to advance to the Borrower a principal amount of EUR 85,000.00, which shall be disbursed in a single transfer to the Borrower's designated bank account within 5 calendar days of the signing of this Agreement.",
+    "description": "\"business days\" has been translated as \"calendar days\", which shortens the disbursement period. This is an error.",
+    "lang": "en"
+  },
+  {
+    "type": "addition",
+    "paragraph": 2,
+    "text": "The outstanding principal shall bear interest at a fixed annual rate of 7.25%, calculated on the basis of a 360-day year and accrued daily from the date of disbursement. No interest shall accrue during the first month following disbursement.",
+    "description": "A sentence has been added that waives interest for the first month. It is not in the source. This is an error.",
+    "lang": "en"
+  },
+  {
+    "type": "omission",
+    "paragraph": 4,
+    "text": "If any instalment remains unpaid for more than 10 days after its due date, the Borrower shall pay a late-payment charge of 2% of the overdue amount.",
+    "description": "The clause allowing the Lender to declare the entire outstanding balance immediately due and payable (acceleration) has been deleted. This is an error.",
+    "lang": "en"
+  },
+  {
+    "type": "minor",
+    "paragraph": 6,
+    "text": "This Agreement shall be governed by the laws of Spain, and any dispute arising out of it shall be submitted to the competent courts of Madrid.",
+    "description": "\"arising from it\" has been changed to \"arising out of it\". The meaning is identical. This is not an error.",
+    "lang": "en"
+  },
+  {
+    "type": "minor",
+    "paragraph": 0,
+    "text": "This Short-Term Business Loan Agreement is entered into on February 9, 2026, between Harbourline Capital Ltd. (the \"Lender\") and Verdant Kitchenware S.L. (the \"Borrower\"), represented by Elena Marquez, its managing director.",
+    "description": "The appositive has been reordered, putting the name before the title. The meaning is identical. This is not an error.",
+    "lang": "en"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 1,
+    "text": "El Prestamista se compromete a entregar al Prestatario un importe principal de 85.000,00 EUR, que se desembolsará mediante una o varias transferencias a la cuenta bancaria designada por el Prestatario en un plazo de 5 días hábiles a partir de la firma del presente Contrato.",
+    "description": "\"una única transferencia\" (a single transfer) has become \"una o varias transferencias\" (one or more transfers). This changes the disbursement terms. This is an error.",
+    "lang": "es"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 5,
+    "text": "El Prestatario podrá amortizar anticipadamente la totalidad o parte del préstamo en cualquier momento con penalización, siempre que notifique por escrito al Prestamista con una antelación mínima de 15 días.",
+    "description": "\"sin penalización\" (without penalty) has become \"con penalización\" (with penalty). This reverses the prepayment term. This is an error.",
+    "lang": "es"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 1,
+    "text": "El Prestamista se compromete a entregar al Prestatario un importe principal de 85.000,00 EUR, que se desembolsará mediante una única transferencia a la cuenta bancaria designada por el Prestatario en un plazo de 5 días naturales a partir de la firma del presente Contrato.",
+    "description": "\"días hábiles\" (business days) has been replaced with \"días naturales\" (calendar days). This is an error.",
+    "lang": "es"
+  },
+  {
+    "type": "addition",
+    "paragraph": 3,
+    "text": "El Prestatario reembolsará el préstamo en 6 cuotas mensuales iguales de 14.500,00 EUR cada una, que incluyen principal e intereses, venciendo la primera cuota el 31 de marzo de 2026 y la última el 31 de agosto de 2026. Las cuotas se cargarán automáticamente mediante domiciliación bancaria en la cuenta del Prestatario.",
+    "description": "A sentence has been added requiring automatic direct debit of the instalments. It is not in the source. This is an error.",
+    "lang": "es"
+  },
+  {
+    "type": "omission",
+    "paragraph": 4,
+    "text": "Si alguna cuota permanece impagada durante más de 10 días después de su fecha de vencimiento, el Prestatario abonará un recargo por demora del 2 % del importe vencido.",
+    "description": "The Lender's right to declare the whole outstanding balance immediately due (acceleration) has been removed. This is an error.",
+    "lang": "es"
+  },
+  {
+    "type": "minor",
+    "paragraph": 0,
+    "text": "El presente Contrato de Préstamo Empresarial a Corto Plazo se suscribe el 9 de febrero de 2026 entre Harbourline Capital Ltd. (el «Prestamista») y Verdant Kitchenware S.L. (el «Prestatario»), representada por su administradora, Elena Marquez.",
+    "description": "\"se celebra\" has been replaced with its synonym \"se suscribe\". The meaning is identical. This is not an error.",
+    "lang": "es"
+  },
+  {
+    "type": "minor",
+    "paragraph": 6,
+    "text": "El presente Contrato se regirá por la legislación española, y cualquier controversia que se derive del mismo se someterá a los juzgados y tribunales competentes de Madrid.",
+    "description": "\"derivada del mismo\" has been rephrased as \"que se derive del mismo\". The meaning is identical. This is not an error.",
+    "lang": "es"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 2,
+    "text": "Le principal restant dû portera intérêt à un taux annuel fixe de 7,25 %, calculé sur la base d'une année de 360 jours et couru quotidiennement à compter de la date de signature du présent Contrat.",
+    "description": "The start date for interest has moved from the date of disbursement to the date of signing. This is an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 5,
+    "text": "L'Emprunteur pourra rembourser par anticipation tout ou partie du prêt à tout moment sans pénalité, à condition que le Prêteur l'en informe par écrit au moins 15 jours à l'avance.",
+    "description": "The notice obligation has been reversed. Under the rewrite, the Lender must notify the Borrower, whereas the original requires the Borrower to notify the Lender. This is an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 0,
+    "text": "Le présent Contrat de prêt professionnel à court terme est conclu le 9 février 2026 entre Harbourline Capital Ltd. (le « Prêteur ») et Verdant Kitchenware S.L. (l'« Emprunteur »), représentée par son actionnaire majoritaire, Elena Marquez.",
+    "description": "\"gérante\" (managing director) has been replaced with \"actionnaire majoritaire\" (majority shareholder). This changes the capacity in which the signatory represents the company. This is an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "addition",
+    "paragraph": 1,
+    "text": "Le Prêteur s'engage à avancer à l'Emprunteur un montant en principal de 85 000,00 EUR, qui sera versé en un seul virement sur le compte bancaire désigné par l'Emprunteur dans un délai de 5 jours ouvrables à compter de la signature du présent Contrat. Aucuns frais de dossier ne seront facturés à l'Emprunteur.",
+    "description": "A sentence has been added waiving arrangement fees. It is not in the source. This is an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "omission",
+    "paragraph": 6,
+    "text": "Le présent Contrat est régi par le droit espagnol.",
+    "description": "The jurisdiction clause submitting disputes to the courts of Madrid has been deleted. This is an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "minor",
+    "paragraph": 3,
+    "text": "L'Emprunteur remboursera le prêt en 6 mensualités égales de 14 500,00 EUR chacune, principal et intérêts compris, la première mensualité arrivant à échéance le 31 mars 2026 et la dernière le 31 août 2026.",
+    "description": "\"étant exigible\" has been changed to \"arrivant à échéance\". The meaning is identical. This is not an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "minor",
+    "paragraph": 1,
+    "text": "Le Prêteur s'engage à avancer à l'Emprunteur un montant en principal de 85 000,00 EUR, qui sera versé en un seul virement sur le compte bancaire désigné par l'Emprunteur sous 5 jours ouvrables à compter de la signature du présent Contrat.",
+    "description": "\"dans un délai de\" has been replaced with the equivalent \"sous\". The meaning is identical. This is not an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 4,
+    "text": "Bleibt eine Rate länger als 10 Tage nach ihrem Fälligkeitsdatum unbezahlt, zahlt der Darlehensnehmer einen Verzugszuschlag in Höhe von 2 % des überfälligen Betrags, und der Darlehensgeber muss den gesamten ausstehenden Restbetrag sofort fällig stellen.",
+    "description": "\"kann\" (may) has been changed to \"muss\" (must). This turns the Lender's discretionary right of acceleration into an obligation. This is an error.",
+    "lang": "de"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 5,
+    "text": "Der Darlehensnehmer kann das Darlehen jederzeit ganz oder teilweise gegen Zahlung einer Vorfälligkeitsentschädigung vorzeitig zurückzahlen, sofern er dies dem Darlehensgeber mindestens 15 Tage im Voraus schriftlich mitteilt.",
+    "description": "\"ohne Vorfälligkeitsentschädigung\" (without penalty) has become \"gegen Zahlung einer Vorfälligkeitsentschädigung\" (against payment of a penalty). This is an error.",
+    "lang": "de"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 1,
+    "text": "Der Darlehensgeber verpflichtet sich, dem Darlehensnehmer einen Darlehensbetrag von 85.000,00 EUR zur Verfügung zu stellen, der innerhalb von 5 Kalendertagen nach Unterzeichnung dieses Vertrags in einer einzigen Überweisung auf das vom Darlehensnehmer benannte Bankkonto ausgezahlt wird.",
+    "description": "\"Geschäftstagen\" (business days) has been replaced with \"Kalendertagen\" (calendar days). This is an error.",
+    "lang": "de"
+  },
+  {
+    "type": "addition",
+    "paragraph": 6,
+    "text": "Dieser Vertrag unterliegt spanischem Recht, und alle sich daraus ergebenden Streitigkeiten werden den zuständigen Gerichten in Madrid vorgelegt. Der Darlehensgeber ist zudem berechtigt, Klage am Sitz des Darlehensnehmers zu erheben.",
+    "description": "A sentence has been added giving the Lender an additional choice of forum. It is not in the source. This is an error.",
+    "lang": "de"
+  },
+  {
+    "type": "omission",
+    "paragraph": 3,
+    "text": "Der Darlehensnehmer zahlt das Darlehen in 6 gleichen monatlichen Raten von je 14.500,00 EUR zurück, wobei die erste Rate am 31. März 2026 und die letzte Rate am 31. August 2026 fällig wird.",
+    "description": "The clause \"einschließlich Tilgung und Zinsen\" (including principal and interest) has been removed. It is now unclear whether interest is included in the instalments. This is an error.",
+    "lang": "de"
+  },
+  {
+    "type": "minor",
+    "paragraph": 0,
+    "text": "Dieser kurzfristige Geschäftsdarlehensvertrag wird am 9. Februar 2026 zwischen Harbourline Capital Ltd. (der „Darlehensgeber“) und Verdant Kitchenware S.L. (der „Darlehensnehmer“), vertreten durch ihre Geschäftsführerin Elena Marquez, abgeschlossen.",
+    "description": "\"geschlossen\" has been changed to its synonym \"abgeschlossen\". The meaning is identical. This is not an error.",
+    "lang": "de"
+  },
+  {
+    "type": "minor",
+    "paragraph": 2,
+    "text": "Der ausstehende Darlehensbetrag wird mit einem festen Jahreszinssatz von 7,25 % verzinst, der auf Basis eines Jahres mit 360 Tagen berechnet wird und vom Tag der Auszahlung an täglich anfällt.",
+    "description": "\"ab dem Tag der Auszahlung\" has been rephrased as \"vom Tag der Auszahlung an\". The meaning is identical. This is not an error.",
+    "lang": "de"
+  }
+]

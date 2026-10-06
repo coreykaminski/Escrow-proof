@@ -1,0 +1,40 @@
+{
+  "id": "p06",
+  "domain": "policy",
+  "title": "Limited Product Warranty Terms",
+  "parties": ["Norvale Appliances Ltd.", "Brightline Retail GmbH"],
+  "paragraphs": {
+    "en": [
+      "Norvale Appliances Ltd. warrants that each product sold through its authorised distributor Brightline Retail GmbH shall be free from defects in materials and workmanship for a period of 24 months from the date of purchase. This warranty applies to all products purchased on or after January 15, 2026.",
+      "During the coverage period, Norvale Appliances Ltd. will repair or replace any defective product at no charge, provided that the defect is reported within 30 days of its discovery. Replacement parts are warranted for the remainder of the original coverage period or for 90 days, whichever is longer.",
+      "Customers may purchase an extended warranty for an additional 12 months at a price of EUR 49.00 per product. The extended warranty must be purchased no later than 60 days after the original date of purchase.",
+      "This warranty does not cover damage caused by misuse, accidents, unauthorised modifications, power surges or failure to follow the installation instructions. Normal wear of consumable components, such as filters and seals, is likewise excluded.",
+      "Where a repair is carried out outside the scope of this warranty, the customer shall pay a diagnostic fee of EUR 75.00 plus the cost of parts, and labour charges shall not exceed 15% of the replacement value of the product.",
+      "Claims under this warranty must be submitted to Brightline Retail GmbH together with the original proof of purchase. These terms enter into force on January 15, 2026 and remain valid until revoked in writing, with the current version having been approved on December 1, 2025."
+    ],
+    "es": [
+      "Norvale Appliances Ltd. garantiza que cada producto vendido a través de su distribuidor autorizado Brightline Retail GmbH estará libre de defectos de materiales y de fabricación durante un periodo de 24 meses a partir de la fecha de compra. Esta garantía se aplica a todos los productos adquiridos a partir del 15 de enero de 2026, inclusive.",
+      "Durante el periodo de cobertura, Norvale Appliances Ltd. reparará o sustituirá sin cargo cualquier producto defectuoso, siempre que el defecto se comunique dentro de los 30 días siguientes a su descubrimiento. Las piezas de repuesto están garantizadas durante el resto del periodo de cobertura original o durante 90 días, si este plazo fuera más largo.",
+      "Los clientes podrán adquirir una garantía ampliada por 12 meses adicionales a un precio de 49,00 EUR por producto. La garantía ampliada deberá adquirirse a más tardar 60 días después de la fecha de compra original.",
+      "Esta garantía no cubre los daños causados por uso indebido, accidentes, modificaciones no autorizadas, sobretensiones o incumplimiento de las instrucciones de instalación. Asimismo, queda excluido el desgaste normal de los componentes consumibles, como filtros y juntas.",
+      "Cuando se realice una reparación fuera del ámbito de esta garantía, el cliente abonará una tarifa de diagnóstico de 75,00 EUR más el coste de las piezas, y los gastos de mano de obra no superarán el 15% del valor de reposición del producto.",
+      "Las reclamaciones en virtud de esta garantía deberán presentarse a Brightline Retail GmbH junto con el justificante de compra original. Las presentes condiciones entran en vigor el 15 de enero de 2026 y seguirán vigentes hasta su revocación por escrito; la versión actual fue aprobada el 1 de diciembre de 2025."
+    ],
+    "fr": [
+      "Norvale Appliances Ltd. garantit que chaque produit vendu par l'intermédiaire de son distributeur agréé Brightline Retail GmbH sera exempt de défauts de matériaux et de fabrication pendant une période de 24 mois à compter de la date d'achat. Cette garantie s'applique à tous les produits achetés à compter du 15 janvier 2026 inclus.",
+      "Pendant la période de couverture, Norvale Appliances Ltd. réparera ou remplacera gratuitement tout produit défectueux, à condition que le défaut soit signalé dans un délai de 30 jours suivant sa découverte. Les pièces de rechange sont garanties pour la durée restante de la période de couverture initiale ou pendant 90 jours, la durée la plus longue étant retenue.",
+      "Les clients peuvent souscrire une extension de garantie de 12 mois supplémentaires au prix de 49,00 EUR par produit. L'extension de garantie doit être souscrite au plus tard 60 jours après la date d'achat initiale.",
+      "Cette garantie ne couvre pas les dommages causés par une utilisation abusive, des accidents, des modifications non autorisées, des surtensions ou le non-respect des instructions d'installation. L'usure normale des composants consommables, tels que les filtres et les joints, est également exclue.",
+      "Lorsqu'une réparation est effectuée en dehors du champ d'application de la présente garantie, le client paiera des frais de diagnostic de 75,00 EUR auxquels s'ajoute le coût des pièces, et les frais de main-d'œuvre ne dépasseront pas 15 % de la valeur de remplacement du produit.",
+      "Les réclamations au titre de la présente garantie doivent être adressées à Brightline Retail GmbH accompagnées de la preuve d'achat originale. Les présentes conditions entrent en vigueur le 15 janvier 2026 et restent valables jusqu'à leur révocation par écrit, la version actuelle ayant été approuvée le 1 décembre 2025."
+    ],
+    "de": [
+      "Norvale Appliances Ltd. garantiert, dass jedes über ihren autorisierten Vertriebspartner Brightline Retail GmbH verkaufte Produkt für einen Zeitraum von 24 Monaten ab dem Kaufdatum frei von Material- und Verarbeitungsfehlern ist. Diese Garantie gilt für alle Produkte, die am oder nach dem 15. Januar 2026 erworben wurden.",
+      "Während des Garantiezeitraums wird Norvale Appliances Ltd. jedes mangelhafte Produkt kostenlos reparieren oder ersetzen, sofern der Mangel innerhalb von 30 Tagen nach seiner Entdeckung gemeldet wird. Für Ersatzteile gilt die Garantie für den verbleibenden ursprünglichen Garantiezeitraum oder für 90 Tage, je nachdem, welcher Zeitraum länger ist.",
+      "Kunden können eine Garantieverlängerung um weitere 12 Monate zum Preis von 49,00 EUR pro Produkt erwerben. Die Garantieverlängerung muss spätestens 60 Tage nach dem ursprünglichen Kaufdatum erworben werden.",
+      "Diese Garantie deckt keine Schäden ab, die durch unsachgemäßen Gebrauch, Unfälle, nicht autorisierte Änderungen, Überspannungen oder die Nichtbeachtung der Installationsanleitung verursacht wurden. Ebenfalls ausgeschlossen ist der normale Verschleiß von Verbrauchsteilen wie Filtern und Dichtungen.",
+      "Wird eine Reparatur außerhalb des Geltungsbereichs dieser Garantie durchgeführt, zahlt der Kunde eine Diagnosegebühr von 75,00 EUR zuzüglich der Kosten für Ersatzteile, wobei die Arbeitskosten 15 % des Wiederbeschaffungswerts des Produkts nicht übersteigen dürfen.",
+      "Ansprüche aus dieser Garantie sind zusammen mit dem Original-Kaufbeleg bei Brightline Retail GmbH geltend zu machen. Diese Bedingungen treten am 15. Januar 2026 in Kraft und gelten bis zu ihrem schriftlichen Widerruf, wobei die aktuelle Fassung am 1. Dezember 2025 genehmigt wurde."
+    ]
+  }
+}

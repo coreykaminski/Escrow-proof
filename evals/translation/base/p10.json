@@ -1,0 +1,40 @@
+{
+  "id": "p10",
+  "domain": "policy",
+  "title": "Cookie Policy",
+  "parties": ["Northwind Digital Ltd.", "Clara Weiss", "Lumetrics Analytics GmbH"],
+  "paragraphs": {
+    "en": [
+      "This Cookie Policy explains how Northwind Digital Ltd. uses cookies and similar technologies on its website and applies from March 3, 2026. It replaces the previous version dated September 15, 2024.",
+      "Strictly necessary cookies enable core functions such as secure login and shopping cart storage and cannot be disabled. These cookies are retained for a maximum of 24 hours after the end of each session.",
+      "Analytics cookies are provided by our processor Lumetrics Analytics GmbH and help us understand how visitors use the website. They are only placed with your consent and are retained for 13 months, after which the collected data is anonymised.",
+      "Marketing cookies allow us to show relevant offers and are retained for no longer than 90 days. We use no more than 6 third-party marketing providers at any time.",
+      "You may withdraw or change your consent at any time through the cookie settings panel, and your choice will be stored for 12 months. Withdrawing consent does not affect the lawfulness of processing carried out before withdrawal.",
+      "Questions about this policy may be addressed to our Data Protection Officer, Clara Weiss, who will respond within 30 days. Northwind Digital Ltd. reviews this policy at least once per year."
+    ],
+    "es": [
+      "La presente Política de Cookies explica cómo Northwind Digital Ltd. utiliza cookies y tecnologías similares en su sitio web y se aplica a partir del 3 de marzo de 2026. Sustituye a la versión anterior de fecha 15 de septiembre de 2024.",
+      "Las cookies estrictamente necesarias permiten funciones básicas como el inicio de sesión seguro y el almacenamiento del carrito de compra y no pueden desactivarse. Estas cookies se conservan durante un máximo de 24 horas tras la finalización de cada sesión.",
+      "Las cookies analíticas las proporciona nuestro encargado del tratamiento Lumetrics Analytics GmbH y nos ayudan a comprender cómo utilizan los visitantes el sitio web. Solo se instalan con su consentimiento y se conservan durante 13 meses, transcurridos los cuales los datos recogidos se anonimizan.",
+      "Las cookies de marketing nos permiten mostrar ofertas pertinentes y se conservan durante un plazo no superior a 90 días. En ningún momento utilizamos más de 6 proveedores de marketing externos.",
+      "Puede retirar o modificar su consentimiento en cualquier momento a través del panel de configuración de cookies, y su elección se almacenará durante 12 meses. La retirada del consentimiento no afecta a la licitud del tratamiento realizado antes de dicha retirada.",
+      "Las consultas sobre esta política pueden dirigirse a nuestra Delegada de Protección de Datos, Clara Weiss, que responderá en un plazo de 30 días. Northwind Digital Ltd. revisa esta política al menos una vez al año."
+    ],
+    "fr": [
+      "La présente Politique relative aux cookies explique comment Northwind Digital Ltd. utilise les cookies et technologies similaires sur son site web et s'applique à compter du 3 mars 2026. Elle remplace la version précédente datée du 15 septembre 2024.",
+      "Les cookies strictement nécessaires permettent des fonctions essentielles telles que la connexion sécurisée et la conservation du panier d'achat et ne peuvent pas être désactivés. Ces cookies sont conservés pendant 24 heures au maximum après la fin de chaque session.",
+      "Les cookies analytiques sont fournis par notre sous-traitant Lumetrics Analytics GmbH et nous aident à comprendre comment les visiteurs utilisent le site web. Ils ne sont déposés qu'avec votre consentement et sont conservés pendant 13 mois, à l'issue desquels les données collectées sont anonymisées.",
+      "Les cookies marketing nous permettent d'afficher des offres pertinentes et sont conservés pendant 90 jours au maximum. Nous ne faisons jamais appel à plus de 6 prestataires marketing tiers simultanément.",
+      "Vous pouvez retirer ou modifier votre consentement à tout moment via le panneau de paramétrage des cookies, et votre choix sera conservé pendant 12 mois. Le retrait du consentement ne remet pas en cause la licéité du traitement effectué avant ce retrait.",
+      "Les questions relatives à la présente politique peuvent être adressées à notre Déléguée à la protection des données, Clara Weiss, qui répondra dans un délai de 30 jours. Northwind Digital Ltd. réexamine la présente politique au moins une fois par an."
+    ],
+    "de": [
+      "Diese Cookie-Richtlinie erläutert, wie Northwind Digital Ltd. Cookies und ähnliche Technologien auf ihrer Website verwendet, und gilt ab dem 3. März 2026. Sie ersetzt die vorherige Fassung vom 15. September 2024.",
+      "Unbedingt erforderliche Cookies ermöglichen grundlegende Funktionen wie die sichere Anmeldung und die Speicherung des Warenkorbs und können nicht deaktiviert werden. Diese Cookies werden höchstens 24 Stunden nach dem Ende jeder Sitzung gespeichert.",
+      "Analyse-Cookies werden von unserem Auftragsverarbeiter Lumetrics Analytics GmbH bereitgestellt und helfen uns zu verstehen, wie Besucher die Website nutzen. Sie werden nur mit Ihrer Einwilligung gesetzt und 13 Monate lang gespeichert; danach werden die erhobenen Daten anonymisiert.",
+      "Marketing-Cookies ermöglichen es uns, relevante Angebote anzuzeigen, und werden nicht länger als 90 Tage gespeichert. Wir setzen zu keinem Zeitpunkt mehr als 6 externe Marketinganbieter ein.",
+      "Sie können Ihre Einwilligung jederzeit über das Cookie-Einstellungsmenü widerrufen oder ändern, und Ihre Auswahl wird 12 Monate lang gespeichert. Der Widerruf der Einwilligung berührt nicht die Rechtmäßigkeit der vor dem Widerruf erfolgten Verarbeitung.",
+      "Fragen zu dieser Richtlinie können an unsere Datenschutzbeauftragte, Clara Weiss, gerichtet werden, die innerhalb von 30 Tagen antworten wird. Northwind Digital Ltd. überprüft diese Richtlinie mindestens einmal jährlich."
+    ]
+  }
+}

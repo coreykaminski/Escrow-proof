@@ -1,0 +1,40 @@
+{
+  "id": "p02",
+  "domain": "policy",
+  "title": "Refund and Cancellation Policy",
+  "parties": ["LearnPath Academy Ltd.", "Brightwave Payments S.L.", "Elena Marquez"],
+  "paragraphs": {
+    "en": [
+      "This Refund and Cancellation Policy applies to all courses purchased on the platform operated by LearnPath Academy Ltd. and takes effect on March 1, 2026, replacing the previous version dated January 15, 2026.",
+      "Learners may cancel any individual course within 14 days of purchase and receive a full refund, provided that no more than 25% of the course content has been accessed. Requests submitted after this period or after exceeding this threshold will not be eligible for a refund.",
+      "Annual subscriptions priced at €240.00 may be cancelled at any time; however, a pro-rata refund will only be issued if cancellation occurs within the first 30 days. After that period, the subscription remains active until the end of the paid term and will not be renewed.",
+      "For corporate training packages exceeding €1,250.00, cancellations must be notified in writing at least 10 business days before the scheduled start date. A cancellation fee of 15% of the package price will be withheld.",
+      "All approved refunds will be processed by Brightwave Payments S.L. to the original payment method within 7 business days of approval. LearnPath Academy Ltd. is not responsible for additional delays caused by the learner's bank or card issuer.",
+      "Questions about this policy should be addressed to Elena Marquez, Head of Learner Support, at support@learnpath.example. LearnPath Academy Ltd. reserves the right to amend this policy with 30 days' prior notice to registered users."
+    ],
+    "es": [
+      "La presente Política de Reembolso y Cancelación se aplica a todos los cursos adquiridos en la plataforma gestionada por LearnPath Academy Ltd. y entra en vigor el 1 de marzo de 2026, sustituyendo a la versión anterior de fecha 15 de enero de 2026.",
+      "Los alumnos podrán cancelar cualquier curso individual en un plazo de 14 días desde la compra y recibir un reembolso íntegro, siempre que no se haya accedido a más del 25% del contenido del curso. Las solicitudes presentadas fuera de este plazo o tras superar dicho umbral no darán derecho a reembolso.",
+      "Las suscripciones anuales con un precio de 240,00 € podrán cancelarse en cualquier momento; no obstante, solo se emitirá un reembolso proporcional si la cancelación se produce dentro de los primeros 30 días. Transcurrido dicho plazo, la suscripción seguirá activa hasta el final del período abonado y no se renovará.",
+      "En el caso de los paquetes de formación para empresas cuyo importe supere los 1.250,00 €, las cancelaciones deberán notificarse por escrito con al menos 10 días hábiles de antelación a la fecha de inicio prevista. Se retendrá una penalización por cancelación del 15% del precio del paquete.",
+      "Todos los reembolsos aprobados serán tramitados por Brightwave Payments S.L. mediante el método de pago original en un plazo de 7 días hábiles desde su aprobación. LearnPath Academy Ltd. no se hace responsable de los retrasos adicionales ocasionados por el banco o el emisor de la tarjeta del alumno.",
+      "Las consultas sobre esta política deberán dirigirse a Elena Marquez, Responsable de Atención al Alumno, en support@learnpath.example. LearnPath Academy Ltd. se reserva el derecho de modificar esta política con un preaviso de 30 días a los usuarios registrados."
+    ],
+    "fr": [
+      "La présente Politique de remboursement et d'annulation s'applique à tous les cours achetés sur la plateforme exploitée par LearnPath Academy Ltd. et entre en vigueur le 1 mars 2026, en remplacement de la version précédente datée du 15 janvier 2026.",
+      "Les apprenants peuvent annuler tout cours individuel dans un délai de 14 jours à compter de l'achat et obtenir un remboursement intégral, à condition de n'avoir pas consulté plus de 25 % du contenu du cours. Les demandes présentées après ce délai ou après le dépassement de ce seuil ne donneront pas droit à un remboursement.",
+      "Les abonnements annuels au prix de 240,00 € peuvent être résiliés à tout moment ; toutefois, un remboursement au prorata ne sera accordé que si la résiliation intervient au cours des 30 premiers jours. Passé ce délai, l'abonnement reste actif jusqu'à la fin de la période payée et ne sera pas renouvelé.",
+      "Pour les formules de formation en entreprise d'un montant supérieur à 1 250,00 €, toute annulation doit être notifiée par écrit au moins 10 jours ouvrables avant la date de début prévue. Des frais d'annulation correspondant à 15 % du prix de la formule seront retenus.",
+      "Tous les remboursements approuvés seront traités par Brightwave Payments S.L. sur le moyen de paiement initial dans un délai de 7 jours ouvrables à compter de leur approbation. LearnPath Academy Ltd. décline toute responsabilité quant aux retards supplémentaires imputables à la banque ou à l'émetteur de la carte de l'apprenant.",
+      "Toute question relative à la présente politique doit être adressée à Elena Marquez, Responsable du support aux apprenants, à l'adresse support@learnpath.example. LearnPath Academy Ltd. se réserve le droit de modifier la présente politique moyennant un préavis de 30 jours adressé aux utilisateurs inscrits."
+    ],
+    "de": [
+      "Diese Erstattungs- und Stornierungsrichtlinie gilt für alle Kurse, die auf der von LearnPath Academy Ltd. betriebenen Plattform erworben werden, und tritt am 1. März 2026 in Kraft; sie ersetzt die vorherige Fassung vom 15. Januar 2026.",
+      "Lernende können jeden Einzelkurs innerhalb von 14 Tagen nach dem Kauf stornieren und erhalten eine vollständige Erstattung, sofern nicht mehr als 25 % der Kursinhalte abgerufen wurden. Anträge, die nach Ablauf dieser Frist oder nach Überschreiten dieses Schwellenwerts gestellt werden, sind nicht erstattungsfähig.",
+      "Jahresabonnements zum Preis von 240,00 € können jederzeit gekündigt werden; eine anteilige Erstattung erfolgt jedoch nur, wenn die Kündigung innerhalb der ersten 30 Tage erfolgt. Nach Ablauf dieses Zeitraums bleibt das Abonnement bis zum Ende der bezahlten Laufzeit aktiv und wird nicht verlängert.",
+      "Bei Firmenschulungspaketen mit einem Preis von mehr als 1.250,00 € ist eine Stornierung spätestens 10 Werktage vor dem geplanten Beginn schriftlich mitzuteilen. Es wird eine Stornogebühr in Höhe von 15 % des Paketpreises einbehalten.",
+      "Alle genehmigten Erstattungen werden von Brightwave Payments S.L. innerhalb von 7 Werktagen nach Genehmigung auf das ursprüngliche Zahlungsmittel veranlasst. LearnPath Academy Ltd. haftet nicht für zusätzliche Verzögerungen, die durch die Bank oder den Kartenaussteller des Lernenden verursacht werden.",
+      "Fragen zu dieser Richtlinie sind an Elena Marquez, Leiterin des Lernendensupports, unter support@learnpath.example zu richten. LearnPath Academy Ltd. behält sich das Recht vor, diese Richtlinie mit einer Vorankündigungsfrist von 30 Tagen gegenüber registrierten Nutzern zu ändern."
+    ]
+  }
+}

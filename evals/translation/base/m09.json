@@ -1,0 +1,40 @@
+{
+  "id": "m09",
+  "domain": "marketing",
+  "title": "First-Box Discount Offer Terms",
+  "parties": ["FreshFork Kitchens Ltd.", "Harvest Lane Logistics GmbH"],
+  "paragraphs": {
+    "en": [
+      "FreshFork Kitchens Ltd. is offering new customers a discount of 50% on their first meal-kit box ordered between April 1, 2026 and June 30, 2026. The offer applies only to customers who have never previously held a FreshFork account.",
+      "The maximum discount per customer is €40.00, and the offer cannot be combined with any other promotional code or voucher. The discount applies to the box price only and does not cover delivery fees or optional add-ons.",
+      "To qualify, the customer must enter the code FIRSTBOX at checkout and select a plan of at least 3 meals for 2 people. Only 1 discounted box may be redeemed per household or delivery address.",
+      "First boxes are delivered by Harvest Lane Logistics GmbH within 5 business days of the order being confirmed. Delivery is available only to addresses within the service areas listed on the FreshFork website.",
+      "After the first box, the subscription renews automatically at the standard weekly price unless the customer cancels at least 7 days before the next scheduled delivery. Customers may cancel at any time free of charge through their online account.",
+      "FreshFork Kitchens Ltd. reserves the right to withdraw or amend this offer at any time without prior notice, provided that orders already confirmed will be honoured. These terms were last updated on March 15, 2026."
+    ],
+    "es": [
+      "FreshFork Kitchens Ltd. ofrece a los nuevos clientes un descuento del 50% en su primera caja de menú pedida entre el 1 de abril de 2026 y el 30 de junio de 2026. La oferta se aplica únicamente a los clientes que nunca hayan tenido una cuenta de FreshFork.",
+      "El descuento máximo por cliente es de 40,00 €, y la oferta no puede combinarse con ningún otro código promocional o vale. El descuento se aplica solo al precio de la caja y no cubre los gastos de envío ni los complementos opcionales.",
+      "Para poder beneficiarse, el cliente debe introducir el código FIRSTBOX al finalizar la compra y seleccionar un plan de al menos 3 comidas para 2 personas. Solo podrá canjearse 1 caja con descuento por hogar o dirección de entrega.",
+      "Las primeras cajas son entregadas por Harvest Lane Logistics GmbH en un plazo de 5 días hábiles desde la confirmación del pedido. La entrega solo está disponible en direcciones situadas dentro de las zonas de servicio indicadas en el sitio web de FreshFork.",
+      "Tras la primera caja, la suscripción se renueva automáticamente al precio semanal estándar, salvo que el cliente la cancele con al menos 7 días de antelación a la siguiente entrega programada. Los clientes pueden cancelarla en cualquier momento y sin coste a través de su cuenta en línea.",
+      "FreshFork Kitchens Ltd. se reserva el derecho de retirar o modificar esta oferta en cualquier momento sin previo aviso, siempre que se respeten los pedidos ya confirmados. Estas condiciones se actualizaron por última vez el 15 de marzo de 2026."
+    ],
+    "fr": [
+      "FreshFork Kitchens Ltd. propose aux nouveaux clients une remise de 50 % sur leur premier panier-repas commandé entre le 1 avril 2026 et le 30 juin 2026. L'offre s'applique uniquement aux clients n'ayant jamais détenu de compte FreshFork.",
+      "La remise maximale par client est de 40,00 €, et l'offre n'est cumulable avec aucun autre code promotionnel ou bon d'achat. La remise s'applique uniquement au prix du panier et ne couvre ni les frais de livraison ni les options supplémentaires.",
+      "Pour en bénéficier, le client doit saisir le code FIRSTBOX lors du paiement et choisir une formule d'au moins 3 repas pour 2 personnes. Seul 1 panier à prix réduit peut être obtenu par foyer ou adresse de livraison.",
+      "Les premiers paniers sont livrés par Harvest Lane Logistics GmbH dans un délai de 5 jours ouvrés à compter de la confirmation de la commande. La livraison est uniquement disponible pour les adresses situées dans les zones desservies indiquées sur le site internet de FreshFork.",
+      "Après le premier panier, l'abonnement est renouvelé automatiquement au prix hebdomadaire standard, sauf si le client le résilie au moins 7 jours avant la prochaine livraison prévue. Les clients peuvent résilier à tout moment et sans frais depuis leur compte en ligne.",
+      "FreshFork Kitchens Ltd. se réserve le droit de retirer ou de modifier la présente offre à tout moment sans préavis, sous réserve d'honorer les commandes déjà confirmées. Les présentes conditions ont été mises à jour pour la dernière fois le 15 mars 2026."
+    ],
+    "de": [
+      "FreshFork Kitchens Ltd. bietet Neukunden einen Rabatt von 50 % auf ihre erste Kochbox, die zwischen dem 1. April 2026 und dem 30. Juni 2026 bestellt wird. Das Angebot gilt nur für Kunden, die noch nie ein FreshFork-Konto besessen haben.",
+      "Der maximale Rabatt pro Kunde beträgt 40,00 €, und das Angebot ist nicht mit anderen Aktionscodes oder Gutscheinen kombinierbar. Der Rabatt gilt nur für den Preis der Box und umfasst weder Versandkosten noch optionale Zusatzprodukte.",
+      "Um teilnahmeberechtigt zu sein, muss der Kunde an der Kasse den Code FIRSTBOX eingeben und einen Plan mit mindestens 3 Mahlzeiten für 2 Personen wählen. Pro Haushalt oder Lieferadresse kann nur 1 rabattierte Box eingelöst werden.",
+      "Erste Boxen werden von Harvest Lane Logistics GmbH innerhalb von 5 Werktagen nach Bestätigung der Bestellung geliefert. Die Lieferung ist nur an Adressen innerhalb der auf der FreshFork-Website aufgeführten Liefergebiete möglich.",
+      "Nach der ersten Box verlängert sich das Abonnement automatisch zum regulären Wochenpreis, sofern der Kunde nicht mindestens 7 Tage vor der nächsten geplanten Lieferung kündigt. Kunden können jederzeit kostenlos über ihr Online-Konto kündigen.",
+      "FreshFork Kitchens Ltd. behält sich das Recht vor, dieses Angebot jederzeit ohne vorherige Ankündigung zurückzuziehen oder zu ändern, wobei bereits bestätigte Bestellungen erfüllt werden. Diese Bedingungen wurden zuletzt am 15. März 2026 aktualisiert."
+    ]
+  }
+}

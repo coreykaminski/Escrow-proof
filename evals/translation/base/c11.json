@@ -1,0 +1,40 @@
+{
+  "id": "c11",
+  "domain": "contract",
+  "title": "Equipment Rental Agreement",
+  "parties": ["Hartwell Equipment Hire Ltd", "Brookfield Construction GmbH", "Daniel Okafor"],
+  "paragraphs": {
+    "en": [
+      "This Equipment Rental Agreement is entered into on April 14, 2026 between Hartwell Equipment Hire Ltd, as lessor, and Brookfield Construction GmbH, as lessee, represented by its project manager Daniel Okafor.",
+      "The lessor agrees to rent to the lessee 2 compact excavators and 1 telescopic handler for a rental period beginning on April 20, 2026 and ending on June 19, 2026. The equipment shall be delivered to the lessee's construction site at the lessor's expense.",
+      "The lessee shall pay a daily rate of EUR 385.00 per excavator and EUR 290.00 for the telescopic handler. Invoices shall be issued monthly and are payable within 14 days of the invoice date.",
+      "Before delivery, the lessee shall pay a security deposit of EUR 6,500.00. The deposit shall be refunded within 10 days after the equipment is returned, less any amounts owed under this Agreement.",
+      "The lessee shall return the equipment in the same condition as at delivery, except for normal wear and tear. Any damage caused by misuse or negligence shall be repaired at the lessee's cost, and the lessor may deduct the repair costs from the deposit.",
+      "If the equipment is returned late, the lessee shall pay the daily rate plus a surcharge of 15% for each day of delay. Daniel Okafor shall be the lessee's contact person for all matters relating to this Agreement."
+    ],
+    "es": [
+      "El presente Contrato de Alquiler de Equipos se celebra el 14 de abril de 2026 entre Hartwell Equipment Hire Ltd, como arrendador, y Brookfield Construction GmbH, como arrendatario, representado por su director de proyecto Daniel Okafor.",
+      "El arrendador se compromete a alquilar al arrendatario 2 excavadoras compactas y 1 manipulador telescópico durante un período de alquiler que comienza el 20 de abril de 2026 y finaliza el 19 de junio de 2026. Los equipos se entregarán en la obra del arrendatario a cargo del arrendador.",
+      "El arrendatario abonará una tarifa diaria de 385,00 EUR por excavadora y de 290,00 EUR por el manipulador telescópico. Las facturas se emitirán mensualmente y serán pagaderas en un plazo de 14 días a partir de la fecha de factura.",
+      "Antes de la entrega, el arrendatario abonará una fianza de 6.500,00 EUR. La fianza se reembolsará en un plazo de 10 días tras la devolución de los equipos, previa deducción de cualquier importe adeudado en virtud del presente Contrato.",
+      "El arrendatario devolverá los equipos en el mismo estado en que se entregaron, salvo el desgaste normal por el uso. Cualquier daño causado por uso indebido o negligencia se reparará a cargo del arrendatario, y el arrendador podrá deducir los costes de reparación de la fianza.",
+      "Si los equipos se devuelven con retraso, el arrendatario abonará la tarifa diaria más un recargo del 15 % por cada día de retraso. Daniel Okafor será la persona de contacto del arrendatario para todos los asuntos relacionados con el presente Contrato."
+    ],
+    "fr": [
+      "Le présent Contrat de location de matériel est conclu le 14 avril 2026 entre Hartwell Equipment Hire Ltd, en qualité de bailleur, et Brookfield Construction GmbH, en qualité de locataire, représentée par son chef de projet Daniel Okafor.",
+      "Le bailleur s'engage à louer au locataire 2 mini-pelles et 1 chariot télescopique pour une période de location commençant le 20 avril 2026 et se terminant le 19 juin 2026. Le matériel sera livré sur le chantier du locataire aux frais du bailleur.",
+      "Le locataire paiera un tarif journalier de 385,00 EUR par pelle et de 290,00 EUR pour le chariot télescopique. Les factures seront émises mensuellement et sont payables dans un délai de 14 jours à compter de la date de facture.",
+      "Avant la livraison, le locataire versera un dépôt de garantie de 6 500,00 EUR. Le dépôt de garantie sera remboursé dans un délai de 10 jours après la restitution du matériel, déduction faite de toute somme due au titre du présent Contrat.",
+      "Le locataire restituera le matériel dans l'état où il se trouvait lors de la livraison, sous réserve de l'usure normale. Tout dommage causé par une utilisation abusive ou une négligence sera réparé aux frais du locataire, et le bailleur pourra déduire les frais de réparation du dépôt de garantie.",
+      "En cas de restitution tardive du matériel, le locataire paiera le tarif journalier majoré de 15 % pour chaque jour de retard. Daniel Okafor sera l'interlocuteur du locataire pour toutes les questions relatives au présent Contrat."
+    ],
+    "de": [
+      "Dieser Gerätemietvertrag wird am 14. April 2026 zwischen Hartwell Equipment Hire Ltd als Vermieter und Brookfield Construction GmbH als Mieter, vertreten durch ihren Projektleiter Daniel Okafor, geschlossen.",
+      "Der Vermieter verpflichtet sich, dem Mieter 2 Kompaktbagger und 1 Teleskoplader für eine Mietdauer vom 20. April 2026 bis zum 19. Juni 2026 zu vermieten. Die Geräte werden auf Kosten des Vermieters an die Baustelle des Mieters geliefert.",
+      "Der Mieter zahlt einen Tagessatz von 385,00 EUR pro Bagger und 290,00 EUR für den Teleskoplader. Rechnungen werden monatlich gestellt und sind innerhalb von 14 Tagen ab Rechnungsdatum zahlbar.",
+      "Vor der Lieferung zahlt der Mieter eine Kaution in Höhe von 6.500,00 EUR. Die Kaution wird innerhalb von 10 Tagen nach Rückgabe der Geräte abzüglich etwaiger nach diesem Vertrag geschuldeter Beträge erstattet.",
+      "Der Mieter hat die Geräte in demselben Zustand wie bei der Lieferung zurückzugeben, mit Ausnahme der normalen Abnutzung. Schäden, die durch unsachgemäße Nutzung oder Fahrlässigkeit verursacht werden, sind auf Kosten des Mieters zu reparieren, und der Vermieter kann die Reparaturkosten von der Kaution abziehen.",
+      "Werden die Geräte verspätet zurückgegeben, zahlt der Mieter für jeden Tag der Verspätung den Tagessatz zuzüglich eines Aufschlags von 15 %. Daniel Okafor ist der Ansprechpartner des Mieters für alle Angelegenheiten im Zusammenhang mit diesem Vertrag."
+    ]
+  }
+}

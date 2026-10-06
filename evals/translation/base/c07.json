@@ -1,0 +1,44 @@
+{
+  "id": "c07",
+  "domain": "contract",
+  "title": "Short-Term Business Loan Agreement",
+  "parties": ["Harbourline Capital Ltd.", "Verdant Kitchenware S.L.", "Elena Marquez"],
+  "paragraphs": {
+    "en": [
+      "This Short-Term Business Loan Agreement is entered into on February 9, 2026, between Harbourline Capital Ltd. (the \"Lender\") and Verdant Kitchenware S.L. (the \"Borrower\"), represented by its managing director, Elena Marquez.",
+      "The Lender agrees to advance to the Borrower a principal amount of EUR 85,000.00, which shall be disbursed in a single transfer to the Borrower's designated bank account within 5 business days of the signing of this Agreement.",
+      "The outstanding principal shall bear interest at a fixed annual rate of 7.25%, calculated on the basis of a 360-day year and accrued daily from the date of disbursement.",
+      "The Borrower shall repay the loan in 6 equal monthly instalments of EUR 14,500.00 each, including principal and interest, with the first instalment due on March 31, 2026, and the final instalment due on August 31, 2026.",
+      "If any instalment remains unpaid for more than 10 days after its due date, the Borrower shall pay a late-payment charge of 2% of the overdue amount, and the Lender may declare the entire outstanding balance immediately due and payable.",
+      "The Borrower may prepay all or part of the loan at any time without penalty, provided that it gives the Lender at least 15 days' prior written notice.",
+      "This Agreement shall be governed by the laws of Spain, and any dispute arising from it shall be submitted to the competent courts of Madrid."
+    ],
+    "es": [
+      "El presente Contrato de Préstamo Empresarial a Corto Plazo se celebra el 9 de febrero de 2026 entre Harbourline Capital Ltd. (el «Prestamista») y Verdant Kitchenware S.L. (el «Prestatario»), representada por su administradora, Elena Marquez.",
+      "El Prestamista se compromete a entregar al Prestatario un importe principal de 85.000,00 EUR, que se desembolsará mediante una única transferencia a la cuenta bancaria designada por el Prestatario en un plazo de 5 días hábiles a partir de la firma del presente Contrato.",
+      "El principal pendiente devengará intereses a un tipo fijo anual del 7,25 %, calculados sobre la base de un año de 360 días y devengados diariamente desde la fecha del desembolso.",
+      "El Prestatario reembolsará el préstamo en 6 cuotas mensuales iguales de 14.500,00 EUR cada una, que incluyen principal e intereses, venciendo la primera cuota el 31 de marzo de 2026 y la última el 31 de agosto de 2026.",
+      "Si alguna cuota permanece impagada durante más de 10 días después de su fecha de vencimiento, el Prestatario abonará un recargo por demora del 2 % del importe vencido, y el Prestamista podrá declarar vencido y exigible de inmediato la totalidad del saldo pendiente.",
+      "El Prestatario podrá amortizar anticipadamente la totalidad o parte del préstamo en cualquier momento sin penalización, siempre que notifique por escrito al Prestamista con una antelación mínima de 15 días.",
+      "El presente Contrato se regirá por la legislación española, y cualquier controversia derivada del mismo se someterá a los juzgados y tribunales competentes de Madrid."
+    ],
+    "fr": [
+      "Le présent Contrat de prêt professionnel à court terme est conclu le 9 février 2026 entre Harbourline Capital Ltd. (le « Prêteur ») et Verdant Kitchenware S.L. (l'« Emprunteur »), représentée par sa gérante, Elena Marquez.",
+      "Le Prêteur s'engage à avancer à l'Emprunteur un montant en principal de 85 000,00 EUR, qui sera versé en un seul virement sur le compte bancaire désigné par l'Emprunteur dans un délai de 5 jours ouvrables à compter de la signature du présent Contrat.",
+      "Le principal restant dû portera intérêt à un taux annuel fixe de 7,25 %, calculé sur la base d'une année de 360 jours et couru quotidiennement à compter de la date du versement.",
+      "L'Emprunteur remboursera le prêt en 6 mensualités égales de 14 500,00 EUR chacune, principal et intérêts compris, la première mensualité étant exigible le 31 mars 2026 et la dernière le 31 août 2026.",
+      "Si une mensualité demeure impayée plus de 10 jours après sa date d'échéance, l'Emprunteur versera une pénalité de retard de 2 % du montant échu, et le Prêteur pourra déclarer l'intégralité du solde restant dû immédiatement exigible.",
+      "L'Emprunteur pourra rembourser par anticipation tout ou partie du prêt à tout moment sans pénalité, à condition d'en informer le Prêteur par écrit au moins 15 jours à l'avance.",
+      "Le présent Contrat est régi par le droit espagnol, et tout litige en découlant sera soumis aux juridictions compétentes de Madrid."
+    ],
+    "de": [
+      "Dieser kurzfristige Geschäftsdarlehensvertrag wird am 9. Februar 2026 zwischen Harbourline Capital Ltd. (der „Darlehensgeber“) und Verdant Kitchenware S.L. (der „Darlehensnehmer“), vertreten durch ihre Geschäftsführerin Elena Marquez, geschlossen.",
+      "Der Darlehensgeber verpflichtet sich, dem Darlehensnehmer einen Darlehensbetrag von 85.000,00 EUR zur Verfügung zu stellen, der innerhalb von 5 Geschäftstagen nach Unterzeichnung dieses Vertrags in einer einzigen Überweisung auf das vom Darlehensnehmer benannte Bankkonto ausgezahlt wird.",
+      "Der ausstehende Darlehensbetrag wird mit einem festen Jahreszinssatz von 7,25 % verzinst, der auf Basis eines Jahres mit 360 Tagen berechnet wird und ab dem Tag der Auszahlung täglich anfällt.",
+      "Der Darlehensnehmer zahlt das Darlehen in 6 gleichen monatlichen Raten von je 14.500,00 EUR einschließlich Tilgung und Zinsen zurück, wobei die erste Rate am 31. März 2026 und die letzte Rate am 31. August 2026 fällig wird.",
+      "Bleibt eine Rate länger als 10 Tage nach ihrem Fälligkeitsdatum unbezahlt, zahlt der Darlehensnehmer einen Verzugszuschlag in Höhe von 2 % des überfälligen Betrags, und der Darlehensgeber kann den gesamten ausstehenden Restbetrag sofort fällig stellen.",
+      "Der Darlehensnehmer kann das Darlehen jederzeit ganz oder teilweise ohne Vorfälligkeitsentschädigung vorzeitig zurückzahlen, sofern er dies dem Darlehensgeber mindestens 15 Tage im Voraus schriftlich mitteilt.",
+      "Dieser Vertrag unterliegt spanischem Recht, und alle sich daraus ergebenden Streitigkeiten werden den zuständigen Gerichten in Madrid vorgelegt."
+    ]
+  }
+}

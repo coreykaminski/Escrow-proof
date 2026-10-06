@@ -1,0 +1,40 @@
+{
+  "id": "m01",
+  "domain": "marketing",
+  "title": "Introducing ThermaSense: Save 25% on Launch Day",
+  "parties": ["Nordlicht Home GmbH", "Clara Jensen", "HeatWise"],
+  "paragraphs": {
+    "en": [
+      "Dear customer, Nordlicht Home GmbH is proud to introduce ThermaSense, our new smart thermostat that adapts to your daily routine and keeps every room at the perfect temperature.",
+      "Our official launch day is April 14, 2026. On that day only, you can order ThermaSense with a 25% discount on the regular price of €249.00, bringing it down to just €186.75.",
+      "ThermaSense learns your schedule within 7 days and can reduce your heating costs by up to 18%, according to tests carried out by the independent laboratory HeatWise.",
+      "Every order includes free shipping, a 2-year warranty and a 30-day return period, so you can try ThermaSense without any risk.",
+      "Pre-orders open on April 1, 2026, and the first 500 customers will also receive a free room sensor worth €39.00.",
+      "\"We designed ThermaSense to make comfort effortless,\" says Clara Jensen, CEO of Nordlicht Home GmbH. Warm regards from the entire Nordlicht Home GmbH team."
+    ],
+    "es": [
+      "Estimado cliente: Nordlicht Home GmbH se enorgullece de presentarle ThermaSense, nuestro nuevo termostato inteligente que se adapta a su rutina diaria y mantiene cada estancia a la temperatura perfecta.",
+      "Nuestro día oficial de lanzamiento es el 14 de abril de 2026. Solo ese día, podrá pedir ThermaSense con un descuento del 25 % sobre el precio habitual de 249,00 €, lo que lo deja en solo 186,75 €.",
+      "ThermaSense aprende su horario en 7 días y puede reducir sus costes de calefacción hasta un 18 %, según las pruebas realizadas por el laboratorio independiente HeatWise.",
+      "Todos los pedidos incluyen envío gratuito, una garantía de 2 años y un plazo de devolución de 30 días, para que pueda probar ThermaSense sin ningún riesgo.",
+      "Las reservas se abren el 1 de abril de 2026, y los primeros 500 clientes recibirán además un sensor de habitación gratuito valorado en 39,00 €.",
+      "«Hemos diseñado ThermaSense para que el confort no requiera ningún esfuerzo», afirma Clara Jensen, directora general de Nordlicht Home GmbH. Reciba un cordial saludo de todo el equipo de Nordlicht Home GmbH."
+    ],
+    "fr": [
+      "Cher client, Nordlicht Home GmbH est fière de vous présenter ThermaSense, notre nouveau thermostat intelligent qui s'adapte à votre routine quotidienne et maintient chaque pièce à la température idéale.",
+      "Notre journée officielle de lancement aura lieu le 14 avril 2026. Ce jour-là uniquement, vous pourrez commander ThermaSense avec une remise de 25 % sur le prix habituel de 249,00 €, soit seulement 186,75 €.",
+      "ThermaSense apprend votre emploi du temps en 7 jours et peut réduire vos frais de chauffage jusqu'à 18 %, selon les tests réalisés par le laboratoire indépendant HeatWise.",
+      "Chaque commande comprend la livraison gratuite, une garantie de 2 ans et un délai de retour de 30 jours, afin que vous puissiez essayer ThermaSense sans aucun risque.",
+      "Les précommandes ouvrent le 1 avril 2026, et les 500 premiers clients recevront également un capteur d'ambiance gratuit d'une valeur de 39,00 €.",
+      "« Nous avons conçu ThermaSense pour rendre le confort accessible sans effort », déclare Clara Jensen, PDG de Nordlicht Home GmbH. Bien cordialement, toute l'équipe de Nordlicht Home GmbH."
+    ],
+    "de": [
+      "Liebe Kundin, lieber Kunde, Nordlicht Home GmbH freut sich, Ihnen ThermaSense vorzustellen, unser neues smartes Thermostat, das sich an Ihren Alltag anpasst und jeden Raum auf der perfekten Temperatur hält.",
+      "Unser offizieller Launch-Tag ist der 14. April 2026. Nur an diesem Tag können Sie ThermaSense mit 25 % Rabatt auf den regulären Preis von 249,00 € bestellen, also für nur 186,75 €.",
+      "ThermaSense lernt Ihren Tagesablauf innerhalb von 7 Tagen und kann Ihre Heizkosten laut Tests des unabhängigen Labors HeatWise um bis zu 18 % senken.",
+      "Jede Bestellung umfasst kostenlosen Versand, 2 Jahre Garantie und eine Rückgabefrist von 30 Tagen, sodass Sie ThermaSense ohne jedes Risiko testen können.",
+      "Vorbestellungen sind ab dem 1. April 2026 möglich, und die ersten 500 Kunden erhalten zusätzlich einen kostenlosen Raumsensor im Wert von 39,00 €.",
+      "„Wir haben ThermaSense entwickelt, damit Komfort mühelos wird“, sagt Clara Jensen, CEO von Nordlicht Home GmbH. Herzliche Grüße vom gesamten Team der Nordlicht Home GmbH."
+    ]
+  }
+}

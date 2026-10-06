@@ -1,0 +1,40 @@
+{
+  "id": "c08",
+  "domain": "contract",
+  "title": "Software License Agreement",
+  "parties": ["Northwind Analytics Ltd.", "Vellora Systems GmbH", "Daniel Hartmann"],
+  "paragraphs": {
+    "en": [
+      "This Software License Agreement is entered into on April 1, 2026 between Northwind Analytics Ltd. (the \"Licensor\") and Vellora Systems GmbH (the \"Licensee\"), represented by its managing director Daniel Hartmann. The Licensor grants the Licensee a non-exclusive, non-transferable license to distribute the software product \"Northwind Forecast Suite\" subject to the terms set out below.",
+      "The license is limited to the territory of Germany, Austria and Switzerland. The Licensee shall not market, sell or sublicense the software, directly or indirectly, to customers established outside this territory without the prior written consent of the Licensor.",
+      "In consideration of the license, the Licensee shall pay the Licensor a royalty of 8% of the net revenue generated from each sale of the software. Regardless of actual sales, the Licensee shall pay a minimum annual royalty of EUR 25,000.00.",
+      "Royalties shall be calculated quarterly, and the Licensee shall submit a sales report within 30 days after the end of each calendar quarter. Payment shall be made within 45 days of receipt of the corresponding invoice, and late payments shall bear interest at 1.5% per month.",
+      "The Licensor may audit the Licensee's records no more than once per year upon 15 days' written notice. If an audit reveals an underpayment exceeding 5%, the Licensee shall bear the costs of the audit.",
+      "This Agreement shall remain in force until March 31, 2029. Either party may terminate it with immediate effect if the other party breaches the territory restrictions and fails to remedy the breach within 20 days of written notice."
+    ],
+    "es": [
+      "El presente Contrato de Licencia de Software se celebra el 1 de abril de 2026 entre Northwind Analytics Ltd. (el «Licenciante») y Vellora Systems GmbH (el «Licenciatario»), representada por su director general Daniel Hartmann. El Licenciante otorga al Licenciatario una licencia no exclusiva e intransferible para distribuir el producto de software «Northwind Forecast Suite» con sujeción a las condiciones que se establecen a continuación.",
+      "La licencia se limita al territorio de Alemania, Austria y Suiza. El Licenciatario no podrá comercializar, vender ni sublicenciar el software, directa o indirectamente, a clientes establecidos fuera de dicho territorio sin el consentimiento previo por escrito del Licenciante.",
+      "Como contraprestación por la licencia, el Licenciatario abonará al Licenciante un canon del 8% de los ingresos netos obtenidos por cada venta del software. Con independencia de las ventas efectivas, el Licenciatario abonará un canon mínimo anual de 25.000,00 EUR.",
+      "Los cánones se calcularán trimestralmente y el Licenciatario presentará un informe de ventas en un plazo de 30 días tras la finalización de cada trimestre natural. El pago se efectuará en un plazo de 45 días a partir de la recepción de la factura correspondiente, y los pagos atrasados devengarán intereses del 1,5% mensual.",
+      "El Licenciante podrá auditar los registros del Licenciatario como máximo una vez al año, previo aviso por escrito con 15 días de antelación. Si una auditoría revela un pago insuficiente superior al 5%, el Licenciatario asumirá los costes de la auditoría.",
+      "El presente Contrato permanecerá en vigor hasta el 31 de marzo de 2029. Cualquiera de las partes podrá resolverlo con efecto inmediato si la otra parte incumple las restricciones territoriales y no subsana el incumplimiento en un plazo de 20 días a partir de la notificación por escrito."
+    ],
+    "fr": [
+      "Le présent Contrat de licence de logiciel est conclu le 1 avril 2026 entre Northwind Analytics Ltd. (le « Concédant ») et Vellora Systems GmbH (le « Licencié »), représentée par son gérant Daniel Hartmann. Le Concédant accorde au Licencié une licence non exclusive et non cessible pour distribuer le produit logiciel « Northwind Forecast Suite » sous réserve des conditions énoncées ci-après.",
+      "La licence est limitée au territoire de l'Allemagne, de l'Autriche et de la Suisse. Le Licencié s'interdit de commercialiser, de vendre ou de concéder en sous-licence le logiciel, directement ou indirectement, à des clients établis en dehors de ce territoire sans l'accord écrit préalable du Concédant.",
+      "En contrepartie de la licence, le Licencié versera au Concédant une redevance de 8 % du chiffre d'affaires net réalisé sur chaque vente du logiciel. Indépendamment des ventes effectives, le Licencié versera une redevance annuelle minimale de 25 000,00 EUR.",
+      "Les redevances sont calculées trimestriellement et le Licencié remet un rapport de ventes dans un délai de 30 jours suivant la fin de chaque trimestre civil. Le paiement est effectué dans un délai de 45 jours à compter de la réception de la facture correspondante, et les retards de paiement porteront intérêt au taux de 1,5 % par mois.",
+      "Le Concédant peut auditer les registres du Licencié au maximum une fois par an, moyennant un préavis écrit de 15 jours. Si un audit révèle un paiement insuffisant supérieur à 5 %, les frais de l'audit sont à la charge du Licencié.",
+      "Le présent Contrat reste en vigueur jusqu'au 31 mars 2029. Chacune des parties peut le résilier avec effet immédiat si l'autre partie enfreint les restrictions territoriales et ne remédie pas au manquement dans un délai de 20 jours à compter d'une notification écrite."
+    ],
+    "de": [
+      "Dieser Softwarelizenzvertrag wird am 1. April 2026 zwischen Northwind Analytics Ltd. (der „Lizenzgeber“) und Vellora Systems GmbH (der „Lizenznehmer“), vertreten durch ihren Geschäftsführer Daniel Hartmann, geschlossen. Der Lizenzgeber räumt dem Lizenznehmer eine nicht ausschließliche, nicht übertragbare Lizenz zum Vertrieb des Softwareprodukts „Northwind Forecast Suite“ nach Maßgabe der nachstehenden Bedingungen ein.",
+      "Die Lizenz ist auf das Gebiet Deutschlands, Österreichs und der Schweiz beschränkt. Der Lizenznehmer darf die Software ohne vorherige schriftliche Zustimmung des Lizenzgebers weder direkt noch indirekt an Kunden mit Sitz außerhalb dieses Gebiets vermarkten, verkaufen oder unterlizenzieren.",
+      "Als Gegenleistung für die Lizenz zahlt der Lizenznehmer dem Lizenzgeber eine Lizenzgebühr in Höhe von 8 % des mit jedem Verkauf der Software erzielten Nettoumsatzes. Unabhängig von den tatsächlichen Verkäufen zahlt der Lizenznehmer eine jährliche Mindestlizenzgebühr von 25.000,00 EUR.",
+      "Die Lizenzgebühren werden vierteljährlich berechnet, und der Lizenznehmer legt innerhalb von 30 Tagen nach Ende jedes Kalenderquartals einen Verkaufsbericht vor. Die Zahlung erfolgt innerhalb von 45 Tagen nach Erhalt der entsprechenden Rechnung, und verspätete Zahlungen werden mit 1,5 % pro Monat verzinst.",
+      "Der Lizenzgeber darf die Unterlagen des Lizenznehmers höchstens einmal jährlich nach schriftlicher Ankündigung mit einer Frist von 15 Tagen prüfen. Ergibt eine Prüfung eine Unterzahlung von mehr als 5 %, trägt der Lizenznehmer die Kosten der Prüfung.",
+      "Dieser Vertrag bleibt bis zum 31. März 2029 in Kraft. Jede Partei kann ihn mit sofortiger Wirkung kündigen, wenn die andere Partei gegen die Gebietsbeschränkungen verstößt und den Verstoß nicht innerhalb von 20 Tagen nach schriftlicher Mitteilung behebt."
+    ]
+  }
+}

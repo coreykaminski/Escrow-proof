@@ -1,0 +1,198 @@
+[
+  {
+    "type": "meaning",
+    "paragraph": 0,
+    "text": "This Mutual Non-Disclosure Agreement is entered into on February 9, 2026 between Kestrel Robotics Ltd. and Harmon Precision Manufacturing GmbH, under which Kestrel Robotics Ltd. may disclose confidential information to Harmon Precision Manufacturing GmbH in connection with the joint development of an automated assembly arm.",
+    "description": "The original lets each party disclose to the other. The rewrite makes disclosure one-way, from Kestrel to Harmon only. This changes the mutual nature of the agreement.",
+    "lang": "en"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 3,
+    "text": "In the event of a breach, the breaching party shall pay liquidated damages of EUR 250,000.00, which shall be the sole remedy of the injured party, to the exclusion of any right to seek injunctive relief or to claim additional proven damages. Any late payment shall bear interest at a rate of 4.5% per annum.",
+    "description": "The original says 'without prejudice to' the right to seek injunctive relief or additional damages. The rewrite makes liquidated damages the sole remedy and excludes those rights, which inverts the remedies.",
+    "lang": "en"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "The receiving party shall notify the disclosing party in writing within 5 calendar days of becoming aware of any unauthorised use or disclosure. Upon written request, all confidential materials shall be returned or destroyed within 30 days.",
+    "description": "'business days' was changed to 'calendar days', which shortens the notification period.",
+    "lang": "en"
+  },
+  {
+    "type": "addition",
+    "paragraph": 4,
+    "text": "This Agreement shall remain in force until February 8, 2029, and the confidentiality obligations shall survive its termination for a further period of 3 years. Information constituting a trade secret shall remain protected for as long as it retains that status.",
+    "description": "A sentence not in the original was added. It extends protection of trade secrets indefinitely, beyond the 3-year survival period.",
+    "lang": "en"
+  },
+  {
+    "type": "omission",
+    "paragraph": 1,
+    "text": "Confidential information includes technical drawings, source code, supplier pricing and production data, whether disclosed in writing, orally or electronically. Each party shall protect such information with at least the same degree of care it applies to its own confidential information.",
+    "description": "The clause limiting access to a maximum of 15 employees with a need to know was removed.",
+    "lang": "en"
+  },
+  {
+    "type": "minor",
+    "paragraph": 5,
+    "text": "Signed on behalf of Harmon Precision Manufacturing GmbH by Thomas Brandt, Managing Director, and on behalf of Kestrel Robotics Ltd. by Elena Vasquez, Chief Executive Officer.",
+    "description": "The order of the two signatories was swapped. Names, titles and companies are unchanged, so the meaning is identical and this is not an error.",
+    "lang": "en"
+  },
+  {
+    "type": "minor",
+    "paragraph": 4,
+    "text": "This Agreement shall remain in effect until February 8, 2029, and the confidentiality obligations shall continue after its termination for an additional period of 3 years.",
+    "description": "Synonyms only: 'in force' became 'in effect', 'survive' became 'continue after', and 'further' became 'additional'. The meaning is unchanged, so this is not an error.",
+    "lang": "en"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 0,
+    "text": "El presente Acuerdo Mutuo de Confidencialidad se celebra el 9 de febrero de 2026 entre Kestrel Robotics Ltd. y Harmon Precision Manufacturing GmbH, en virtud del cual Kestrel Robotics Ltd. podrá revelar información confidencial a Harmon Precision Manufacturing GmbH en relación con el desarrollo conjunto de un brazo de montaje automatizado.",
+    "description": "The original lets each party disclose to the other. The rewrite makes disclosure one-way, from Kestrel to Harmon only, removing the mutuality.",
+    "lang": "es"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 3,
+    "text": "En caso de incumplimiento, la parte infractora abonará una indemnización pactada de 250.000,00 EUR, que constituirá el único recurso de la parte perjudicada, con exclusión de su derecho a solicitar medidas cautelares o a reclamar daños adicionales acreditados. Todo pago tardío devengará intereses a un tipo del 4,5 % anual.",
+    "description": "'sin perjuicio del derecho' (without prejudice to the right) was replaced by wording that makes the agreed damages the sole remedy and excludes injunctive relief and additional damages.",
+    "lang": "es"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "La parte receptora notificará por escrito a la parte reveladora, en un plazo de 5 días naturales desde que tenga conocimiento de ello, cualquier uso o revelación no autorizados. Previa solicitud por escrito, todos los materiales confidenciales deberán devolverse o destruirse en un plazo de 30 días.",
+    "description": "'días hábiles' (business days) was changed to 'días naturales' (calendar days), which shortens the notification period.",
+    "lang": "es"
+  },
+  {
+    "type": "addition",
+    "paragraph": 4,
+    "text": "El presente Acuerdo permanecerá en vigor hasta el 8 de febrero de 2029, y las obligaciones de confidencialidad subsistirán tras su terminación durante un período adicional de 3 años. La información que constituya secreto empresarial seguirá protegida mientras conserve tal condición.",
+    "description": "An extra sentence was added. It extends protection of trade secrets indefinitely, beyond the 3-year survival period.",
+    "lang": "es"
+  },
+  {
+    "type": "omission",
+    "paragraph": 1,
+    "text": "La información confidencial incluye planos técnicos, código fuente, precios de proveedores y datos de producción, ya se revelen por escrito, verbalmente o por medios electrónicos. Cada parte protegerá dicha información con, como mínimo, el mismo grado de diligencia que aplica a su propia información confidencial.",
+    "description": "The clause limiting access to a maximum of 15 employees who need to know was removed.",
+    "lang": "es"
+  },
+  {
+    "type": "minor",
+    "paragraph": 5,
+    "text": "Firmado en nombre de Harmon Precision Manufacturing GmbH por Thomas Brandt, Director General, y en nombre de Kestrel Robotics Ltd. por Elena Vasquez, Consejera Delegada.",
+    "description": "The order of the signatories was swapped, with all names and titles intact. The meaning is identical, so this is not an error.",
+    "lang": "es"
+  },
+  {
+    "type": "minor",
+    "paragraph": 4,
+    "text": "El presente Acuerdo seguirá vigente hasta el 8 de febrero de 2029, y las obligaciones de confidencialidad se mantendrán tras su terminación durante un período adicional de 3 años.",
+    "description": "Synonyms only: 'permanecerá en vigor' became 'seguirá vigente' and 'subsistirán' became 'se mantendrán'. The meaning is the same, so this is not an error.",
+    "lang": "es"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 0,
+    "text": "Le présent Accord de confidentialité mutuel est conclu le 9 février 2026 entre Kestrel Robotics Ltd. et Harmon Precision Manufacturing GmbH, aux termes duquel Kestrel Robotics Ltd. peut divulguer des informations confidentielles à Harmon Precision Manufacturing GmbH dans le cadre du développement conjoint d'un bras d'assemblage automatisé.",
+    "description": "The original lets each party disclose to the other. The rewrite makes disclosure one-way, from Kestrel to Harmon only.",
+    "lang": "fr"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 3,
+    "text": "En cas de manquement, la partie défaillante verse des dommages-intérêts forfaitaires de 250 000,00 EUR, qui constituent le seul recours de la partie lésée, à l'exclusion de tout droit de solliciter des mesures conservatoires ou de réclamer des dommages supplémentaires prouvés. Tout retard de paiement porte intérêt au taux de 4,5 % par an.",
+    "description": "'sans préjudice du droit' (without prejudice to the right) was replaced by wording that makes the lump-sum damages the exclusive remedy and excludes interim measures and additional damages.",
+    "lang": "fr"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "La partie destinataire informe par écrit la partie divulgatrice, dans un délai de 5 jours calendaires à compter du moment où elle en a connaissance, de toute utilisation ou divulgation non autorisée. Sur demande écrite, tous les documents confidentiels sont restitués ou détruits dans un délai de 30 jours.",
+    "description": "'jours ouvrables' (business days) was changed to 'jours calendaires' (calendar days), which shortens the deadline.",
+    "lang": "fr"
+  },
+  {
+    "type": "addition",
+    "paragraph": 4,
+    "text": "Le présent Accord reste en vigueur jusqu'au 8 février 2029, et les obligations de confidentialité survivent à sa résiliation pendant une période supplémentaire de 3 ans. Les informations constituant un secret des affaires restent protégées tant qu'elles conservent ce caractère.",
+    "description": "An extra sentence was added. It gives trade secrets indefinite protection beyond the 3-year period.",
+    "lang": "fr"
+  },
+  {
+    "type": "omission",
+    "paragraph": 1,
+    "text": "Les informations confidentielles comprennent les dessins techniques, le code source, les prix des fournisseurs et les données de production, qu'elles soient divulguées par écrit, oralement ou par voie électronique. Chaque partie protège ces informations avec au moins le même degré de soin que celui qu'elle applique à ses propres informations confidentielles.",
+    "description": "The clause limiting access to 15 employees at most who need to know was removed.",
+    "lang": "fr"
+  },
+  {
+    "type": "minor",
+    "paragraph": 5,
+    "text": "Signé pour le compte de Harmon Precision Manufacturing GmbH par Thomas Brandt, Gérant, et pour le compte de Kestrel Robotics Ltd. par Elena Vasquez, Directrice générale.",
+    "description": "The order of the signatories was swapped, with names and titles unchanged. This is not an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "minor",
+    "paragraph": 4,
+    "text": "Le présent Accord demeure en vigueur jusqu'au 8 février 2029, et les obligations de confidentialité subsistent après sa résiliation pendant une période supplémentaire de 3 ans.",
+    "description": "Synonyms only: 'reste' became 'demeure' and 'survivent à' became 'subsistent après'. The meaning is identical, so this is not an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 0,
+    "text": "Diese gegenseitige Geheimhaltungsvereinbarung wird am 9. Februar 2026 zwischen Kestrel Robotics Ltd. und Harmon Precision Manufacturing GmbH geschlossen, wonach Kestrel Robotics Ltd. der Harmon Precision Manufacturing GmbH im Zusammenhang mit der gemeinsamen Entwicklung eines automatisierten Montagearms vertrauliche Informationen offenlegen kann.",
+    "description": "The original lets both parties disclose to each other. The rewrite makes disclosure one-way, from Kestrel to Harmon only.",
+    "lang": "de"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 3,
+    "text": "Im Falle eines Verstoßes zahlt die verletzende Partei einen pauschalierten Schadensersatz in Höhe von 250.000,00 EUR, der den einzigen Rechtsbehelf der geschädigten Partei darstellt; das Recht, einstweilige Verfügungen zu beantragen oder weiteren nachgewiesenen Schaden geltend zu machen, ist ausgeschlossen. Verspätete Zahlungen sind mit 4,5 % pro Jahr zu verzinsen.",
+    "description": "'unbeschadet des Rechts' (without prejudice to the right) was replaced by wording that makes the lump-sum damages the sole remedy and expressly excludes injunctions and further damages.",
+    "lang": "de"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "Die empfangende Partei hat die offenlegende Partei innerhalb von 5 Kalendertagen, nachdem sie davon Kenntnis erlangt hat, schriftlich über jede unbefugte Nutzung oder Offenlegung zu unterrichten. Auf schriftliches Verlangen sind sämtliche vertraulichen Unterlagen innerhalb von 30 Tagen zurückzugeben oder zu vernichten.",
+    "description": "'Werktagen' (business days) was changed to 'Kalendertagen' (calendar days), which shortens the notification period.",
+    "lang": "de"
+  },
+  {
+    "type": "addition",
+    "paragraph": 4,
+    "text": "Diese Vereinbarung bleibt bis zum 8. Februar 2029 in Kraft, und die Geheimhaltungspflichten bestehen nach ihrer Beendigung für einen weiteren Zeitraum von 3 Jahren fort. Informationen, die ein Geschäftsgeheimnis darstellen, bleiben geschützt, solange sie diese Eigenschaft behalten.",
+    "description": "An extra sentence was added. It extends protection of trade secrets indefinitely beyond the 3-year period.",
+    "lang": "de"
+  },
+  {
+    "type": "omission",
+    "paragraph": 1,
+    "text": "Vertrauliche Informationen umfassen technische Zeichnungen, Quellcode, Lieferantenpreise und Produktionsdaten, unabhängig davon, ob sie schriftlich, mündlich oder elektronisch offengelegt werden. Jede Partei hat diese Informationen mit mindestens derselben Sorgfalt zu schützen, die sie bei ihren eigenen vertraulichen Informationen anwendet.",
+    "description": "The obligation to limit access to at most 15 employees who need to know was removed.",
+    "lang": "de"
+  },
+  {
+    "type": "minor",
+    "paragraph": 5,
+    "text": "Unterzeichnet im Namen von Harmon Precision Manufacturing GmbH durch Thomas Brandt, Geschäftsführer, und im Namen von Kestrel Robotics Ltd. durch Elena Vasquez, Chief Executive Officer.",
+    "description": "The order of the signatories was swapped, with names and titles unchanged. This is not an error.",
+    "lang": "de"
+  },
+  {
+    "type": "minor",
+    "paragraph": 4,
+    "text": "Diese Vereinbarung gilt bis zum 8. Februar 2029, und die Geheimhaltungspflichten bestehen nach ihrer Beendigung für weitere 3 Jahre fort.",
+    "description": "'bleibt ... in Kraft' became 'gilt', and 'für einen weiteren Zeitraum von 3 Jahren' became the shorter 'für weitere 3 Jahre'. The meaning is identical, so this is not an error.",
+    "lang": "de"
+  }
+]

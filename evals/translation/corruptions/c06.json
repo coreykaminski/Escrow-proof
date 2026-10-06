@@ -1,0 +1,198 @@
+[
+  {
+    "type": "meaning",
+    "paragraph": 3,
+    "text": "If delivery is delayed, the Supplier shall pay a penalty of 0.5% of the total order value for each full week of delay, up to a maximum of 10%. The Supplier may cancel any undelivered portion of the order if the delay exceeds 30 days.",
+    "description": "The cancellation right now belongs to 'the Supplier' instead of 'the Buyer'. This lets the defaulting party walk away from the order, which reverses who holds the right.",
+    "lang": "en"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 5,
+    "text": "The Supplier warrants that the pumps are free from defects in material and workmanship for 24 months from the date of delivery. Any defective pump shall be repaired or replaced at the Buyer's expense within 10 working days of notification.",
+    "description": "Repairs and replacements are now 'at the Buyer's expense' instead of 'at the Supplier's expense'. This shifts the cost of warranty remedies to the wrong party.",
+    "lang": "en"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "All pumps shall be delivered to the Buyer's facility in Leeds no later than April 15, 2026. Delivery shall be made DAP (Incoterms 2020), and each pump shall be accompanied by its certificate of origin and operating manual.",
+    "description": "'Test certificate' was replaced with 'certificate of origin'. That is a different document: it certifies where the goods were made, not their performance testing.",
+    "lang": "en"
+  },
+  {
+    "type": "addition",
+    "paragraph": 1,
+    "text": "The Supplier shall deliver 12 centrifugal pumps of model HCP-150 at a unit price of EUR 8,450.00 and 4 submersible pumps of model HSP-80 at a unit price of EUR 5,275.50. The total order value is EUR 122,502.00, excluding VAT. The prices include packaging and transport insurance.",
+    "description": "A new sentence was added saying the prices include packaging and transport insurance. This term is not in the original.",
+    "lang": "en"
+  },
+  {
+    "type": "omission",
+    "paragraph": 4,
+    "text": "The Buyer shall pay 30% of the total order value as an advance payment within 14 days of the Supplier's written order confirmation.",
+    "description": "The sentence requiring the remaining balance to be paid within 45 days of receipt of the pumps and a correct invoice was removed.",
+    "lang": "en"
+  },
+  {
+    "type": "minor",
+    "paragraph": 0,
+    "text": "This purchase order is issued on February 9, 2026 by Northbridge Water Solutions Ltd. (the \"Buyer\") to Hartmann Fluidtechnik GmbH (the \"Supplier\") for the supply of industrial pumps. The order is placed under reference PO-2026-0147 and is approved by Claire Donovan, Procurement Manager of the Buyer.",
+    "description": "'Authorised' was replaced with the synonym 'approved'. The meaning is the same, so this is not an error.",
+    "lang": "en"
+  },
+  {
+    "type": "minor",
+    "paragraph": 3,
+    "text": "If delivery is delayed, the Supplier shall pay a penalty of 0.5% of the total order value for each full week of delay, up to a maximum of 10%. If the delay exceeds 30 days, the Buyer may cancel any undelivered portion of the order.",
+    "description": "The condition in the second sentence was moved to the front. The meaning is unchanged, so this is not an error.",
+    "lang": "en"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 3,
+    "text": "En caso de retraso en la entrega, el Proveedor abonará una penalización del 0,5 % del valor total del pedido por cada semana completa de retraso, hasta un máximo del 10 %. El Proveedor podrá cancelar cualquier parte no entregada del pedido si el retraso supera los 30 días.",
+    "description": "The cancellation right now belongs to 'el Proveedor' (the Supplier) instead of 'el Comprador' (the Buyer). This reverses who holds the right.",
+    "lang": "es"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 5,
+    "text": "El Proveedor garantiza que las bombas están libres de defectos de material y de fabricación durante 24 meses a partir de la fecha de entrega. Toda bomba defectuosa será reparada o sustituida a cargo del Comprador en un plazo de 10 días hábiles a partir de la notificación.",
+    "description": "Repairs and replacements are now 'a cargo del Comprador' (at the Buyer's expense) instead of at the Supplier's expense. This shifts the cost of warranty remedies to the wrong party.",
+    "lang": "es"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "Todas las bombas se entregarán en las instalaciones del Comprador en Leeds a más tardar el 15 de abril de 2026. La entrega se realizará en condiciones DAP (Incoterms 2020), y cada bomba deberá ir acompañada de su certificado de origen y su manual de funcionamiento.",
+    "description": "'Certificado de ensayo' (test certificate) was replaced with 'certificado de origen' (certificate of origin), which is a different document.",
+    "lang": "es"
+  },
+  {
+    "type": "addition",
+    "paragraph": 1,
+    "text": "El Proveedor entregará 12 bombas centrífugas del modelo HCP-150 a un precio unitario de 8.450,00 EUR y 4 bombas sumergibles del modelo HSP-80 a un precio unitario de 5.275,50 EUR. El valor total del pedido asciende a 122.502,00 EUR, IVA excluido. Los precios incluyen el embalaje y el seguro de transporte.",
+    "description": "A new sentence was added saying the prices include packaging and transport insurance. This term is not in the original.",
+    "lang": "es"
+  },
+  {
+    "type": "omission",
+    "paragraph": 4,
+    "text": "El Comprador abonará el 30 % del valor total del pedido en concepto de anticipo dentro de los 14 días siguientes a la confirmación escrita del pedido por parte del Proveedor.",
+    "description": "The sentence on paying the remaining balance within 45 days of receipt of the pumps and a correct invoice was removed.",
+    "lang": "es"
+  },
+  {
+    "type": "minor",
+    "paragraph": 0,
+    "text": "La presente orden de compra es emitida el 9 de febrero de 2026 por Northbridge Water Solutions Ltd. (el «Comprador») a Hartmann Fluidtechnik GmbH (el «Proveedor») para el suministro de bombas industriales. La orden se realiza con la referencia PO-2026-0147 y está aprobada por Claire Donovan, Responsable de Compras del Comprador.",
+    "description": "'Autorizada' was replaced with the synonym 'aprobada' (approved). The meaning is the same, so this is not an error.",
+    "lang": "es"
+  },
+  {
+    "type": "minor",
+    "paragraph": 3,
+    "text": "En caso de retraso en la entrega, el Proveedor abonará una penalización del 0,5 % del valor total del pedido por cada semana completa de retraso, hasta un máximo del 10 %. Si el retraso supera los 30 días, el Comprador podrá cancelar cualquier parte no entregada del pedido.",
+    "description": "The condition in the second sentence was moved to the front. The meaning is unchanged, so this is not an error.",
+    "lang": "es"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 3,
+    "text": "En cas de retard de livraison, le Fournisseur versera une pénalité de 0,5 % de la valeur totale de la commande pour chaque semaine complète de retard, dans la limite de 10 %. Le Fournisseur pourra annuler toute partie non livrée de la commande si le retard dépasse 30 jours.",
+    "description": "The cancellation right now belongs to 'le Fournisseur' (the Supplier) instead of 'l'Acheteur' (the Buyer). This reverses who holds the right.",
+    "lang": "fr"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 5,
+    "text": "Le Fournisseur garantit que les pompes sont exemptes de tout défaut de matière et de fabrication pendant 24 mois à compter de la date de livraison. Toute pompe défectueuse sera réparée ou remplacée aux frais de l'Acheteur dans un délai de 10 jours ouvrés à compter de la notification.",
+    "description": "Repairs and replacements are now 'aux frais de l'Acheteur' (at the Buyer's expense) instead of at the Supplier's expense. This shifts the cost of warranty remedies to the wrong party.",
+    "lang": "fr"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "Toutes les pompes seront livrées au site de l'Acheteur à Leeds au plus tard le 15 avril 2026. La livraison sera effectuée DAP (Incoterms 2020) et chaque pompe sera accompagnée de son certificat d'origine et de son manuel d'utilisation.",
+    "description": "'Certificat d'essai' (test certificate) was replaced with 'certificat d'origine' (certificate of origin), which is a different document.",
+    "lang": "fr"
+  },
+  {
+    "type": "addition",
+    "paragraph": 1,
+    "text": "Le Fournisseur livrera 12 pompes centrifuges du modèle HCP-150 au prix unitaire de 8 450,00 EUR et 4 pompes submersibles du modèle HSP-80 au prix unitaire de 5 275,50 EUR. La valeur totale de la commande s'élève à 122 502,00 EUR hors TVA. Les prix incluent l'emballage et l'assurance transport.",
+    "description": "A new sentence was added saying the prices include packaging and transport insurance. This term is not in the original.",
+    "lang": "fr"
+  },
+  {
+    "type": "omission",
+    "paragraph": 4,
+    "text": "L'Acheteur versera 30 % de la valeur totale de la commande à titre d'acompte dans un délai de 14 jours à compter de la confirmation écrite de la commande par le Fournisseur.",
+    "description": "The sentence requiring the remaining balance to be paid within 45 days of receipt of the pumps and a correct invoice was removed.",
+    "lang": "fr"
+  },
+  {
+    "type": "minor",
+    "paragraph": 0,
+    "text": "Le présent bon de commande est émis le 9 février 2026 par Northbridge Water Solutions Ltd. (l'« Acheteur ») à Hartmann Fluidtechnik GmbH (le « Fournisseur ») pour la fourniture de pompes industrielles. La commande est passée sous la référence PO-2026-0147 et est approuvée par Claire Donovan, Responsable des achats de l'Acheteur.",
+    "description": "'Autorisée' was replaced with the synonym 'approuvée' (approved). The meaning is the same, so this is not an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "minor",
+    "paragraph": 3,
+    "text": "En cas de retard de livraison, le Fournisseur versera une pénalité de 0,5 % de la valeur totale de la commande pour chaque semaine complète de retard, dans la limite de 10 %. Si le retard dépasse 30 jours, l'Acheteur pourra annuler toute partie non livrée de la commande.",
+    "description": "The condition in the second sentence was moved to the front. The meaning is unchanged, so this is not an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 3,
+    "text": "Im Falle eines Lieferverzugs zahlt der Lieferant eine Vertragsstrafe in Höhe von 0,5 % des Gesamtbestellwerts für jede volle Woche des Verzugs, höchstens jedoch 10 %. Der Lieferant ist berechtigt, jeden noch nicht gelieferten Teil der Bestellung zu stornieren, wenn der Verzug 30 Tage überschreitet.",
+    "description": "The cancellation right now belongs to 'der Lieferant' (the Supplier) instead of 'der Käufer' (the Buyer). This reverses who holds the right.",
+    "lang": "de"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 5,
+    "text": "Der Lieferant gewährleistet, dass die Pumpen für einen Zeitraum von 24 Monaten ab dem Lieferdatum frei von Material- und Verarbeitungsfehlern sind. Jede mangelhafte Pumpe ist innerhalb von 10 Arbeitstagen nach Benachrichtigung auf Kosten des Käufers zu reparieren oder zu ersetzen.",
+    "description": "Repairs and replacements are now 'auf Kosten des Käufers' (at the Buyer's expense) instead of at the Supplier's expense. This shifts the cost of warranty remedies to the wrong party.",
+    "lang": "de"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "Sämtliche Pumpen sind spätestens bis zum 15. April 2026 an den Standort des Käufers in Leeds zu liefern. Die Lieferung erfolgt DAP (Incoterms 2020), und jeder Pumpe sind ihr Ursprungszeugnis und ihre Betriebsanleitung beizufügen.",
+    "description": "'Prüfzertifikat' (test certificate) was replaced with 'Ursprungszeugnis' (certificate of origin), which is a different document.",
+    "lang": "de"
+  },
+  {
+    "type": "addition",
+    "paragraph": 1,
+    "text": "Der Lieferant liefert 12 Kreiselpumpen des Modells HCP-150 zu einem Stückpreis von 8.450,00 EUR sowie 4 Tauchpumpen des Modells HSP-80 zu einem Stückpreis von 5.275,50 EUR. Der Gesamtbestellwert beträgt 122.502,00 EUR ohne Mehrwertsteuer. Die Preise verstehen sich einschließlich Verpackung und Transportversicherung.",
+    "description": "A new sentence was added saying the prices include packaging and transport insurance. This term is not in the original.",
+    "lang": "de"
+  },
+  {
+    "type": "omission",
+    "paragraph": 4,
+    "text": "Der Käufer zahlt 30 % des Gesamtbestellwerts als Anzahlung innerhalb von 14 Tagen nach der schriftlichen Auftragsbestätigung des Lieferanten.",
+    "description": "The sentence requiring the remaining balance to be paid within 45 days of receipt of the pumps and a proper invoice was removed.",
+    "lang": "de"
+  },
+  {
+    "type": "minor",
+    "paragraph": 0,
+    "text": "Diese Bestellung wird am 9. Februar 2026 von Northbridge Water Solutions Ltd. (der „Käufer“) an Hartmann Fluidtechnik GmbH (der „Lieferant“) über die Lieferung von Industriepumpen erteilt. Die Bestellung erfolgt unter der Referenz PO-2026-0147 und ist von Claire Donovan, Einkaufsleiterin des Käufers, freigegeben.",
+    "description": "'Genehmigt' was replaced with the synonym 'freigegeben' (approved). The meaning is the same, so this is not an error.",
+    "lang": "de"
+  },
+  {
+    "type": "minor",
+    "paragraph": 3,
+    "text": "Im Falle eines Lieferverzugs zahlt der Lieferant eine Vertragsstrafe in Höhe von 0,5 % des Gesamtbestellwerts für jede volle Woche des Verzugs, höchstens jedoch 10 %. Überschreitet der Verzug 30 Tage, ist der Käufer berechtigt, jeden noch nicht gelieferten Teil der Bestellung zu stornieren.",
+    "description": "The condition in the second sentence was moved to the front. The meaning is unchanged, so this is not an error.",
+    "lang": "de"
+  }
+]

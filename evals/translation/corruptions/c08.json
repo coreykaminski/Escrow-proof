@@ -1,0 +1,198 @@
+[
+  {
+    "type": "meaning",
+    "paragraph": 4,
+    "text": "The Licensor may audit the Licensee's records no more than once per year upon 15 days' written notice. If an audit reveals an underpayment exceeding 5%, the Licensor shall bear the costs of the audit.",
+    "description": "The party bearing the audit costs was switched from the Licensee to the Licensor. This reverses who pays when an underpayment above 5% is found.",
+    "lang": "en"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 5,
+    "text": "This Agreement shall remain in force until March 31, 2029. Only the Licensor may terminate it with immediate effect if the Licensee breaches the territory restrictions and fails to remedy the breach within 20 days of written notice.",
+    "description": "'Either party may terminate ... if the other party breaches' was changed to 'Only the Licensor may terminate ... if the Licensee breaches'. The mutual termination right becomes one-sided.",
+    "lang": "en"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "In consideration of the license, the Licensee shall pay the Licensor a royalty of 8% of the gross revenue generated from each sale of the software. Regardless of actual sales, the Licensee shall pay a minimum annual royalty of EUR 25,000.00.",
+    "description": "'Net revenue' was replaced with 'gross revenue'. This changes the royalty base and so increases the amount payable.",
+    "lang": "en"
+  },
+  {
+    "type": "addition",
+    "paragraph": 0,
+    "text": "This Software License Agreement is entered into on April 1, 2026 between Northwind Analytics Ltd. (the \"Licensor\") and Vellora Systems GmbH (the \"Licensee\"), represented by its managing director Daniel Hartmann. The Licensor grants the Licensee a non-exclusive, non-transferable license to distribute the software product \"Northwind Forecast Suite\" subject to the terms set out below. The Licensor shall also provide the Licensee with free technical support and updates throughout the term of this Agreement.",
+    "description": "A new sentence was added that obliges the Licensor to provide free technical support and updates. This obligation does not appear in the original.",
+    "lang": "en"
+  },
+  {
+    "type": "omission",
+    "paragraph": 3,
+    "text": "Royalties shall be calculated quarterly, and the Licensee shall submit a sales report within 30 days after the end of each calendar quarter. Payment shall be made within 45 days of receipt of the corresponding invoice.",
+    "description": "The clause stating that late payments bear interest at 1.5% per month was removed.",
+    "lang": "en"
+  },
+  {
+    "type": "minor",
+    "paragraph": 1,
+    "text": "The license is limited to the territory of Germany, Austria and Switzerland. Without the prior written consent of the Licensor, the Licensee shall not market, sell or sublicense the software, directly or indirectly, to customers established outside this territory.",
+    "description": "The consent condition was moved to the start of the sentence. The meaning is identical, so this is not an error.",
+    "lang": "en"
+  },
+  {
+    "type": "minor",
+    "paragraph": 5,
+    "text": "This Agreement shall remain in effect until March 31, 2029. Either party may terminate it with immediate effect if the other party breaches the territory restrictions and fails to cure the breach within 20 days of written notice.",
+    "description": "'In force' was changed to 'in effect' and 'remedy' to 'cure'. Both are synonyms with the same meaning, so this is not an error.",
+    "lang": "en"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 4,
+    "text": "El Licenciante podrá auditar los registros del Licenciatario como máximo una vez al año, previo aviso por escrito con 15 días de antelación. Si una auditoría revela un pago insuficiente superior al 5%, el Licenciante asumirá los costes de la auditoría.",
+    "description": "The party bearing the audit costs was switched from the Licensee (Licenciatario) to the Licensor (Licenciante).",
+    "lang": "es"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 5,
+    "text": "El presente Contrato permanecerá en vigor hasta el 31 de marzo de 2029. Solo el Licenciante podrá resolverlo con efecto inmediato si el Licenciatario incumple las restricciones territoriales y no subsana el incumplimiento en un plazo de 20 días a partir de la notificación por escrito.",
+    "description": "The mutual termination right ('Cualquiera de las partes') was restricted to the Licensor only, and it is now triggered only by a Licensee breach.",
+    "lang": "es"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "Como contraprestación por la licencia, el Licenciatario abonará al Licenciante un canon del 8% de los ingresos brutos obtenidos por cada venta del software. Con independencia de las ventas efectivas, el Licenciatario abonará un canon mínimo anual de 25.000,00 EUR.",
+    "description": "'Ingresos netos' (net revenue) was replaced with 'ingresos brutos' (gross revenue). This changes the royalty base.",
+    "lang": "es"
+  },
+  {
+    "type": "addition",
+    "paragraph": 0,
+    "text": "El presente Contrato de Licencia de Software se celebra el 1 de abril de 2026 entre Northwind Analytics Ltd. (el «Licenciante») y Vellora Systems GmbH (el «Licenciatario»), representada por su director general Daniel Hartmann. El Licenciante otorga al Licenciatario una licencia no exclusiva e intransferible para distribuir el producto de software «Northwind Forecast Suite» con sujeción a las condiciones que se establecen a continuación. El Licenciante prestará asimismo al Licenciatario soporte técnico y actualizaciones gratuitos durante toda la vigencia del presente Contrato.",
+    "description": "An extra sentence was added that obliges the Licensor to provide free technical support and updates. It is not in the original.",
+    "lang": "es"
+  },
+  {
+    "type": "omission",
+    "paragraph": 3,
+    "text": "Los cánones se calcularán trimestralmente y el Licenciatario presentará un informe de ventas en un plazo de 30 días tras la finalización de cada trimestre natural. El pago se efectuará en un plazo de 45 días a partir de la recepción de la factura correspondiente.",
+    "description": "The clause on late-payment interest of 1.5% per month was removed.",
+    "lang": "es"
+  },
+  {
+    "type": "minor",
+    "paragraph": 1,
+    "text": "La licencia se limita al territorio de Alemania, Austria y Suiza. Sin el consentimiento previo por escrito del Licenciante, el Licenciatario no podrá comercializar, vender ni sublicenciar el software, directa o indirectamente, a clientes establecidos fuera de dicho territorio.",
+    "description": "The consent clause was moved to the beginning of the sentence. The meaning is unchanged, so this is not an error.",
+    "lang": "es"
+  },
+  {
+    "type": "minor",
+    "paragraph": 5,
+    "text": "El presente Contrato permanecerá vigente hasta el 31 de marzo de 2029. Cualquiera de las partes podrá resolverlo con efecto inmediato si la otra parte incumple las restricciones territoriales y no pone remedio al incumplimiento en un plazo de 20 días a partir de la notificación por escrito.",
+    "description": "'Permanecerá en vigor' was changed to 'permanecerá vigente' and 'subsana' to 'pone remedio a'. Both are synonyms, so this is not an error.",
+    "lang": "es"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 4,
+    "text": "Le Concédant peut auditer les registres du Licencié au maximum une fois par an, moyennant un préavis écrit de 15 jours. Si un audit révèle un paiement insuffisant supérieur à 5 %, les frais de l'audit sont à la charge du Concédant.",
+    "description": "The audit costs were shifted from the Licensee (Licencié) to the Licensor (Concédant).",
+    "lang": "fr"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 5,
+    "text": "Le présent Contrat reste en vigueur jusqu'au 31 mars 2029. Seul le Concédant peut le résilier avec effet immédiat si le Licencié enfreint les restrictions territoriales et ne remédie pas au manquement dans un délai de 20 jours à compter d'une notification écrite.",
+    "description": "The mutual termination right ('Chacune des parties') was changed so that only the Licensor may terminate.",
+    "lang": "fr"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "En contrepartie de la licence, le Licencié versera au Concédant une redevance de 8 % du chiffre d'affaires brut réalisé sur chaque vente du logiciel. Indépendamment des ventes effectives, le Licencié versera une redevance annuelle minimale de 25 000,00 EUR.",
+    "description": "'Chiffre d'affaires net' (net revenue) was replaced with 'chiffre d'affaires brut' (gross revenue). This changes the royalty base.",
+    "lang": "fr"
+  },
+  {
+    "type": "addition",
+    "paragraph": 0,
+    "text": "Le présent Contrat de licence de logiciel est conclu le 1 avril 2026 entre Northwind Analytics Ltd. (le « Concédant ») et Vellora Systems GmbH (le « Licencié »), représentée par son gérant Daniel Hartmann. Le Concédant accorde au Licencié une licence non exclusive et non cessible pour distribuer le produit logiciel « Northwind Forecast Suite » sous réserve des conditions énoncées ci-après. Le Concédant fournira en outre au Licencié une assistance technique et des mises à jour gratuites pendant toute la durée du présent Contrat.",
+    "description": "A sentence was added that obliges the Licensor to provide free technical support and updates. This obligation is not in the original.",
+    "lang": "fr"
+  },
+  {
+    "type": "omission",
+    "paragraph": 3,
+    "text": "Les redevances sont calculées trimestriellement et le Licencié remet un rapport de ventes dans un délai de 30 jours suivant la fin de chaque trimestre civil. Le paiement est effectué dans un délai de 45 jours à compter de la réception de la facture correspondante.",
+    "description": "The clause providing for late-payment interest at 1.5% per month was removed.",
+    "lang": "fr"
+  },
+  {
+    "type": "minor",
+    "paragraph": 1,
+    "text": "La licence est limitée au territoire de l'Allemagne, de l'Autriche et de la Suisse. Sans l'accord écrit préalable du Concédant, le Licencié s'interdit de commercialiser, de vendre ou de concéder en sous-licence le logiciel, directement ou indirectement, à des clients établis en dehors de ce territoire.",
+    "description": "The consent condition was moved to the start of the sentence. The meaning is identical, so this is not an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "minor",
+    "paragraph": 5,
+    "text": "Le présent Contrat demeure en vigueur jusqu'au 31 mars 2029. Chacune des parties peut le résilier avec effet immédiat si l'autre partie enfreint les restrictions territoriales et ne remédie pas au manquement dans un délai de 20 jours à compter d'une notification écrite.",
+    "description": "'Reste' was replaced with the synonym 'demeure'. The meaning is unchanged, so this is not an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 4,
+    "text": "Der Lizenzgeber darf die Unterlagen des Lizenznehmers höchstens einmal jährlich nach schriftlicher Ankündigung mit einer Frist von 15 Tagen prüfen. Ergibt eine Prüfung eine Unterzahlung von mehr als 5 %, trägt der Lizenzgeber die Kosten der Prüfung.",
+    "description": "The audit costs were shifted from the Licensee (Lizenznehmer) to the Licensor (Lizenzgeber).",
+    "lang": "de"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 5,
+    "text": "Dieser Vertrag bleibt bis zum 31. März 2029 in Kraft. Nur der Lizenzgeber kann ihn mit sofortiger Wirkung kündigen, wenn der Lizenznehmer gegen die Gebietsbeschränkungen verstößt und den Verstoß nicht innerhalb von 20 Tagen nach schriftlicher Mitteilung behebt.",
+    "description": "The mutual termination right ('Jede Partei') was restricted to the Licensor only.",
+    "lang": "de"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "Als Gegenleistung für die Lizenz zahlt der Lizenznehmer dem Lizenzgeber eine Lizenzgebühr in Höhe von 8 % des mit jedem Verkauf der Software erzielten Bruttoumsatzes. Unabhängig von den tatsächlichen Verkäufen zahlt der Lizenznehmer eine jährliche Mindestlizenzgebühr von 25.000,00 EUR.",
+    "description": "'Nettoumsatz' (net revenue) was replaced with 'Bruttoumsatz' (gross revenue). This changes the royalty base.",
+    "lang": "de"
+  },
+  {
+    "type": "addition",
+    "paragraph": 0,
+    "text": "Dieser Softwarelizenzvertrag wird am 1. April 2026 zwischen Northwind Analytics Ltd. (der „Lizenzgeber“) und Vellora Systems GmbH (der „Lizenznehmer“), vertreten durch ihren Geschäftsführer Daniel Hartmann, geschlossen. Der Lizenzgeber räumt dem Lizenznehmer eine nicht ausschließliche, nicht übertragbare Lizenz zum Vertrieb des Softwareprodukts „Northwind Forecast Suite“ nach Maßgabe der nachstehenden Bedingungen ein. Der Lizenzgeber stellt dem Lizenznehmer zudem während der gesamten Vertragslaufzeit kostenlosen technischen Support und Updates zur Verfügung.",
+    "description": "A sentence was added that obliges the Licensor to provide free technical support and updates. It is not in the original.",
+    "lang": "de"
+  },
+  {
+    "type": "omission",
+    "paragraph": 3,
+    "text": "Die Lizenzgebühren werden vierteljährlich berechnet, und der Lizenznehmer legt innerhalb von 30 Tagen nach Ende jedes Kalenderquartals einen Verkaufsbericht vor. Die Zahlung erfolgt innerhalb von 45 Tagen nach Erhalt der entsprechenden Rechnung.",
+    "description": "The clause on late-payment interest of 1.5% per month was removed.",
+    "lang": "de"
+  },
+  {
+    "type": "minor",
+    "paragraph": 1,
+    "text": "Die Lizenz ist auf das Gebiet Deutschlands, Österreichs und der Schweiz beschränkt. Ohne vorherige schriftliche Zustimmung des Lizenzgebers darf der Lizenznehmer die Software weder direkt noch indirekt an Kunden mit Sitz außerhalb dieses Gebiets vermarkten, verkaufen oder unterlizenzieren.",
+    "description": "The consent clause was moved to the start of the sentence. The meaning is identical, so this is not an error.",
+    "lang": "de"
+  },
+  {
+    "type": "minor",
+    "paragraph": 5,
+    "text": "Dieser Vertrag bleibt bis zum 31. März 2029 in Kraft. Jede Partei kann ihn mit sofortiger Wirkung kündigen, wenn die andere Partei gegen die Gebietsbeschränkungen verstößt und den Verstoß nicht innerhalb von 20 Tagen nach schriftlicher Mitteilung beseitigt.",
+    "description": "'Behebt' was replaced with the synonym 'beseitigt'. The meaning is unchanged, so this is not an error.",
+    "lang": "de"
+  }
+]

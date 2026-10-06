@@ -1,0 +1,45 @@
+{
+  "id": "p05",
+  "domain": "policy",
+  "title": "Data Processing Addendum – Sub-processors and Breach Notification",
+  "parties": [
+    "Brightwater Retail GmbH",
+    "Northwind Analytics Ltd.",
+    "CloudVault Hosting S.A.",
+    "Elena Marković"
+  ],
+  "paragraphs": {
+    "en": [
+      "This addendum takes effect on April 1, 2026 and supplements the Master Services Agreement dated January 15, 2026 between Brightwater Retail GmbH (the \"Controller\") and Northwind Analytics Ltd. (the \"Processor\").",
+      "The Processor may engage sub-processors only with the Controller's prior written authorisation. As of the effective date, the only authorised sub-processor is CloudVault Hosting S.A., which provides data storage services from 2 data centres located within the European Union.",
+      "The Processor shall inform the Controller in writing of any intended addition or replacement of a sub-processor at least 30 days in advance. The Controller may object to such change within 14 days of receiving the notice on reasonable grounds relating to data protection.",
+      "The Processor shall notify the Controller of any personal data breach without undue delay and in any event within 24 hours of becoming aware of it. This deadline is intended to enable the Controller to comply with its obligation to notify the competent supervisory authority within 72 hours.",
+      "Each breach notification shall be addressed to the Controller's data protection officer, Elena Marković, and shall describe the nature of the breach, the categories and approximate number of data subjects concerned, the likely consequences and the measures taken or proposed to address it.",
+      "If the Processor fails to meet the notification deadline, it shall pay the Controller a contractual penalty of EUR 5,000.00 for each day of delay, up to a maximum of EUR 150,000.00. The payment of this penalty shall be without prejudice to the Controller's right to claim further damages."
+    ],
+    "es": [
+      "La presente adenda entra en vigor el 1 de abril de 2026 y complementa el Contrato Marco de Servicios de fecha 15 de enero de 2026 celebrado entre Brightwater Retail GmbH (el «Responsable») y Northwind Analytics Ltd. (el «Encargado»).",
+      "El Encargado solo podrá recurrir a subencargados con la autorización previa y por escrito del Responsable. A la fecha de entrada en vigor, el único subencargado autorizado es CloudVault Hosting S.A., que presta servicios de almacenamiento de datos desde 2 centros de datos situados en la Unión Europea.",
+      "El Encargado deberá informar por escrito al Responsable de cualquier incorporación o sustitución prevista de un subencargado con una antelación mínima de 30 días. El Responsable podrá oponerse a dicho cambio en un plazo de 14 días desde la recepción de la notificación por motivos razonables relacionados con la protección de datos.",
+      "El Encargado notificará al Responsable cualquier violación de la seguridad de los datos personales sin dilación indebida y, en todo caso, en un plazo de 24 horas desde que tenga conocimiento de ella. Este plazo tiene por objeto permitir al Responsable cumplir su obligación de notificar a la autoridad de control competente en un plazo de 72 horas.",
+      "Cada notificación de violación se dirigirá a la delegada de protección de datos del Responsable, Elena Marković, y describirá la naturaleza de la violación, las categorías y el número aproximado de interesados afectados, las consecuencias probables y las medidas adoptadas o propuestas para ponerle remedio.",
+      "Si el Encargado incumple el plazo de notificación, abonará al Responsable una penalización contractual de 5.000,00 EUR por cada día de retraso, hasta un máximo de 150.000,00 EUR. El pago de esta penalización se entenderá sin perjuicio del derecho del Responsable a reclamar daños y perjuicios adicionales."
+    ],
+    "fr": [
+      "Le présent avenant prend effet le 1 avril 2026 et complète le Contrat-cadre de services du 15 janvier 2026 conclu entre Brightwater Retail GmbH (le « Responsable du traitement ») et Northwind Analytics Ltd. (le « Sous-traitant »).",
+      "Le Sous-traitant ne peut faire appel à des sous-traitants ultérieurs qu'avec l'autorisation écrite préalable du Responsable du traitement. À la date de prise d'effet, le seul sous-traitant ultérieur autorisé est CloudVault Hosting S.A., qui fournit des services de stockage de données depuis 2 centres de données situés dans l'Union européenne.",
+      "Le Sous-traitant informe par écrit le Responsable du traitement de tout ajout ou remplacement envisagé d'un sous-traitant ultérieur au moins 30 jours à l'avance. Le Responsable du traitement peut s'opposer à ce changement dans un délai de 14 jours à compter de la réception de la notification, pour des motifs raisonnables liés à la protection des données.",
+      "Le Sous-traitant notifie au Responsable du traitement toute violation de données à caractère personnel dans les meilleurs délais et, en tout état de cause, dans un délai de 24 heures après en avoir pris connaissance. Ce délai vise à permettre au Responsable du traitement de respecter son obligation de notification à l'autorité de contrôle compétente dans un délai de 72 heures.",
+      "Chaque notification de violation est adressée à la déléguée à la protection des données du Responsable du traitement, Elena Marković, et décrit la nature de la violation, les catégories et le nombre approximatif de personnes concernées, les conséquences probables ainsi que les mesures prises ou proposées pour y remédier.",
+      "Si le Sous-traitant ne respecte pas le délai de notification, il verse au Responsable du traitement une pénalité contractuelle de 5 000,00 EUR par jour de retard, dans la limite de 150 000,00 EUR. Le paiement de cette pénalité est sans préjudice du droit du Responsable du traitement de réclamer des dommages-intérêts supplémentaires."
+    ],
+    "de": [
+      "Dieser Nachtrag tritt am 1. April 2026 in Kraft und ergänzt den Rahmendienstleistungsvertrag vom 15. Januar 2026 zwischen der Brightwater Retail GmbH (der „Verantwortliche“) und der Northwind Analytics Ltd. (der „Auftragsverarbeiter“).",
+      "Der Auftragsverarbeiter darf Unterauftragsverarbeiter nur mit vorheriger schriftlicher Genehmigung des Verantwortlichen beauftragen. Zum Zeitpunkt des Inkrafttretens ist der einzige genehmigte Unterauftragsverarbeiter die CloudVault Hosting S.A., die Datenspeicherdienste aus 2 Rechenzentren innerhalb der Europäischen Union erbringt.",
+      "Der Auftragsverarbeiter hat den Verantwortlichen über jede beabsichtigte Hinzuziehung oder Ersetzung eines Unterauftragsverarbeiters mindestens 30 Tage im Voraus schriftlich zu informieren. Der Verantwortliche kann einer solchen Änderung innerhalb von 14 Tagen nach Erhalt der Mitteilung aus berechtigten datenschutzrechtlichen Gründen widersprechen.",
+      "Der Auftragsverarbeiter meldet dem Verantwortlichen jede Verletzung des Schutzes personenbezogener Daten unverzüglich, in jedem Fall jedoch innerhalb von 24 Stunden, nachdem ihm die Verletzung bekannt geworden ist. Diese Frist soll es dem Verantwortlichen ermöglichen, seiner Pflicht zur Meldung an die zuständige Aufsichtsbehörde innerhalb von 72 Stunden nachzukommen.",
+      "Jede Meldung einer Verletzung ist an die Datenschutzbeauftragte des Verantwortlichen, Elena Marković, zu richten und muss die Art der Verletzung, die Kategorien und die ungefähre Zahl der betroffenen Personen, die wahrscheinlichen Folgen sowie die ergriffenen oder vorgeschlagenen Maßnahmen zu ihrer Behebung beschreiben.",
+      "Hält der Auftragsverarbeiter die Meldefrist nicht ein, zahlt er dem Verantwortlichen eine Vertragsstrafe in Höhe von 5.000,00 EUR für jeden Tag des Verzugs, höchstens jedoch 150.000,00 EUR. Die Zahlung dieser Vertragsstrafe lässt das Recht des Verantwortlichen, weitergehenden Schadensersatz geltend zu machen, unberührt."
+    ]
+  }
+}

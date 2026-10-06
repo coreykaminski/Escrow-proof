@@ -1,0 +1,40 @@
+{
+  "id": "c09",
+  "domain": "contract",
+  "title": "Freelance Consulting Agreement",
+  "parties": ["Brightwater Analytics Ltd.", "Elena Marsh"],
+  "paragraphs": {
+    "en": [
+      "This Freelance Consulting Agreement is entered into on February 2, 2026 between Brightwater Analytics Ltd. (the \"Client\") and Elena Marsh (the \"Consultant\"). The Consultant will provide data strategy advisory services to the Client as an independent contractor.",
+      "The Consultant shall be paid an hourly rate of EUR 95.00 for all services actually performed. Time shall be recorded in increments of 15 minutes and reported to the Client on a weekly basis.",
+      "The total fees payable under this Agreement shall not exceed EUR 28,500.00 without the prior written approval of the Client. The Consultant shall notify the Client in writing once 80% of this cap has been reached.",
+      "The Consultant shall submit invoices at the end of each calendar month, itemising the hours worked and the tasks completed. The Client shall pay each undisputed invoice within 30 days of receipt.",
+      "Any amount not paid by its due date shall bear late interest at a rate of 1.5% per month. The Client may dispute an invoice in good faith by giving written notice within 10 days of receipt.",
+      "This Agreement shall remain in force until July 31, 2026, unless terminated earlier by either party with 14 days' written notice. Upon termination, the Client shall pay for all services performed up to the effective date of termination."
+    ],
+    "es": [
+      "El presente Contrato de Consultoría Autónoma se celebra el 2 de febrero de 2026 entre Brightwater Analytics Ltd. (el «Cliente») y Elena Marsh (la «Consultora»). La Consultora prestará al Cliente servicios de asesoramiento en estrategia de datos como profesional independiente.",
+      "La Consultora percibirá una tarifa por hora de 95,00 EUR por todos los servicios efectivamente prestados. El tiempo se registrará en fracciones de 15 minutos y se comunicará al Cliente con periodicidad semanal.",
+      "El total de los honorarios pagaderos en virtud del presente Contrato no excederá de 28.500,00 EUR sin la aprobación previa por escrito del Cliente. La Consultora notificará por escrito al Cliente en cuanto se haya alcanzado el 80 % de dicho límite.",
+      "La Consultora presentará facturas al final de cada mes natural, detallando las horas trabajadas y las tareas realizadas. El Cliente abonará cada factura no impugnada en un plazo de 30 días desde su recepción.",
+      "Toda cantidad no pagada en su fecha de vencimiento devengará intereses de demora a un tipo del 1,5 % mensual. El Cliente podrá impugnar de buena fe una factura mediante notificación por escrito en un plazo de 10 días desde su recepción.",
+      "El presente Contrato permanecerá en vigor hasta el 31 de julio de 2026, salvo que cualquiera de las partes lo resuelva anticipadamente con un preaviso por escrito de 14 días. En caso de resolución, el Cliente abonará todos los servicios prestados hasta la fecha efectiva de la resolución."
+    ],
+    "fr": [
+      "Le présent Contrat de conseil en freelance est conclu le 2 février 2026 entre Brightwater Analytics Ltd. (le « Client ») et Elena Marsh (la « Consultante »). La Consultante fournira au Client des services de conseil en stratégie de données en qualité de prestataire indépendante.",
+      "La Consultante percevra un taux horaire de 95,00 EUR pour l'ensemble des services effectivement fournis. Le temps sera comptabilisé par tranches de 15 minutes et communiqué au Client sur une base hebdomadaire.",
+      "Le montant total des honoraires dus au titre du présent Contrat ne pourra excéder 28 500,00 EUR sans l'accord écrit préalable du Client. La Consultante informera le Client par écrit dès que 80 % de ce plafond aura été atteint.",
+      "La Consultante émettra des factures à la fin de chaque mois civil, en détaillant les heures travaillées et les tâches accomplies. Le Client réglera chaque facture non contestée dans un délai de 30 jours à compter de sa réception.",
+      "Tout montant non réglé à son échéance portera intérêts de retard au taux de 1,5 % par mois. Le Client pourra contester de bonne foi une facture en adressant une notification écrite dans un délai de 10 jours à compter de sa réception.",
+      "Le présent Contrat restera en vigueur jusqu'au 31 juillet 2026, sauf résiliation anticipée par l'une ou l'autre des parties moyennant un préavis écrit de 14 jours. En cas de résiliation, le Client réglera l'ensemble des services fournis jusqu'à la date d'effet de la résiliation."
+    ],
+    "de": [
+      "Dieser Vertrag über freiberufliche Beratungsleistungen wird am 2. Februar 2026 zwischen Brightwater Analytics Ltd. (der „Auftraggeber“) und Elena Marsh (die „Beraterin“) geschlossen. Die Beraterin erbringt für den Auftraggeber als selbständige Auftragnehmerin Beratungsleistungen im Bereich Datenstrategie.",
+      "Die Beraterin erhält für alle tatsächlich erbrachten Leistungen einen Stundensatz von 95,00 EUR. Die Zeit wird in Einheiten von 15 Minuten erfasst und dem Auftraggeber wöchentlich gemeldet.",
+      "Die nach diesem Vertrag zu zahlenden Gesamthonorare dürfen ohne vorherige schriftliche Zustimmung des Auftraggebers 28.500,00 EUR nicht übersteigen. Die Beraterin hat den Auftraggeber schriftlich zu benachrichtigen, sobald 80 % dieser Obergrenze erreicht sind.",
+      "Die Beraterin stellt am Ende jedes Kalendermonats Rechnungen, in denen die geleisteten Stunden und die erledigten Aufgaben einzeln aufgeführt sind. Der Auftraggeber bezahlt jede unbestrittene Rechnung innerhalb von 30 Tagen nach Eingang.",
+      "Jeder bei Fälligkeit nicht gezahlte Betrag ist mit Verzugszinsen in Höhe von 1,5 % pro Monat zu verzinsen. Der Auftraggeber kann eine Rechnung in gutem Glauben durch schriftliche Mitteilung innerhalb von 10 Tagen nach Eingang beanstanden.",
+      "Dieser Vertrag bleibt bis zum 31. Juli 2026 in Kraft, sofern er nicht zuvor von einer der Parteien mit einer schriftlichen Frist von 14 Tagen gekündigt wird. Im Falle einer Kündigung bezahlt der Auftraggeber alle bis zum Wirksamkeitsdatum der Kündigung erbrachten Leistungen."
+    ]
+  }
+}

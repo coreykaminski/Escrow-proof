@@ -1,0 +1,40 @@
+{
+  "id": "p01",
+  "domain": "policy",
+  "title": "Privacy Policy – Data Retention and User Rights",
+  "parties": ["Nordwind Analytics Ltd.", "Clara Mendel", "Helios Cloud Services GmbH"],
+  "paragraphs": {
+    "en": [
+      "This section of the privacy policy of Nordwind Analytics Ltd. describes how long we retain personal data and which rights users may exercise. It applies to all accounts created on or after January 15, 2026.",
+      "Account data is retained for as long as the account remains active and for 24 months after its closure. Payment records are retained for 10 years in order to comply with applicable tax and accounting obligations.",
+      "Server logs containing IP addresses are deleted automatically after 90 days. Data stored on behalf of Nordwind Analytics Ltd. by its hosting provider, Helios Cloud Services GmbH, is subject to the same retention periods.",
+      "Users may request access to, rectification of or erasure of their personal data at any time. We will respond to each request within 30 days of receipt, and the first copy of the data will be provided free of charge, while additional copies may incur an administrative fee of EUR 25.00.",
+      "Requests should be addressed to our Data Protection Officer, Clara Mendel, by email or by post. If a request cannot be fulfilled in full, we will explain the reasons in writing.",
+      "This version of the section enters into force on March 1, 2026 and replaces all previous versions. Where a change reduces user rights by more than 1 provision, users will be notified at least 14 days in advance."
+    ],
+    "es": [
+      "Esta sección de la política de privacidad de Nordwind Analytics Ltd. describe durante cuánto tiempo conservamos los datos personales y qué derechos pueden ejercer los usuarios. Se aplica a todas las cuentas creadas a partir del 15 de enero de 2026, inclusive.",
+      "Los datos de la cuenta se conservan mientras la cuenta permanezca activa y durante 24 meses tras su cierre. Los registros de pago se conservan durante 10 años con el fin de cumplir las obligaciones fiscales y contables aplicables.",
+      "Los registros del servidor que contienen direcciones IP se eliminan automáticamente transcurridos 90 días. Los datos almacenados por cuenta de Nordwind Analytics Ltd. por su proveedor de alojamiento, Helios Cloud Services GmbH, están sujetos a los mismos plazos de conservación.",
+      "Los usuarios pueden solicitar en cualquier momento el acceso, la rectificación o la supresión de sus datos personales. Responderemos a cada solicitud en un plazo de 30 días desde su recepción, y la primera copia de los datos se facilitará de forma gratuita, mientras que las copias adicionales podrán conllevar una tasa administrativa de 25,00 EUR.",
+      "Las solicitudes deben dirigirse a nuestra Delegada de Protección de Datos, Clara Mendel, por correo electrónico o por correo postal. Si una solicitud no puede atenderse en su totalidad, explicaremos los motivos por escrito.",
+      "La presente versión de esta sección entra en vigor el 1 de marzo de 2026 y sustituye a todas las versiones anteriores. Cuando una modificación reduzca los derechos de los usuarios en más de 1 disposición, se notificará a los usuarios con una antelación mínima de 14 días."
+    ],
+    "fr": [
+      "La présente section de la politique de confidentialité de Nordwind Analytics Ltd. décrit la durée pendant laquelle nous conservons les données personnelles et les droits que les utilisateurs peuvent exercer. Elle s'applique à tous les comptes créés à compter du 15 janvier 2026.",
+      "Les données de compte sont conservées tant que le compte reste actif et pendant 24 mois après sa clôture. Les justificatifs de paiement sont conservés pendant 10 ans afin de respecter les obligations fiscales et comptables applicables.",
+      "Les journaux de serveur contenant des adresses IP sont supprimés automatiquement au bout de 90 jours. Les données stockées pour le compte de Nordwind Analytics Ltd. par son hébergeur, Helios Cloud Services GmbH, sont soumises aux mêmes durées de conservation.",
+      "Les utilisateurs peuvent à tout moment demander l'accès à leurs données personnelles, leur rectification ou leur effacement. Nous répondrons à chaque demande dans un délai de 30 jours à compter de sa réception, et la première copie des données sera fournie gratuitement, tandis que les copies supplémentaires pourront donner lieu à des frais administratifs de 25,00 EUR.",
+      "Les demandes doivent être adressées à notre Déléguée à la protection des données, Clara Mendel, par courrier électronique ou par voie postale. Si une demande ne peut être satisfaite intégralement, nous en expliquerons les raisons par écrit.",
+      "La présente version de cette section entre en vigueur le 1 mars 2026 et remplace toutes les versions antérieures. Lorsqu'une modification réduit les droits des utilisateurs de plus de 1 disposition, les utilisateurs en seront informés au moins 14 jours à l'avance."
+    ],
+    "de": [
+      "Dieser Abschnitt der Datenschutzerklärung der Nordwind Analytics Ltd. beschreibt, wie lange wir personenbezogene Daten aufbewahren und welche Rechte Nutzer ausüben können. Er gilt für alle Konten, die am oder nach dem 15. Januar 2026 erstellt werden.",
+      "Kontodaten werden aufbewahrt, solange das Konto aktiv ist, sowie 24 Monate nach dessen Schließung. Zahlungsbelege werden 10 Jahre lang aufbewahrt, um die geltenden steuer- und handelsrechtlichen Pflichten zu erfüllen.",
+      "Serverprotokolle, die IP-Adressen enthalten, werden nach 90 Tagen automatisch gelöscht. Daten, die im Auftrag der Nordwind Analytics Ltd. von deren Hosting-Anbieter, der Helios Cloud Services GmbH, gespeichert werden, unterliegen denselben Aufbewahrungsfristen.",
+      "Nutzer können jederzeit Auskunft über ihre personenbezogenen Daten sowie deren Berichtigung oder Löschung verlangen. Wir beantworten jede Anfrage innerhalb von 30 Tagen nach Eingang; die erste Kopie der Daten wird kostenlos zur Verfügung gestellt, während für weitere Kopien eine Verwaltungsgebühr von 25,00 EUR anfallen kann.",
+      "Anfragen sind per E-Mail oder per Post an unsere Datenschutzbeauftragte, Clara Mendel, zu richten. Kann eine Anfrage nicht vollständig erfüllt werden, erläutern wir die Gründe schriftlich.",
+      "Diese Fassung des Abschnitts tritt am 1. März 2026 in Kraft und ersetzt alle früheren Fassungen. Schränkt eine Änderung die Rechte der Nutzer in mehr als 1 Bestimmung ein, werden die Nutzer mindestens 14 Tage im Voraus benachrichtigt."
+    ]
+  }
+}

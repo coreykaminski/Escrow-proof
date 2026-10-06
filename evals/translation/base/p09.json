@@ -1,0 +1,40 @@
+{
+  "id": "p09",
+  "domain": "policy",
+  "title": "Acceptable Use Policy – Nimbus Stratus Hosting Ltd.",
+  "parties": ["Nimbus Stratus Hosting Ltd.", "Elena Varga"],
+  "paragraphs": {
+    "en": [
+      "This Acceptable Use Policy is issued by Nimbus Stratus Hosting Ltd. and governs all use of its cloud hosting services by customers and their end users. It was published on February 16, 2026 and takes effect on April 1, 2026.",
+      "Customers must not use the services to distribute malware, send unsolicited bulk email, conduct denial-of-service attacks or store content that infringes third-party rights. Any attempt to circumvent security controls or to access another customer's resources without authorisation is strictly prohibited.",
+      "Each account is limited to 1,200 API requests per minute and 500 GB of outbound data transfer per calendar month. Requests exceeding the limit will receive an error response, and transfer above the monthly allowance will be charged at EUR 0.08 per GB.",
+      "If an account's traffic exceeds the applicable rate limit by more than 15% for a continuous period of 72 hours, Nimbus Stratus Hosting Ltd. may temporarily throttle or suspend the affected services. The customer will be notified by email and given an opportunity to reduce usage before any suspension, except where immediate action is required to protect the platform.",
+      "Repeated or serious violations may result in termination of the account upon 30 days' written notice and a contractual penalty of EUR 2,500.00 per incident. Termination does not release the customer from payment of fees already accrued.",
+      "Questions about this policy and reports of suspected abuse should be addressed to the Compliance Officer, Elena Varga, who will acknowledge each report within 2 business days. Nimbus Stratus Hosting Ltd. reserves the right to amend this policy, and any amendment will be announced at least 30 days before it becomes effective."
+    ],
+    "es": [
+      "La presente Política de Uso Aceptable es emitida por Nimbus Stratus Hosting Ltd. y regula todo uso de sus servicios de alojamiento en la nube por parte de los clientes y sus usuarios finales. Fue publicada el 16 de febrero de 2026 y entra en vigor el 1 de abril de 2026.",
+      "Los clientes no deberán utilizar los servicios para distribuir software malicioso, enviar correo masivo no solicitado, realizar ataques de denegación de servicio ni almacenar contenidos que infrinjan derechos de terceros. Queda estrictamente prohibido todo intento de eludir los controles de seguridad o de acceder sin autorización a los recursos de otro cliente.",
+      "Cada cuenta está limitada a 1.200 solicitudes de API por minuto y a 500 GB de transferencia de datos saliente por mes natural. Las solicitudes que superen el límite recibirán una respuesta de error, y la transferencia que exceda la cuota mensual se facturará a 0,08 EUR por GB.",
+      "Si el tráfico de una cuenta supera el límite de solicitudes aplicable en más de un 15% durante un periodo continuo de 72 horas, Nimbus Stratus Hosting Ltd. podrá limitar o suspender temporalmente los servicios afectados. Se notificará al cliente por correo electrónico y se le dará la oportunidad de reducir su uso antes de cualquier suspensión, salvo cuando se requiera una actuación inmediata para proteger la plataforma.",
+      "Las infracciones reiteradas o graves podrán dar lugar a la resolución de la cuenta mediante preaviso por escrito de 30 días y a una penalización contractual de 2.500,00 EUR por incidente. La resolución no exime al cliente del pago de las tarifas ya devengadas.",
+      "Las consultas sobre esta política y las denuncias de presuntos abusos deberán dirigirse a la Responsable de Cumplimiento, Elena Varga, quien acusará recibo de cada denuncia en un plazo de 2 días hábiles. Nimbus Stratus Hosting Ltd. se reserva el derecho de modificar esta política, y toda modificación se anunciará con al menos 30 días de antelación a su entrada en vigor."
+    ],
+    "fr": [
+      "La présente Politique d'utilisation acceptable est émise par Nimbus Stratus Hosting Ltd. et régit toute utilisation de ses services d'hébergement cloud par les clients et leurs utilisateurs finaux. Elle a été publiée le 16 février 2026 et entre en vigueur le 1 avril 2026.",
+      "Les clients ne doivent pas utiliser les services pour diffuser des logiciels malveillants, envoyer des courriels de masse non sollicités, mener des attaques par déni de service ou stocker des contenus portant atteinte aux droits de tiers. Toute tentative de contourner les contrôles de sécurité ou d'accéder sans autorisation aux ressources d'un autre client est strictement interdite.",
+      "Chaque compte est limité à 1 200 requêtes API par minute et à 500 Go de transfert de données sortant par mois civil. Les requêtes dépassant la limite recevront une réponse d'erreur, et le transfert au-delà du quota mensuel sera facturé 0,08 EUR par Go.",
+      "Si le trafic d'un compte dépasse la limite de requêtes applicable de plus de 15 % pendant une période continue de 72 heures, Nimbus Stratus Hosting Ltd. peut temporairement restreindre ou suspendre les services concernés. Le client sera informé par courriel et aura la possibilité de réduire son utilisation avant toute suspension, sauf lorsqu'une action immédiate est nécessaire pour protéger la plateforme.",
+      "Des violations répétées ou graves peuvent entraîner la résiliation du compte moyennant un préavis écrit de 30 jours ainsi qu'une pénalité contractuelle de 2 500,00 EUR par incident. La résiliation ne libère pas le client du paiement des frais déjà échus.",
+      "Les questions relatives à la présente politique et les signalements d'abus présumés doivent être adressés à la Responsable de la conformité, Elena Varga, qui accusera réception de chaque signalement dans un délai de 2 jours ouvrables. Nimbus Stratus Hosting Ltd. se réserve le droit de modifier la présente politique, et toute modification sera annoncée au moins 30 jours avant son entrée en vigueur."
+    ],
+    "de": [
+      "Diese Richtlinie zur akzeptablen Nutzung wird von Nimbus Stratus Hosting Ltd. herausgegeben und regelt jede Nutzung ihrer Cloud-Hosting-Dienste durch Kunden und deren Endnutzer. Sie wurde am 16. Februar 2026 veröffentlicht und tritt am 1. April 2026 in Kraft.",
+      "Kunden dürfen die Dienste nicht dazu nutzen, Schadsoftware zu verbreiten, unerwünschte Massen-E-Mails zu versenden, Denial-of-Service-Angriffe durchzuführen oder Inhalte zu speichern, die Rechte Dritter verletzen. Jeder Versuch, Sicherheitskontrollen zu umgehen oder ohne Berechtigung auf die Ressourcen eines anderen Kunden zuzugreifen, ist strengstens untersagt.",
+      "Jedes Konto ist auf 1.200 API-Anfragen pro Minute und 500 GB ausgehende Datenübertragung pro Kalendermonat begrenzt. Anfragen, die das Limit überschreiten, erhalten eine Fehlermeldung, und Datenübertragungen über das monatliche Kontingent hinaus werden mit 0,08 EUR pro GB berechnet.",
+      "Überschreitet der Datenverkehr eines Kontos das geltende Anfragelimit über einen ununterbrochenen Zeitraum von 72 Stunden um mehr als 15 %, kann Nimbus Stratus Hosting Ltd. die betroffenen Dienste vorübergehend drosseln oder aussetzen. Der Kunde wird per E-Mail benachrichtigt und erhält vor jeder Aussetzung die Gelegenheit, seine Nutzung zu verringern, es sei denn, zum Schutz der Plattform ist ein sofortiges Eingreifen erforderlich.",
+      "Wiederholte oder schwerwiegende Verstöße können zur Kündigung des Kontos mit einer schriftlichen Frist von 30 Tagen sowie zu einer Vertragsstrafe von 2.500,00 EUR je Vorfall führen. Die Kündigung entbindet den Kunden nicht von der Zahlung bereits angefallener Gebühren.",
+      "Fragen zu dieser Richtlinie und Meldungen über mutmaßlichen Missbrauch sind an die Compliance-Beauftragte, Elena Varga, zu richten, die den Eingang jeder Meldung innerhalb von 2 Werktagen bestätigt. Nimbus Stratus Hosting Ltd. behält sich das Recht vor, diese Richtlinie zu ändern, und jede Änderung wird mindestens 30 Tage vor ihrem Inkrafttreten angekündigt."
+    ]
+  }
+}

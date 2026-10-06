@@ -1,0 +1,40 @@
+{
+  "id": "m06",
+  "domain": "marketing",
+  "title": "LinguaLeap – Learn Languages in 10 Minutes a Day",
+  "parties": ["LinguaLeap", "Nordhaven Labs GmbH", "Clara Mendes"],
+  "paragraphs": {
+    "en": [
+      "LinguaLeap, developed by Nordhaven Labs GmbH, helps you learn 12 languages with short daily lessons of just 10 minutes. More than 3,500 interactive lessons, created together with linguist Clara Mendes, cover vocabulary, grammar and pronunciation.",
+      "Our speech recognition engine gives you instant feedback on your pronunciation, and offline mode lets you download up to 50 lessons for your travels. Your progress syncs automatically across all your devices.",
+      "The free version includes 5 lessons per day. LinguaLeap Premium unlocks unlimited lessons for €9.99 per month or €59.99 per year, saving you 50% compared with monthly billing. A Family plan for up to 6 members costs €89.99 per year.",
+      "New subscribers receive a 7-day free trial. Payment will be charged to your account when the trial ends, and your subscription renews automatically unless you cancel it at least 24 hours before the end of the current period.",
+      "Limited-time offer: subscribe to the annual plan between March 1, 2026 and March 31, 2026 and pay only €44.99 for your first year.",
+      "Version 4.2, released on February 10, 2026, adds 2 new languages and improved review exercises. If you have any questions, our support team will reply within 48 hours."
+    ],
+    "es": [
+      "LinguaLeap, desarrollada por Nordhaven Labs GmbH, te ayuda a aprender 12 idiomas con breves lecciones diarias de solo 10 minutos. Más de 3.500 lecciones interactivas, creadas junto con la lingüista Clara Mendes, abarcan vocabulario, gramática y pronunciación.",
+      "Nuestro motor de reconocimiento de voz te ofrece comentarios instantáneos sobre tu pronunciación, y el modo sin conexión te permite descargar hasta 50 lecciones para tus viajes. Tu progreso se sincroniza automáticamente en todos tus dispositivos.",
+      "La versión gratuita incluye 5 lecciones al día. LinguaLeap Premium desbloquea lecciones ilimitadas por 9,99 € al mes o 59,99 € al año, lo que te permite ahorrar un 50% en comparación con la facturación mensual. El plan Familiar para hasta 6 miembros cuesta 89,99 € al año.",
+      "Los nuevos suscriptores disfrutan de una prueba gratuita de 7 días. El pago se cargará en tu cuenta al finalizar la prueba, y la suscripción se renueva automáticamente salvo que la canceles al menos 24 horas antes del final del periodo en curso.",
+      "Oferta por tiempo limitado: suscríbete al plan anual entre el 1 de marzo de 2026 y el 31 de marzo de 2026 y paga solo 44,99 € por tu primer año.",
+      "La versión 4.2, publicada el 10 de febrero de 2026, añade 2 nuevos idiomas y ejercicios de repaso mejorados. Si tienes alguna pregunta, nuestro equipo de soporte te responderá en un plazo de 48 horas."
+    ],
+    "fr": [
+      "LinguaLeap, développée par Nordhaven Labs GmbH, vous aide à apprendre 12 langues grâce à de courtes leçons quotidiennes de seulement 10 minutes. Plus de 3 500 leçons interactives, conçues avec la linguiste Clara Mendes, couvrent le vocabulaire, la grammaire et la prononciation.",
+      "Notre moteur de reconnaissance vocale vous donne un retour instantané sur votre prononciation, et le mode hors ligne vous permet de télécharger jusqu'à 50 leçons pour vos voyages. Votre progression se synchronise automatiquement sur tous vos appareils.",
+      "La version gratuite comprend 5 leçons par jour. LinguaLeap Premium débloque des leçons illimitées pour 9,99 € par mois ou 59,99 € par an, soit une économie de 50 % par rapport à la facturation mensuelle. La formule Famille pour 6 membres maximum coûte 89,99 € par an.",
+      "Les nouveaux abonnés bénéficient d'un essai gratuit de 7 jours. Le paiement sera débité de votre compte à la fin de l'essai, et votre abonnement se renouvelle automatiquement, sauf résiliation au moins 24 heures avant la fin de la période en cours.",
+      "Offre à durée limitée : souscrivez la formule annuelle entre le 1er mars 2026 et le 31 mars 2026 et ne payez que 44,99 € pour votre première année.",
+      "La version 4.2, publiée le 10 février 2026, ajoute 2 nouvelles langues et des exercices de révision améliorés. Pour toute question, notre équipe d'assistance vous répondra sous 48 heures."
+    ],
+    "de": [
+      "LinguaLeap, entwickelt von Nordhaven Labs GmbH, hilft Ihnen, 12 Sprachen mit kurzen täglichen Lektionen von nur 10 Minuten zu lernen. Mehr als 3.500 interaktive Lektionen, gemeinsam mit der Linguistin Clara Mendes erstellt, decken Wortschatz, Grammatik und Aussprache ab.",
+      "Unsere Spracherkennung gibt Ihnen sofortiges Feedback zu Ihrer Aussprache, und im Offline-Modus können Sie bis zu 50 Lektionen für Ihre Reisen herunterladen. Ihr Lernfortschritt wird automatisch auf allen Ihren Geräten synchronisiert.",
+      "Die kostenlose Version umfasst 5 Lektionen pro Tag. LinguaLeap Premium schaltet unbegrenzte Lektionen für 9,99 € pro Monat oder 59,99 € pro Jahr frei, wodurch Sie im Vergleich zur monatlichen Abrechnung 50 % sparen. Der Familientarif für bis zu 6 Mitglieder kostet 89,99 € pro Jahr.",
+      "Neue Abonnenten erhalten eine 7-tägige kostenlose Testphase. Die Zahlung wird Ihrem Konto am Ende der Testphase belastet, und Ihr Abonnement verlängert sich automatisch, sofern Sie es nicht mindestens 24 Stunden vor Ablauf des aktuellen Zeitraums kündigen.",
+      "Zeitlich begrenztes Angebot: Schließen Sie zwischen dem 1. März 2026 und dem 31. März 2026 das Jahresabo ab und zahlen Sie für Ihr erstes Jahr nur 44,99 €.",
+      "Version 4.2, veröffentlicht am 10. Februar 2026, bietet 2 neue Sprachen und verbesserte Wiederholungsübungen. Bei Fragen antwortet Ihnen unser Support-Team innerhalb von 48 Stunden."
+    ]
+  }
+}

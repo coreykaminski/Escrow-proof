@@ -1,0 +1,40 @@
+{
+  "id": "c04",
+  "domain": "contract",
+  "title": "Employment Offer Letter – Senior Data Engineer",
+  "parties": ["Brightwater Data Solutions Ltd.", "Elena Marquez", "Thomas Reed"],
+  "paragraphs": {
+    "en": [
+      "Dear Elena Marquez, on behalf of Brightwater Data Solutions Ltd., we are pleased to offer you the position of Senior Data Engineer, reporting to Thomas Reed, Head of Data Platform. This offer is dated February 16, 2026.",
+      "Your employment will commence on April 1, 2026. You will work 40 hours per week at our Dublin office, with the option of working remotely for up to 2 days per week.",
+      "You will receive an annual gross base salary of EUR 95,000.00, payable in 12 equal monthly instalments. Your base salary will be reviewed once a year.",
+      "You will be eligible for an annual performance bonus of up to 15% of your base salary, based on the achievement of individual and company objectives. In addition, you will receive a one-time signing bonus of EUR 5,000.00, payable with your first monthly salary.",
+      "The first 6 months of employment will constitute a probationary period, during which either party may terminate the employment with 14 days' written notice. After the probationary period, the notice period will be 30 days. You will be entitled to 25 days of paid annual leave per calendar year.",
+      "Please confirm your acceptance of this offer by signing and returning this letter no later than March 2, 2026. If we do not receive your signed acceptance by that date, this offer will lapse."
+    ],
+    "es": [
+      "Estimada Elena Marquez: en nombre de Brightwater Data Solutions Ltd., nos complace ofrecerle el puesto de Ingeniera de Datos Sénior, bajo la dependencia de Thomas Reed, Responsable de la Plataforma de Datos. La presente oferta está fechada el 16 de febrero de 2026.",
+      "Su relación laboral comenzará el 1 de abril de 2026. Trabajará 40 horas semanales en nuestra oficina de Dublín, con la posibilidad de teletrabajar hasta 2 días por semana.",
+      "Percibirá un salario base bruto anual de 95.000,00 EUR, pagadero en 12 mensualidades iguales. Su salario base se revisará una vez al año.",
+      "Tendrá derecho a un bonus anual por desempeño de hasta el 15% de su salario base, en función de la consecución de objetivos individuales y de la empresa. Además, recibirá una prima única de incorporación de 5.000,00 EUR, que se abonará junto con su primer salario mensual.",
+      "Los primeros 6 meses de la relación laboral constituirán un período de prueba, durante el cual cualquiera de las partes podrá resolver la relación laboral con un preaviso por escrito de 14 días. Una vez finalizado el período de prueba, el plazo de preaviso será de 30 días. Tendrá derecho a 25 días de vacaciones anuales retribuidas por año natural.",
+      "Le rogamos que confirme su aceptación de esta oferta firmando y devolviendo la presente carta a más tardar el 2 de marzo de 2026. Si no recibimos su aceptación firmada antes de dicha fecha, esta oferta quedará sin efecto."
+    ],
+    "fr": [
+      "Chère Elena Marquez, au nom de Brightwater Data Solutions Ltd., nous avons le plaisir de vous proposer le poste d'Ingénieure Data Senior, sous la responsabilité de Thomas Reed, Responsable de la Plateforme de Données. La présente offre est datée du 16 février 2026.",
+      "Votre contrat de travail prendra effet le 1 avril 2026. Vous travaillerez 40 heures par semaine dans nos bureaux de Dublin, avec la possibilité de télétravailler jusqu'à 2 jours par semaine.",
+      "Vous percevrez un salaire de base annuel brut de 95 000,00 EUR, payable en 12 mensualités égales. Votre salaire de base fera l'objet d'une révision une fois par an.",
+      "Vous serez éligible à une prime annuelle de performance pouvant atteindre 15% de votre salaire de base, en fonction de l'atteinte d'objectifs individuels et de l'entreprise. En outre, vous recevrez une prime unique de bienvenue de 5 000,00 EUR, versée avec votre premier salaire mensuel.",
+      "Les 6 premiers mois de travail constitueront une période d'essai, pendant laquelle chacune des parties pourra mettre fin au contrat moyennant un préavis écrit de 14 jours. À l'issue de la période d'essai, le délai de préavis sera de 30 jours. Vous aurez droit à 25 jours de congés payés annuels par année civile.",
+      "Nous vous prions de confirmer votre acceptation de cette offre en signant et en nous retournant la présente lettre au plus tard le 2 mars 2026. Si nous ne recevons pas votre acceptation signée à cette date, la présente offre deviendra caduque."
+    ],
+    "de": [
+      "Sehr geehrte Elena Marquez, im Namen der Brightwater Data Solutions Ltd. freuen wir uns, Ihnen die Position als Senior Data Engineer anzubieten, wobei Sie an Thomas Reed, Leiter der Datenplattform, berichten. Dieses Angebot ist auf den 16. Februar 2026 datiert.",
+      "Ihr Arbeitsverhältnis beginnt am 1. April 2026. Sie arbeiten 40 Stunden pro Woche in unserem Büro in Dublin, mit der Möglichkeit, bis zu 2 Tage pro Woche mobil zu arbeiten.",
+      "Sie erhalten ein jährliches Bruttogrundgehalt von 95.000,00 EUR, zahlbar in 12 gleichen Monatsraten. Ihr Grundgehalt wird einmal jährlich überprüft.",
+      "Sie haben Anspruch auf einen jährlichen Leistungsbonus von bis zu 15% Ihres Grundgehalts, abhängig von der Erreichung individueller und unternehmensbezogener Ziele. Zusätzlich erhalten Sie eine einmalige Antrittsprämie von 5.000,00 EUR, die mit Ihrem ersten Monatsgehalt ausgezahlt wird.",
+      "Die ersten 6 Monate des Arbeitsverhältnisses gelten als Probezeit, während der jede Partei das Arbeitsverhältnis mit einer schriftlichen Kündigungsfrist von 14 Tagen beenden kann. Nach Ablauf der Probezeit beträgt die Kündigungsfrist 30 Tage. Sie haben Anspruch auf 25 Tage bezahlten Jahresurlaub pro Kalenderjahr.",
+      "Bitte bestätigen Sie Ihre Annahme dieses Angebots, indem Sie dieses Schreiben unterzeichnet bis spätestens 2. März 2026 an uns zurücksenden. Sollte uns Ihre unterzeichnete Annahme bis zu diesem Datum nicht vorliegen, erlischt dieses Angebot."
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "id": "m02",
+  "domain": "marketing",
+  "title": "Taskwell – Project Management Made Simple",
+  "parties": ["Taskwell Software Ltd.", "Brightline Studios", "Maria Okafor"],
+  "paragraphs": {
+    "en": [
+      "Taskwell brings your projects, deadlines and team conversations together in one clear workspace. Built by Taskwell Software Ltd., it already helps more than 12,000 teams deliver their work on time.",
+      "The Starter plan costs €9.00 per user per month and includes up to 10 active projects and 5 GB of storage per workspace. It is ideal for small teams that need simple task boards and shared calendars.",
+      "The Professional plan costs €19.00 per user per month and adds unlimited projects, Gantt charts, time tracking and 100 GB of storage. Teams that choose annual billing save 20% on both the Starter and Professional plans.",
+      "For larger organisations, the Enterprise plan starts at €1,500.00 per month for up to 100 users. It includes single sign-on, a dedicated account manager and a 99.9% uptime commitment.",
+      "Every plan comes with a free 30-day trial, and no credit card is required to get started. Customers who subscribe between March 2, 2026 and April 30, 2026 receive their first 3 months of the Professional plan at half price.",
+      "\"Since switching to Taskwell, our studio has cut missed deadlines by 40%,\" says Maria Okafor, Head of Operations at Brightline Studios. Join her team and thousands of others today."
+    ],
+    "es": [
+      "Taskwell reúne sus proyectos, plazos y conversaciones de equipo en un único espacio de trabajo claro. Desarrollado por Taskwell Software Ltd., ya ayuda a más de 12.000 equipos a entregar su trabajo a tiempo.",
+      "El plan Starter cuesta 9,00 € por usuario al mes e incluye hasta 10 proyectos activos y 5 GB de almacenamiento por espacio de trabajo. Es ideal para equipos pequeños que necesitan tableros de tareas sencillos y calendarios compartidos.",
+      "El plan Professional cuesta 19,00 € por usuario al mes y añade proyectos ilimitados, diagramas de Gantt, control de tiempos y 100 GB de almacenamiento. Los equipos que eligen la facturación anual ahorran un 20 % tanto en el plan Starter como en el plan Professional.",
+      "Para organizaciones de mayor tamaño, el plan Enterprise parte de 1.500,00 € al mes para hasta 100 usuarios. Incluye inicio de sesión único, un gestor de cuenta dedicado y un compromiso de disponibilidad del 99,9 %.",
+      "Todos los planes incluyen una prueba gratuita de 30 días y no se necesita tarjeta de crédito para empezar. Los clientes que se suscriban entre el 2 de marzo de 2026 y el 30 de abril de 2026 recibirán sus primeros 3 meses del plan Professional a mitad de precio.",
+      "«Desde que nos pasamos a Taskwell, nuestro estudio ha reducido los plazos incumplidos en un 40 %», afirma Maria Okafor, directora de Operaciones de Brightline Studios. Únase hoy a su equipo y a miles de otros."
+    ],
+    "fr": [
+      "Taskwell réunit vos projets, vos échéances et les échanges de votre équipe dans un espace de travail unique et clair. Conçu par Taskwell Software Ltd., il aide déjà plus de 12 000 équipes à livrer leur travail dans les délais.",
+      "L'offre Starter coûte 9,00 € par utilisateur et par mois et comprend jusqu'à 10 projets actifs et 5 Go de stockage par espace de travail. Elle est idéale pour les petites équipes qui ont besoin de tableaux de tâches simples et de calendriers partagés.",
+      "L'offre Professional coûte 19,00 € par utilisateur et par mois et ajoute des projets illimités, des diagrammes de Gantt, le suivi du temps et 100 Go de stockage. Les équipes qui optent pour la facturation annuelle économisent 20 % sur les offres Starter et Professional.",
+      "Pour les organisations de plus grande taille, l'offre Enterprise démarre à 1 500,00 € par mois pour un maximum de 100 utilisateurs. Elle comprend l'authentification unique, un gestionnaire de compte dédié et un engagement de disponibilité de 99,9 %.",
+      "Chaque offre inclut un essai gratuit de 30 jours, sans carte bancaire requise pour commencer. Les clients qui s'abonnent entre le 2 mars 2026 et le 30 avril 2026 bénéficient de leurs 3 premiers mois de l'offre Professional à moitié prix.",
+      "« Depuis que nous sommes passés à Taskwell, notre studio a réduit de 40 % les échéances non respectées », déclare Maria Okafor, responsable des opérations chez Brightline Studios. Rejoignez dès aujourd'hui son équipe et des milliers d'autres."
+    ],
+    "de": [
+      "Taskwell vereint Ihre Projekte, Fristen und Teamgespräche in einem übersichtlichen Arbeitsbereich. Entwickelt von Taskwell Software Ltd., hilft es bereits mehr als 12.000 Teams, ihre Arbeit pünktlich zu erledigen.",
+      "Der Starter-Tarif kostet 9,00 € pro Nutzer und Monat und umfasst bis zu 10 aktive Projekte sowie 5 GB Speicherplatz pro Arbeitsbereich. Er ist ideal für kleine Teams, die einfache Aufgabenboards und gemeinsame Kalender benötigen.",
+      "Der Professional-Tarif kostet 19,00 € pro Nutzer und Monat und bietet zusätzlich unbegrenzte Projekte, Gantt-Diagramme, Zeiterfassung und 100 GB Speicherplatz. Teams, die sich für die jährliche Abrechnung entscheiden, sparen 20 % sowohl beim Starter- als auch beim Professional-Tarif.",
+      "Für größere Organisationen beginnt der Enterprise-Tarif bei 1.500,00 € pro Monat für bis zu 100 Nutzer. Er umfasst Single Sign-on, einen persönlichen Kundenbetreuer und eine Verfügbarkeitszusage von 99,9 %.",
+      "Jeder Tarif beinhaltet eine kostenlose 30-tägige Testphase, und für den Einstieg ist keine Kreditkarte erforderlich. Kunden, die zwischen dem 2. März 2026 und dem 30. April 2026 ein Abonnement abschließen, erhalten die ersten 3 Monate des Professional-Tarifs zum halben Preis.",
+      "„Seit unserem Wechsel zu Taskwell hat unser Studio verpasste Fristen um 40 % reduziert“, sagt Maria Okafor, Leiterin des operativen Geschäfts bei Brightline Studios. Schließen Sie sich noch heute ihrem Team und Tausenden weiteren an."
+    ]
+  }
+}

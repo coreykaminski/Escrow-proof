@@ -1,0 +1,198 @@
+[
+  {
+    "type": "meaning",
+    "paragraph": 4,
+    "text": "The first 6 months of employment will constitute a probationary period, during which the Company may terminate the employment with 14 days' written notice. After the probationary period, the notice period will be 30 days. You will be entitled to 25 days of paid annual leave per calendar year.",
+    "description": "'either party may terminate' changed to 'the Company may terminate'. The employee loses the right to terminate during probation, which changes who holds the right.",
+    "lang": "en"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 1,
+    "text": "Your employment will commence on April 1, 2026. You will work 40 hours per week at our Dublin office, with the requirement to work remotely at least 2 days per week.",
+    "description": "'the option of working remotely for up to 2 days' changed to 'the requirement to work remotely at least 2 days'. An optional maximum becomes a mandatory minimum.",
+    "lang": "en"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "You will receive an annual net base salary of EUR 95,000.00, payable in 12 equal monthly instalments. Your base salary will be reviewed once a year.",
+    "description": "'gross base salary' replaced with 'net base salary'. Net (after tax) is a different and higher entitlement than gross.",
+    "lang": "en"
+  },
+  {
+    "type": "addition",
+    "paragraph": 5,
+    "text": "Please confirm your acceptance of this offer by signing and returning this letter no later than March 2, 2026. Upon your request, this deadline will be extended automatically. If we do not receive your signed acceptance by that date, this offer will lapse.",
+    "description": "Added the sentence 'Upon your request, this deadline will be extended automatically.' This creates a deadline-extension right that is not in the original.",
+    "lang": "en"
+  },
+  {
+    "type": "omission",
+    "paragraph": 3,
+    "text": "You will be eligible for an annual performance bonus of up to 15% of your base salary, based on the achievement of individual and company objectives.",
+    "description": "Removed the entire sentence about the one-time signing bonus of EUR 5,000.00 payable with the first monthly salary.",
+    "lang": "en"
+  },
+  {
+    "type": "minor",
+    "paragraph": 0,
+    "text": "Dear Elena Marquez, on behalf of Brightwater Data Solutions Ltd., we are delighted to offer you the position of Senior Data Engineer, reporting to Thomas Reed, Head of Data Platform. This offer is dated February 16, 2026.",
+    "description": "'pleased' replaced with the synonym 'delighted'. The meaning is identical, so this is not an error.",
+    "lang": "en"
+  },
+  {
+    "type": "minor",
+    "paragraph": 2,
+    "text": "You will receive an annual gross base salary of EUR 95,000.00, payable in 12 equal monthly instalments. Your base salary will be reviewed annually.",
+    "description": "'once a year' replaced with the equivalent 'annually'. The meaning is identical, so this is not an error.",
+    "lang": "en"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 4,
+    "text": "Los primeros 6 meses de la relación laboral constituirán un período de prueba, durante el cual la empresa podrá resolver la relación laboral con un preaviso por escrito de 14 días. Una vez finalizado el período de prueba, el plazo de preaviso será de 30 días. Tendrá derecho a 25 días de vacaciones anuales retribuidas por año natural.",
+    "description": "'cualquiera de las partes podrá' changed to 'la empresa podrá'. Only the employer may terminate during probation, which changes who holds the right.",
+    "lang": "es"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 1,
+    "text": "Su relación laboral comenzará el 1 de abril de 2026. Trabajará 40 horas semanales en nuestra oficina de Dublín, con la obligación de teletrabajar al menos 2 días por semana.",
+    "description": "'la posibilidad de teletrabajar hasta 2 días' changed to 'la obligación de teletrabajar al menos 2 días'. An optional maximum becomes a mandatory minimum.",
+    "lang": "es"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "Percibirá un salario base neto anual de 95.000,00 EUR, pagadero en 12 mensualidades iguales. Su salario base se revisará una vez al año.",
+    "description": "'bruto' (gross) replaced with 'neto' (net). This is a different salary basis.",
+    "lang": "es"
+  },
+  {
+    "type": "addition",
+    "paragraph": 5,
+    "text": "Le rogamos que confirme su aceptación de esta oferta firmando y devolviendo la presente carta a más tardar el 2 de marzo de 2026. Si así lo solicita, dicho plazo se prorrogará automáticamente. Si no recibimos su aceptación firmada antes de dicha fecha, esta oferta quedará sin efecto.",
+    "description": "Added the sentence 'Si así lo solicita, dicho plazo se prorrogará automáticamente.' This automatic extension right is not in the original.",
+    "lang": "es"
+  },
+  {
+    "type": "omission",
+    "paragraph": 3,
+    "text": "Tendrá derecho a un bonus anual por desempeño de hasta el 15% de su salario base, en función de la consecución de objetivos individuales y de la empresa.",
+    "description": "Removed the sentence about the one-time signing bonus of 5.000,00 EUR.",
+    "lang": "es"
+  },
+  {
+    "type": "minor",
+    "paragraph": 0,
+    "text": "Estimada Elena Marquez: en nombre de Brightwater Data Solutions Ltd., tenemos el placer de ofrecerle el puesto de Ingeniera de Datos Sénior, bajo la dependencia de Thomas Reed, Responsable de la Plataforma de Datos. La presente oferta está fechada el 16 de febrero de 2026.",
+    "description": "'nos complace ofrecerle' replaced with the equivalent 'tenemos el placer de ofrecerle'. The meaning is identical, so this is not an error.",
+    "lang": "es"
+  },
+  {
+    "type": "minor",
+    "paragraph": 2,
+    "text": "Percibirá un salario base bruto anual de 95.000,00 EUR, pagadero en 12 mensualidades iguales. Su salario base se revisará anualmente.",
+    "description": "'una vez al año' replaced with the equivalent 'anualmente'. The meaning is identical, so this is not an error.",
+    "lang": "es"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 4,
+    "text": "Les 6 premiers mois de travail constitueront une période d'essai, pendant laquelle l'employeur pourra mettre fin au contrat moyennant un préavis écrit de 14 jours. À l'issue de la période d'essai, le délai de préavis sera de 30 jours. Vous aurez droit à 25 jours de congés payés annuels par année civile.",
+    "description": "'chacune des parties pourra' changed to 'l'employeur pourra'. Only the employer may terminate during probation, which changes who holds the right.",
+    "lang": "fr"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 1,
+    "text": "Votre contrat de travail prendra effet le 1 avril 2026. Vous travaillerez 40 heures par semaine dans nos bureaux de Dublin, avec l'obligation de télétravailler au moins 2 jours par semaine.",
+    "description": "'la possibilité de télétravailler jusqu'à 2 jours' changed to 'l'obligation de télétravailler au moins 2 jours'. An optional maximum becomes a mandatory minimum.",
+    "lang": "fr"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "Vous percevrez un salaire de base annuel net de 95 000,00 EUR, payable en 12 mensualités égales. Votre salaire de base fera l'objet d'une révision une fois par an.",
+    "description": "'brut' (gross) replaced with 'net'. This is a different salary basis.",
+    "lang": "fr"
+  },
+  {
+    "type": "addition",
+    "paragraph": 5,
+    "text": "Nous vous prions de confirmer votre acceptation de cette offre en signant et en nous retournant la présente lettre au plus tard le 2 mars 2026. Sur simple demande de votre part, ce délai sera prolongé de plein droit. Si nous ne recevons pas votre acceptation signée à cette date, la présente offre deviendra caduque.",
+    "description": "Added the sentence 'Sur simple demande de votre part, ce délai sera prolongé de plein droit.' This automatic extension is not in the original.",
+    "lang": "fr"
+  },
+  {
+    "type": "omission",
+    "paragraph": 3,
+    "text": "Vous serez éligible à une prime annuelle de performance pouvant atteindre 15% de votre salaire de base, en fonction de l'atteinte d'objectifs individuels et de l'entreprise.",
+    "description": "Removed the sentence about the one-time welcome bonus of 5 000,00 EUR.",
+    "lang": "fr"
+  },
+  {
+    "type": "minor",
+    "paragraph": 0,
+    "text": "Chère Elena Marquez, au nom de Brightwater Data Solutions Ltd., nous sommes heureux de vous proposer le poste d'Ingénieure Data Senior, sous la responsabilité de Thomas Reed, Responsable de la Plateforme de Données. La présente offre est datée du 16 février 2026.",
+    "description": "'nous avons le plaisir de' replaced with the equivalent 'nous sommes heureux de'. The meaning is identical, so this is not an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "minor",
+    "paragraph": 2,
+    "text": "Vous percevrez un salaire de base annuel brut de 95 000,00 EUR, payable en 12 mensualités égales. Votre salaire de base sera révisé une fois par an.",
+    "description": "'fera l'objet d'une révision' replaced with the equivalent 'sera révisé'. The meaning is identical, so this is not an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 4,
+    "text": "Die ersten 6 Monate des Arbeitsverhältnisses gelten als Probezeit, während der der Arbeitgeber das Arbeitsverhältnis mit einer schriftlichen Kündigungsfrist von 14 Tagen beenden kann. Nach Ablauf der Probezeit beträgt die Kündigungsfrist 30 Tage. Sie haben Anspruch auf 25 Tage bezahlten Jahresurlaub pro Kalenderjahr.",
+    "description": "'jede Partei' changed to 'der Arbeitgeber'. Only the employer may terminate during probation, which changes who holds the right.",
+    "lang": "de"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 1,
+    "text": "Ihr Arbeitsverhältnis beginnt am 1. April 2026. Sie arbeiten 40 Stunden pro Woche in unserem Büro in Dublin, mit der Verpflichtung, mindestens 2 Tage pro Woche mobil zu arbeiten.",
+    "description": "'Möglichkeit, bis zu 2 Tage' changed to 'Verpflichtung, mindestens 2 Tage'. An optional maximum becomes a mandatory minimum.",
+    "lang": "de"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "Sie erhalten ein jährliches Nettogrundgehalt von 95.000,00 EUR, zahlbar in 12 gleichen Monatsraten. Ihr Grundgehalt wird einmal jährlich überprüft.",
+    "description": "'Bruttogrundgehalt' replaced with 'Nettogrundgehalt'. Net and gross salary are different bases.",
+    "lang": "de"
+  },
+  {
+    "type": "addition",
+    "paragraph": 5,
+    "text": "Bitte bestätigen Sie Ihre Annahme dieses Angebots, indem Sie dieses Schreiben unterzeichnet bis spätestens 2. März 2026 an uns zurücksenden. Auf Ihren Wunsch wird diese Frist automatisch verlängert. Sollte uns Ihre unterzeichnete Annahme bis zu diesem Datum nicht vorliegen, erlischt dieses Angebot.",
+    "description": "Added the sentence 'Auf Ihren Wunsch wird diese Frist automatisch verlängert.' This automatic extension right is not in the original.",
+    "lang": "de"
+  },
+  {
+    "type": "omission",
+    "paragraph": 3,
+    "text": "Sie haben Anspruch auf einen jährlichen Leistungsbonus von bis zu 15% Ihres Grundgehalts, abhängig von der Erreichung individueller und unternehmensbezogener Ziele.",
+    "description": "Removed the sentence about the one-time signing bonus of 5.000,00 EUR.",
+    "lang": "de"
+  },
+  {
+    "type": "minor",
+    "paragraph": 0,
+    "text": "Sehr geehrte Elena Marquez, im Namen der Brightwater Data Solutions Ltd. freut es uns, Ihnen die Position als Senior Data Engineer anzubieten, wobei Sie an Thomas Reed, Leiter der Datenplattform, berichten. Dieses Angebot ist auf den 16. Februar 2026 datiert.",
+    "description": "'freuen wir uns' replaced with the equivalent 'freut es uns'. The meaning is identical, so this is not an error.",
+    "lang": "de"
+  },
+  {
+    "type": "minor",
+    "paragraph": 2,
+    "text": "Sie erhalten ein jährliches Bruttogrundgehalt von 95.000,00 EUR, zahlbar in 12 gleichen Monatsraten. Ihr Grundgehalt wird einmal im Jahr überprüft.",
+    "description": "'einmal jährlich' replaced with the equivalent 'einmal im Jahr'. The meaning is identical, so this is not an error.",
+    "lang": "de"
+  }
+]

@@ -1,0 +1,40 @@
+{
+  "id": "c06",
+  "domain": "contract",
+  "title": "Purchase Order PO-2026-0147 for Industrial Pumps",
+  "parties": ["Northbridge Water Solutions Ltd.", "Hartmann Fluidtechnik GmbH", "Claire Donovan"],
+  "paragraphs": {
+    "en": [
+      "This purchase order is issued on February 9, 2026 by Northbridge Water Solutions Ltd. (the \"Buyer\") to Hartmann Fluidtechnik GmbH (the \"Supplier\") for the supply of industrial pumps. The order is placed under reference PO-2026-0147 and is authorised by Claire Donovan, Procurement Manager of the Buyer.",
+      "The Supplier shall deliver 12 centrifugal pumps of model HCP-150 at a unit price of EUR 8,450.00 and 4 submersible pumps of model HSP-80 at a unit price of EUR 5,275.50. The total order value is EUR 122,502.00, excluding VAT.",
+      "All pumps shall be delivered to the Buyer's facility in Leeds no later than April 15, 2026. Delivery shall be made DAP (Incoterms 2020), and each pump shall be accompanied by its test certificate and operating manual.",
+      "If delivery is delayed, the Supplier shall pay a penalty of 0.5% of the total order value for each full week of delay, up to a maximum of 10%. The Buyer may cancel any undelivered portion of the order if the delay exceeds 30 days.",
+      "The Buyer shall pay 30% of the total order value as an advance payment within 14 days of the Supplier's written order confirmation. The remaining balance shall be paid within 45 days of receipt of the pumps and a correct invoice.",
+      "The Supplier warrants that the pumps are free from defects in material and workmanship for 24 months from the date of delivery. Any defective pump shall be repaired or replaced at the Supplier's expense within 10 working days of notification."
+    ],
+    "es": [
+      "La presente orden de compra es emitida el 9 de febrero de 2026 por Northbridge Water Solutions Ltd. (el «Comprador») a Hartmann Fluidtechnik GmbH (el «Proveedor») para el suministro de bombas industriales. La orden se realiza con la referencia PO-2026-0147 y está autorizada por Claire Donovan, Responsable de Compras del Comprador.",
+      "El Proveedor entregará 12 bombas centrífugas del modelo HCP-150 a un precio unitario de 8.450,00 EUR y 4 bombas sumergibles del modelo HSP-80 a un precio unitario de 5.275,50 EUR. El valor total del pedido asciende a 122.502,00 EUR, IVA excluido.",
+      "Todas las bombas se entregarán en las instalaciones del Comprador en Leeds a más tardar el 15 de abril de 2026. La entrega se realizará en condiciones DAP (Incoterms 2020), y cada bomba deberá ir acompañada de su certificado de ensayo y su manual de funcionamiento.",
+      "En caso de retraso en la entrega, el Proveedor abonará una penalización del 0,5 % del valor total del pedido por cada semana completa de retraso, hasta un máximo del 10 %. El Comprador podrá cancelar cualquier parte no entregada del pedido si el retraso supera los 30 días.",
+      "El Comprador abonará el 30 % del valor total del pedido en concepto de anticipo dentro de los 14 días siguientes a la confirmación escrita del pedido por parte del Proveedor. El saldo restante se abonará dentro de los 45 días siguientes a la recepción de las bombas y de una factura correcta.",
+      "El Proveedor garantiza que las bombas están libres de defectos de material y de fabricación durante 24 meses a partir de la fecha de entrega. Toda bomba defectuosa será reparada o sustituida a cargo del Proveedor en un plazo de 10 días hábiles a partir de la notificación."
+    ],
+    "fr": [
+      "Le présent bon de commande est émis le 9 février 2026 par Northbridge Water Solutions Ltd. (l'« Acheteur ») à Hartmann Fluidtechnik GmbH (le « Fournisseur ») pour la fourniture de pompes industrielles. La commande est passée sous la référence PO-2026-0147 et est autorisée par Claire Donovan, Responsable des achats de l'Acheteur.",
+      "Le Fournisseur livrera 12 pompes centrifuges du modèle HCP-150 au prix unitaire de 8 450,00 EUR et 4 pompes submersibles du modèle HSP-80 au prix unitaire de 5 275,50 EUR. La valeur totale de la commande s'élève à 122 502,00 EUR hors TVA.",
+      "Toutes les pompes seront livrées au site de l'Acheteur à Leeds au plus tard le 15 avril 2026. La livraison sera effectuée DAP (Incoterms 2020) et chaque pompe sera accompagnée de son certificat d'essai et de son manuel d'utilisation.",
+      "En cas de retard de livraison, le Fournisseur versera une pénalité de 0,5 % de la valeur totale de la commande pour chaque semaine complète de retard, dans la limite de 10 %. L'Acheteur pourra annuler toute partie non livrée de la commande si le retard dépasse 30 jours.",
+      "L'Acheteur versera 30 % de la valeur totale de la commande à titre d'acompte dans un délai de 14 jours à compter de la confirmation écrite de la commande par le Fournisseur. Le solde restant sera payé dans un délai de 45 jours à compter de la réception des pompes et d'une facture correcte.",
+      "Le Fournisseur garantit que les pompes sont exemptes de tout défaut de matière et de fabrication pendant 24 mois à compter de la date de livraison. Toute pompe défectueuse sera réparée ou remplacée aux frais du Fournisseur dans un délai de 10 jours ouvrés à compter de la notification."
+    ],
+    "de": [
+      "Diese Bestellung wird am 9. Februar 2026 von Northbridge Water Solutions Ltd. (der „Käufer“) an Hartmann Fluidtechnik GmbH (der „Lieferant“) über die Lieferung von Industriepumpen erteilt. Die Bestellung erfolgt unter der Referenz PO-2026-0147 und ist von Claire Donovan, Einkaufsleiterin des Käufers, genehmigt.",
+      "Der Lieferant liefert 12 Kreiselpumpen des Modells HCP-150 zu einem Stückpreis von 8.450,00 EUR sowie 4 Tauchpumpen des Modells HSP-80 zu einem Stückpreis von 5.275,50 EUR. Der Gesamtbestellwert beträgt 122.502,00 EUR ohne Mehrwertsteuer.",
+      "Sämtliche Pumpen sind spätestens bis zum 15. April 2026 an den Standort des Käufers in Leeds zu liefern. Die Lieferung erfolgt DAP (Incoterms 2020), und jeder Pumpe sind ihr Prüfzertifikat und ihre Betriebsanleitung beizufügen.",
+      "Im Falle eines Lieferverzugs zahlt der Lieferant eine Vertragsstrafe in Höhe von 0,5 % des Gesamtbestellwerts für jede volle Woche des Verzugs, höchstens jedoch 10 %. Der Käufer ist berechtigt, jeden noch nicht gelieferten Teil der Bestellung zu stornieren, wenn der Verzug 30 Tage überschreitet.",
+      "Der Käufer zahlt 30 % des Gesamtbestellwerts als Anzahlung innerhalb von 14 Tagen nach der schriftlichen Auftragsbestätigung des Lieferanten. Der verbleibende Restbetrag ist innerhalb von 45 Tagen nach Erhalt der Pumpen und einer ordnungsgemäßen Rechnung zu zahlen.",
+      "Der Lieferant gewährleistet, dass die Pumpen für einen Zeitraum von 24 Monaten ab dem Lieferdatum frei von Material- und Verarbeitungsfehlern sind. Jede mangelhafte Pumpe ist innerhalb von 10 Arbeitstagen nach Benachrichtigung auf Kosten des Lieferanten zu reparieren oder zu ersetzen."
+    ]
+  }
+}

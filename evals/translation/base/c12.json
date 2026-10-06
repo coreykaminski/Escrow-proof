@@ -1,0 +1,45 @@
+{
+  "id": "c12",
+  "domain": "contract",
+  "title": "Coffee Bean Supply Agreement",
+  "parties": [
+    "Altura Coffee Growers S.A.",
+    "Brightcup Roasters Ltd",
+    "Elena Vargas",
+    "Thomas Reid"
+  ],
+  "paragraphs": {
+    "en": [
+      "This Supply Agreement is entered into on February 2, 2026 between Altura Coffee Growers S.A., represented by Elena Vargas (the \"Supplier\"), and Brightcup Roasters Ltd, represented by Thomas Reid (the \"Buyer\").",
+      "The Supplier shall deliver green Arabica coffee beans at a price of USD 6.85 per kilogram, delivered to the Buyer's warehouse. The price shall remain fixed until the end of the initial term.",
+      "The Buyer undertakes to purchase a minimum volume of 12,000 kilograms per calendar quarter. If the Buyer purchases less than the minimum volume, it shall pay the Supplier a shortfall fee equal to 15% of the price of the undelivered quantity.",
+      "The Buyer shall pay each invoice within 30 days of the delivery date. Late payments shall bear interest at a rate of 1.5% per month.",
+      "Beans that do not meet the agreed moisture content of 12% or less may be rejected by the Buyer within 10 days of delivery. The Supplier shall replace rejected beans at its own cost.",
+      "This Agreement shall remain in force until January 31, 2028 and may be terminated by either party with 90 days' written notice in the event of a material breach."
+    ],
+    "es": [
+      "El presente Contrato de Suministro se celebra el 2 de febrero de 2026 entre Altura Coffee Growers S.A., representada por Elena Vargas (el «Proveedor»), y Brightcup Roasters Ltd, representada por Thomas Reid (el «Comprador»).",
+      "El Proveedor entregará granos de café verde arábica a un precio de 6,85 USD por kilogramo, con entrega en el almacén del Comprador. El precio permanecerá fijo hasta el final del plazo inicial.",
+      "El Comprador se compromete a adquirir un volumen mínimo de 12.000 kilogramos por trimestre natural. Si el Comprador adquiere una cantidad inferior al volumen mínimo, abonará al Proveedor una penalización por déficit equivalente al 15 % del precio de la cantidad no suministrada.",
+      "El Comprador pagará cada factura en un plazo de 30 días a partir de la fecha de entrega. Los pagos atrasados devengarán intereses a un tipo del 1,5 % mensual.",
+      "Los granos que no cumplan el contenido de humedad acordado del 12 % o inferior podrán ser rechazados por el Comprador en un plazo de 10 días desde la entrega. El Proveedor sustituirá los granos rechazados por su propia cuenta.",
+      "El presente Contrato permanecerá en vigor hasta el 31 de enero de 2028 y podrá ser resuelto por cualquiera de las partes mediante preaviso por escrito de 90 días en caso de incumplimiento grave."
+    ],
+    "fr": [
+      "Le présent Contrat d'approvisionnement est conclu le 2 février 2026 entre Altura Coffee Growers S.A., représentée par Elena Vargas (le « Fournisseur »), et Brightcup Roasters Ltd, représentée par Thomas Reid (l'« Acheteur »).",
+      "Le Fournisseur livrera des grains de café vert Arabica au prix de 6,85 USD par kilogramme, livrés à l'entrepôt de l'Acheteur. Le prix restera fixe jusqu'à la fin de la durée initiale.",
+      "L'Acheteur s'engage à acheter un volume minimum de 12 000 kilogrammes par trimestre civil. Si l'Acheteur achète une quantité inférieure au volume minimum, il versera au Fournisseur une indemnité de déficit égale à 15 % du prix de la quantité non livrée.",
+      "L'Acheteur paiera chaque facture dans un délai de 30 jours à compter de la date de livraison. Les retards de paiement porteront intérêt au taux de 1,5 % par mois.",
+      "Les grains ne respectant pas le taux d'humidité convenu de 12 % ou moins pourront être refusés par l'Acheteur dans un délai de 10 jours à compter de la livraison. Le Fournisseur remplacera les grains refusés à ses propres frais.",
+      "Le présent Contrat restera en vigueur jusqu'au 31 janvier 2028 et pourra être résilié par l'une ou l'autre des parties moyennant un préavis écrit de 90 jours en cas de manquement grave."
+    ],
+    "de": [
+      "Dieser Liefervertrag wird am 2. Februar 2026 zwischen Altura Coffee Growers S.A., vertreten durch Elena Vargas (der „Lieferant“), und Brightcup Roasters Ltd, vertreten durch Thomas Reid (der „Käufer“), geschlossen.",
+      "Der Lieferant liefert grüne Arabica-Kaffeebohnen zu einem Preis von 6,85 USD pro Kilogramm, geliefert an das Lager des Käufers. Der Preis bleibt bis zum Ende der anfänglichen Laufzeit unverändert.",
+      "Der Käufer verpflichtet sich, eine Mindestmenge von 12.000 Kilogramm pro Kalenderquartal abzunehmen. Nimmt der Käufer weniger als die Mindestmenge ab, zahlt er dem Lieferanten eine Fehlmengengebühr in Höhe von 15 % des Preises der nicht gelieferten Menge.",
+      "Der Käufer zahlt jede Rechnung innerhalb von 30 Tagen nach dem Lieferdatum. Verspätete Zahlungen werden mit 1,5 % pro Monat verzinst.",
+      "Bohnen, die den vereinbarten Feuchtigkeitsgehalt von 12 % oder weniger nicht einhalten, können vom Käufer innerhalb von 10 Tagen nach der Lieferung zurückgewiesen werden. Der Lieferant ersetzt zurückgewiesene Bohnen auf eigene Kosten.",
+      "Dieser Vertrag bleibt bis zum 31. Januar 2028 in Kraft und kann von jeder Partei im Falle einer wesentlichen Vertragsverletzung mit einer schriftlichen Frist von 90 Tagen gekündigt werden."
+    ]
+  }
+}

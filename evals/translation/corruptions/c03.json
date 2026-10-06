@@ -1,0 +1,198 @@
+[
+  {
+    "type": "meaning",
+    "paragraph": 5,
+    "text": "The tenant may sublet the premises or assign this Agreement without the prior written consent of the landlord. All notices under this Agreement shall be sent to the landlord's property manager, Margaret Ellison, or to such other person as the landlord designates in writing.",
+    "description": "The prohibition 'may not sublet ... without the prior written consent' became a permission 'may sublet ... without the prior written consent'. This removes the landlord's consent requirement and is a meaning error.",
+    "lang": "en"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 3,
+    "text": "Upon signing this Agreement, the tenant shall provide a security deposit of EUR 28,350.00, which the landlord shall return within 30 days after the end of the lease, less any amounts lawfully deducted for unpaid rent or damage including normal wear and tear.",
+    "description": "'damage beyond normal wear and tear' became 'damage including normal wear and tear'. This inverts the exception and lets the landlord deduct for ordinary wear. It is a meaning error.",
+    "lang": "en"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "The tenant shall pay a monthly service charge of EUR 9,450.00, payable in advance no later than the 5th day of each calendar month. On each anniversary of the commencement date, the service charge shall increase by 3.5% over the rent payable in the preceding year.",
+    "description": "'base rent' was rendered as 'service charge' in both places. A service charge is a different payment (operating costs), not the rent itself, so this is a terminology error.",
+    "lang": "en"
+  },
+  {
+    "type": "addition",
+    "paragraph": 4,
+    "text": "If any payment of rent is more than 10 days overdue, the tenant shall pay a late charge equal to 1.5% of the outstanding amount for each month or part thereof until payment in full. The landlord may waive the late charge for the first late payment in each lease year.",
+    "description": "A new sentence was added that lets the landlord waive the late charge for the first late payment in each lease year. This is not in the source, so it is an addition error.",
+    "lang": "en"
+  },
+  {
+    "type": "omission",
+    "paragraph": 1,
+    "text": "The lease shall have a term of 3 years, commencing on April 1, 2026 and ending on March 31, 2029.",
+    "description": "The clause 'unless terminated earlier in accordance with this Agreement' was removed. This drops the possibility of early termination, so it is an omission error.",
+    "lang": "en"
+  },
+  {
+    "type": "minor",
+    "paragraph": 0,
+    "text": "This Commercial Office Lease Agreement is entered into on February 12, 2026 between Harbourview Properties Ltd., as landlord, and Lindqvist Consulting GmbH, as tenant, for the rental of office premises with a floor area of 420 square metres on the 5th floor of the building at 18 Quayside Road.",
+    "description": "'for the lease of' became 'for the rental of'. This is a synonym with identical meaning and is not an error.",
+    "lang": "en"
+  },
+  {
+    "type": "minor",
+    "paragraph": 1,
+    "text": "The lease shall have a term of 3 years, beginning on April 1, 2026 and expiring on March 31, 2029, unless terminated earlier in accordance with this Agreement.",
+    "description": "'commencing'/'ending' became 'beginning'/'expiring'. These are synonyms with identical meaning, so this is not an error.",
+    "lang": "en"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 5,
+    "text": "El arrendatario podrá subarrendar el local o ceder el presente Contrato sin el consentimiento previo y por escrito del arrendador. Todas las notificaciones derivadas del presente Contrato se enviarán a la administradora del inmueble del arrendador, Margaret Ellison, o a cualquier otra persona que el arrendador designe por escrito.",
+    "description": "'no podrá subarrendar ... ni ceder' became 'podrá subarrendar ... o ceder'. The prohibition is now a permission without consent, which is a meaning error.",
+    "lang": "es"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 3,
+    "text": "A la firma del presente Contrato, el arrendatario constituirá una fianza de 28.350,00 EUR, que el arrendador devolverá dentro de los 30 días siguientes a la finalización del arrendamiento, previa deducción de las cantidades legítimamente retenidas por rentas impagadas o por daños, incluido el desgaste normal por uso.",
+    "description": "'daños que excedan el desgaste normal por uso' became 'daños, incluido el desgaste normal por uso'. This inverts the exception, so it is a meaning error.",
+    "lang": "es"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "El arrendatario abonará una cuota mensual de gastos comunes de 9.450,00 EUR, pagadera por anticipado a más tardar el día 5 de cada mes natural. En cada aniversario de la fecha de inicio, la cuota de gastos comunes se incrementará en un 3,5 % respecto de la renta pagadera en el año anterior.",
+    "description": "'renta base mensual' became 'cuota mensual de gastos comunes' (service charges). This is a different concept from base rent, so it is a terminology error.",
+    "lang": "es"
+  },
+  {
+    "type": "addition",
+    "paragraph": 4,
+    "text": "Si algún pago de la renta se retrasa más de 10 días, el arrendatario abonará un recargo por demora equivalente al 1,5 % del importe pendiente por cada mes o fracción hasta su pago íntegro. El arrendador podrá condonar el recargo por demora correspondiente al primer retraso de cada año de arrendamiento.",
+    "description": "A sentence not in the source was added: the landlord may waive the late charge for the first delay each lease year. This is an addition error.",
+    "lang": "es"
+  },
+  {
+    "type": "omission",
+    "paragraph": 1,
+    "text": "El arrendamiento tendrá una duración de 3 años, comenzando el 1 de abril de 2026 y finalizando el 31 de marzo de 2029.",
+    "description": "The clause 'salvo que se resuelva anticipadamente de conformidad con el presente Contrato' was removed. This drops early termination, so it is an omission error.",
+    "lang": "es"
+  },
+  {
+    "type": "minor",
+    "paragraph": 0,
+    "text": "El presente Contrato de Arrendamiento de Oficinas se suscribe el 12 de febrero de 2026 entre Harbourview Properties Ltd., en calidad de arrendador, y Lindqvist Consulting GmbH, en calidad de arrendatario, para el arrendamiento de un local de oficinas con una superficie de 420 metros cuadrados situado en la 5.ª planta del edificio sito en 18 Quayside Road.",
+    "description": "'se celebra' became 'se suscribe'. This is a synonym with the same meaning and is not an error.",
+    "lang": "es"
+  },
+  {
+    "type": "minor",
+    "paragraph": 1,
+    "text": "El arrendamiento tendrá una duración de 3 años, iniciándose el 1 de abril de 2026 y terminando el 31 de marzo de 2029, salvo que se resuelva anticipadamente de conformidad con el presente Contrato.",
+    "description": "'comenzando'/'finalizando' became 'iniciándose'/'terminando'. These are synonyms with identical meaning, so this is not an error.",
+    "lang": "es"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 5,
+    "text": "Le preneur peut sous-louer les locaux ou céder le présent Contrat sans le consentement préalable et écrit du bailleur. Toutes les notifications au titre du présent Contrat seront adressées à la gestionnaire immobilière du bailleur, Margaret Ellison, ou à toute autre personne désignée par écrit par le bailleur.",
+    "description": "'ne peut sous-louer ... ni céder' became 'peut sous-louer ... ou céder'. The negation is flipped and subletting no longer needs consent, which is a meaning error.",
+    "lang": "fr"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 3,
+    "text": "À la signature du présent Contrat, le preneur versera un dépôt de garantie de 28 350,00 EUR, que le bailleur restituera dans un délai de 30 jours suivant la fin du bail, déduction faite des sommes légitimement retenues au titre des loyers impayés ou des dommages, y compris l'usure normale.",
+    "description": "'dommages excédant l'usure normale' became 'dommages, y compris l'usure normale'. This inverts the exception, so it is a meaning error.",
+    "lang": "fr"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "Le preneur versera une provision pour charges mensuelle de 9 450,00 EUR, payable d'avance au plus tard le 5e jour de chaque mois civil. À chaque date anniversaire de la prise d'effet, la provision pour charges sera augmentée de 3,5 % par rapport au loyer dû au titre de l'année précédente.",
+    "description": "'loyer de base' became 'provision pour charges' (service charge advance). This refers to a different payment, so it is a terminology error.",
+    "lang": "fr"
+  },
+  {
+    "type": "addition",
+    "paragraph": 4,
+    "text": "Si un paiement de loyer accuse un retard de plus de 10 jours, le preneur sera redevable d'une pénalité de retard égale à 1,5 % du montant impayé pour chaque mois ou fraction de mois jusqu'au paiement intégral. Le bailleur pourra renoncer à la pénalité de retard pour le premier retard de chaque année de bail.",
+    "description": "A sentence was added that lets the landlord waive the penalty for the first delay each lease year. It is not in the source, so this is an addition error.",
+    "lang": "fr"
+  },
+  {
+    "type": "omission",
+    "paragraph": 1,
+    "text": "Le bail est consenti pour une durée de 3 ans, prenant effet le 1er avril 2026 et expirant le 31 mars 2029.",
+    "description": "The clause 'sauf résiliation anticipée conformément au présent Contrat' was removed. This is an omission error.",
+    "lang": "fr"
+  },
+  {
+    "type": "minor",
+    "paragraph": 0,
+    "text": "Le présent Contrat de bail de bureaux commerciaux est conclu le 12 février 2026 entre Harbourview Properties Ltd., en qualité de bailleur, et Lindqvist Consulting GmbH, en qualité de preneur, pour la location de locaux à usage de bureaux d'une surface de 420 mètres carrés se trouvant au 5e étage de l'immeuble sis 18 Quayside Road.",
+    "description": "'situés au' became 'se trouvant au'. This is a synonym with identical meaning and is not an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "minor",
+    "paragraph": 1,
+    "text": "Le bail est consenti pour une durée de 3 ans, commençant le 1er avril 2026 et se terminant le 31 mars 2029, sauf résiliation anticipée conformément au présent Contrat.",
+    "description": "'prenant effet'/'expirant' became 'commençant'/'se terminant'. The meaning is the same, so this is not an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 5,
+    "text": "Der Mieter darf die Räume auch ohne vorherige schriftliche Zustimmung des Vermieters untervermieten oder diesen Vertrag übertragen. Sämtliche Mitteilungen im Rahmen dieses Vertrags sind an die Hausverwalterin des Vermieters, Margaret Ellison, oder an eine andere vom Vermieter schriftlich benannte Person zu richten.",
+    "description": "'weder untervermieten noch ... übertragen' became 'auch ohne ... untervermieten oder ... übertragen'. The prohibition is now a permission, which is a meaning error.",
+    "lang": "de"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 3,
+    "text": "Bei Unterzeichnung dieses Vertrags leistet der Mieter eine Mietkaution von 28.350,00 EUR, die der Vermieter innerhalb von 30 Tagen nach Ende des Mietverhältnisses zurückzahlt, abzüglich etwaiger rechtmäßig einbehaltener Beträge für Mietrückstände oder Schäden einschließlich der normalen Abnutzung.",
+    "description": "'Schäden, die über die normale Abnutzung hinausgehen' became 'Schäden einschließlich der normalen Abnutzung'. This inverts the exception, so it is a meaning error.",
+    "lang": "de"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 2,
+    "text": "Der Mieter zahlt eine monatliche Nebenkostenvorauszahlung von 9.450,00 EUR, die im Voraus spätestens bis zum 5. Tag jedes Kalendermonats fällig ist. An jedem Jahrestag des Mietbeginns erhöht sich die Nebenkostenvorauszahlung um 3,5 % gegenüber der im Vorjahr zu zahlenden Miete.",
+    "description": "'Grundmiete' became 'Nebenkostenvorauszahlung' (advance payment of operating costs). This is a different payment from base rent, so it is a terminology error.",
+    "lang": "de"
+  },
+  {
+    "type": "addition",
+    "paragraph": 4,
+    "text": "Ist eine Mietzahlung mehr als 10 Tage überfällig, zahlt der Mieter einen Verspätungszuschlag in Höhe von 1,5 % des ausstehenden Betrags für jeden angefangenen Monat bis zur vollständigen Zahlung. Der Vermieter kann für den ersten Zahlungsverzug in jedem Mietjahr auf den Verspätungszuschlag verzichten.",
+    "description": "A sentence not in the source was added, allowing a waiver of the late charge for the first delay each lease year. This is an addition error.",
+    "lang": "de"
+  },
+  {
+    "type": "omission",
+    "paragraph": 1,
+    "text": "Das Mietverhältnis hat eine Laufzeit von 3 Jahren, beginnt am 1. April 2026 und endet am 31. März 2029.",
+    "description": "The clause 'sofern es nicht vorzeitig gemäß diesem Vertrag beendet wird' was removed. This drops early termination, so it is an omission error.",
+    "lang": "de"
+  },
+  {
+    "type": "minor",
+    "paragraph": 0,
+    "text": "Dieser Gewerbemietvertrag über Büroräume wird am 12. Februar 2026 zwischen Harbourview Properties Ltd. als Vermieter und Lindqvist Consulting GmbH als Mieter über die Anmietung von Büroflächen mit einer Fläche von 420 Quadratmetern im 5. Obergeschoss des Gebäudes 18 Quayside Road abgeschlossen.",
+    "description": "'geschlossen' became 'abgeschlossen'. This is a synonym with identical meaning and is not an error.",
+    "lang": "de"
+  },
+  {
+    "type": "minor",
+    "paragraph": 1,
+    "text": "Das Mietverhältnis hat eine Laufzeit von 3 Jahren, beginnt am 1. April 2026 und läuft am 31. März 2029 aus, sofern es nicht vorzeitig gemäß diesem Vertrag beendet wird.",
+    "description": "'endet am' became 'läuft am ... aus'. The meaning is the same, so this is not an error.",
+    "lang": "de"
+  }
+]

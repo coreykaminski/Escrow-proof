@@ -1,0 +1,45 @@
+{
+  "id": "c01",
+  "domain": "contract",
+  "title": "Mutual Non-Disclosure Agreement",
+  "parties": [
+    "Kestrel Robotics Ltd.",
+    "Harmon Precision Manufacturing GmbH",
+    "Elena Vasquez",
+    "Thomas Brandt"
+  ],
+  "paragraphs": {
+    "en": [
+      "This Mutual Non-Disclosure Agreement is entered into on February 9, 2026 between Kestrel Robotics Ltd. and Harmon Precision Manufacturing GmbH, each of which may disclose confidential information to the other in connection with the joint development of an automated assembly arm.",
+      "Confidential information includes technical drawings, source code, supplier pricing and production data, whether disclosed in writing, orally or electronically. Each party shall protect such information with at least the same degree of care it applies to its own confidential information and shall limit access to a maximum of 15 employees with a need to know.",
+      "The receiving party shall notify the disclosing party in writing within 5 business days of becoming aware of any unauthorised use or disclosure. Upon written request, all confidential materials shall be returned or destroyed within 30 days.",
+      "In the event of a breach, the breaching party shall pay liquidated damages of EUR 250,000.00, without prejudice to the right of the injured party to seek injunctive relief or to claim additional proven damages. Any late payment shall bear interest at a rate of 4.5% per annum.",
+      "This Agreement shall remain in force until February 8, 2029, and the confidentiality obligations shall survive its termination for a further period of 3 years.",
+      "Signed on behalf of Kestrel Robotics Ltd. by Elena Vasquez, Chief Executive Officer, and on behalf of Harmon Precision Manufacturing GmbH by Thomas Brandt, Managing Director."
+    ],
+    "es": [
+      "El presente Acuerdo Mutuo de Confidencialidad se celebra el 9 de febrero de 2026 entre Kestrel Robotics Ltd. y Harmon Precision Manufacturing GmbH, cada una de las cuales podrá revelar información confidencial a la otra en relación con el desarrollo conjunto de un brazo de montaje automatizado.",
+      "La información confidencial incluye planos técnicos, código fuente, precios de proveedores y datos de producción, ya se revelen por escrito, verbalmente o por medios electrónicos. Cada parte protegerá dicha información con, como mínimo, el mismo grado de diligencia que aplica a su propia información confidencial y limitará el acceso a un máximo de 15 empleados que necesiten conocerla.",
+      "La parte receptora notificará por escrito a la parte reveladora, en un plazo de 5 días hábiles desde que tenga conocimiento de ello, cualquier uso o revelación no autorizados. Previa solicitud por escrito, todos los materiales confidenciales deberán devolverse o destruirse en un plazo de 30 días.",
+      "En caso de incumplimiento, la parte infractora abonará una indemnización pactada de 250.000,00 EUR, sin perjuicio del derecho de la parte perjudicada a solicitar medidas cautelares o a reclamar daños adicionales acreditados. Todo pago tardío devengará intereses a un tipo del 4,5 % anual.",
+      "El presente Acuerdo permanecerá en vigor hasta el 8 de febrero de 2029, y las obligaciones de confidencialidad subsistirán tras su terminación durante un período adicional de 3 años.",
+      "Firmado en nombre de Kestrel Robotics Ltd. por Elena Vasquez, Consejera Delegada, y en nombre de Harmon Precision Manufacturing GmbH por Thomas Brandt, Director General."
+    ],
+    "fr": [
+      "Le présent Accord de confidentialité mutuel est conclu le 9 février 2026 entre Kestrel Robotics Ltd. et Harmon Precision Manufacturing GmbH, chacune d'elles pouvant divulguer des informations confidentielles à l'autre dans le cadre du développement conjoint d'un bras d'assemblage automatisé.",
+      "Les informations confidentielles comprennent les dessins techniques, le code source, les prix des fournisseurs et les données de production, qu'elles soient divulguées par écrit, oralement ou par voie électronique. Chaque partie protège ces informations avec au moins le même degré de soin que celui qu'elle applique à ses propres informations confidentielles et en limite l'accès à 15 salariés au maximum ayant besoin d'en connaître.",
+      "La partie destinataire informe par écrit la partie divulgatrice, dans un délai de 5 jours ouvrables à compter du moment où elle en a connaissance, de toute utilisation ou divulgation non autorisée. Sur demande écrite, tous les documents confidentiels sont restitués ou détruits dans un délai de 30 jours.",
+      "En cas de manquement, la partie défaillante verse des dommages-intérêts forfaitaires de 250 000,00 EUR, sans préjudice du droit de la partie lésée de solliciter des mesures conservatoires ou de réclamer des dommages supplémentaires prouvés. Tout retard de paiement porte intérêt au taux de 4,5 % par an.",
+      "Le présent Accord reste en vigueur jusqu'au 8 février 2029, et les obligations de confidentialité survivent à sa résiliation pendant une période supplémentaire de 3 ans.",
+      "Signé pour le compte de Kestrel Robotics Ltd. par Elena Vasquez, Directrice générale, et pour le compte de Harmon Precision Manufacturing GmbH par Thomas Brandt, Gérant."
+    ],
+    "de": [
+      "Diese gegenseitige Geheimhaltungsvereinbarung wird am 9. Februar 2026 zwischen Kestrel Robotics Ltd. und Harmon Precision Manufacturing GmbH geschlossen, die einander jeweils im Zusammenhang mit der gemeinsamen Entwicklung eines automatisierten Montagearms vertrauliche Informationen offenlegen können.",
+      "Vertrauliche Informationen umfassen technische Zeichnungen, Quellcode, Lieferantenpreise und Produktionsdaten, unabhängig davon, ob sie schriftlich, mündlich oder elektronisch offengelegt werden. Jede Partei hat diese Informationen mit mindestens derselben Sorgfalt zu schützen, die sie bei ihren eigenen vertraulichen Informationen anwendet, und den Zugang auf höchstens 15 Mitarbeiter zu beschränken, die davon Kenntnis haben müssen.",
+      "Die empfangende Partei hat die offenlegende Partei innerhalb von 5 Werktagen, nachdem sie davon Kenntnis erlangt hat, schriftlich über jede unbefugte Nutzung oder Offenlegung zu unterrichten. Auf schriftliches Verlangen sind sämtliche vertraulichen Unterlagen innerhalb von 30 Tagen zurückzugeben oder zu vernichten.",
+      "Im Falle eines Verstoßes zahlt die verletzende Partei einen pauschalierten Schadensersatz in Höhe von 250.000,00 EUR, unbeschadet des Rechts der geschädigten Partei, einstweilige Verfügungen zu beantragen oder weiteren nachgewiesenen Schaden geltend zu machen. Verspätete Zahlungen sind mit 4,5 % pro Jahr zu verzinsen.",
+      "Diese Vereinbarung bleibt bis zum 8. Februar 2029 in Kraft, und die Geheimhaltungspflichten bestehen nach ihrer Beendigung für einen weiteren Zeitraum von 3 Jahren fort.",
+      "Unterzeichnet im Namen von Kestrel Robotics Ltd. durch Elena Vasquez, Chief Executive Officer, und im Namen von Harmon Precision Manufacturing GmbH durch Thomas Brandt, Geschäftsführer."
+    ]
+  }
+}

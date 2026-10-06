@@ -20,7 +20,10 @@
     "db:generate": "npm run generate -w @proofdesk/db",
     "cli": "tsx apps/api/src/cli.ts",
     "eval:spec": "tsx evals/spec-engine/run.ts",
-    "eval:spec:score": "tsx evals/spec-engine/score.ts"
+    "eval:spec:score": "tsx evals/spec-engine/score.ts",
+    "golden:base": "tsx evals/translation/build-base.ts",
+    "golden:corrupt": "tsx evals/translation/build-corruptions.ts",
+    "golden:build": "tsx evals/translation/build-golden.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",

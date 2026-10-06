@@ -1,0 +1,198 @@
+[
+  {
+    "type": "meaning",
+    "paragraph": 4,
+    "text": "The Developer warrants that the delivered software will perform materially in accordance with the specifications for 90 days following final acceptance and shall correct any reported defects free of charge during that period. Upon full payment, all intellectual property rights in the custom code shall vest in the Developer.",
+    "description": "Recipient of the IP rights changed from 'the Client' to 'the Developer', reversing who owns the custom code after full payment.",
+    "lang": "en"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 5,
+    "text": "Only the Client may terminate this Agreement upon 60 days' written notice, in which case the Client shall pay for all work completed up to the termination date. All communications regarding this Agreement shall be addressed, on behalf of the Client, to its project director, Daniel Moreau.",
+    "description": "'Either party may terminate' changed to 'Only the Client may terminate', removing the Developer's termination right.",
+    "lang": "en"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 3,
+    "text": "The Client shall review each deliverable within 10 calendar days of receipt and shall either accept it in writing or provide a detailed list of defects. Invoices shall be paid within 30 days of the invoice date, and late payments shall bear interest at 1.5% per month.",
+    "description": "'business days' replaced with 'calendar days', which shortens the review period.",
+    "lang": "en"
+  },
+  {
+    "type": "addition",
+    "paragraph": 1,
+    "text": "The total fee for the services is EUR 84,000.00, excluding VAT, payable in 3 milestone instalments. No additional fees shall be charged for hosting or third-party licences. The first instalment of 30% (EUR 25,200.00) becomes due upon acceptance of the working prototype, which the Developer shall deliver no later than April 15, 2026.",
+    "description": "Added a sentence that is not in the original, stating that no additional fees will be charged for hosting or third-party licences.",
+    "lang": "en"
+  },
+  {
+    "type": "omission",
+    "paragraph": 3,
+    "text": "The Client shall review each deliverable within 10 business days of receipt and shall either accept it in writing or provide a detailed list of defects. Invoices shall be paid within 30 days of the invoice date.",
+    "description": "Removed the clause stating that late payments bear interest at 1.5% per month.",
+    "lang": "en"
+  },
+  {
+    "type": "minor",
+    "paragraph": 0,
+    "text": "This Software Development Services Agreement is entered into on March 3, 2026 between Northbridge Analytics Ltd. (the \"Client\") and Kestrel Code Labs GmbH (the \"Developer\"). Under this Agreement, the Developer shall design, build and deliver a web-based inventory management platform in conformity with the specifications attached hereto.",
+    "description": "'in accordance with' replaced with the synonym 'in conformity with'. The meaning is identical, so this is not an error.",
+    "lang": "en"
+  },
+  {
+    "type": "minor",
+    "paragraph": 2,
+    "text": "The second instalment of 40% (EUR 33,600.00) becomes due upon acceptance of the beta version, planned for delivery by July 31, 2026. The final instalment of 30% (EUR 25,200.00) becomes due upon acceptance of the production release and completion of the data migration.",
+    "description": "'scheduled for delivery' changed to 'planned for delivery'. This is a synonymous wording, so it is not an error.",
+    "lang": "en"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 1,
+    "text": "Los honorarios totales por los servicios ascienden a 84.000,00 EUR, IVA incluido, pagaderos en 3 plazos vinculados a hitos. El primer plazo del 30 % (25.200,00 EUR) será exigible tras la aceptación del prototipo funcional, que el Desarrollador deberá entregar a más tardar el 15 de abril de 2026.",
+    "description": "'IVA excluido' changed to 'IVA incluido', so VAT now falls within the fee rather than being added on top of it.",
+    "lang": "es"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 4,
+    "text": "El Desarrollador garantiza que el software entregado funcionará sustancialmente conforme a las especificaciones durante 90 días a partir de la aceptación final y corregirá, con cargo al Cliente, cualquier defecto notificado durante dicho período. Una vez efectuado el pago íntegro, todos los derechos de propiedad intelectual sobre el código personalizado corresponderán al Cliente.",
+    "description": "'corregirá gratuitamente' changed to 'corregirá, con cargo al Cliente', so the Client now pays for warranty fixes.",
+    "lang": "es"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 4,
+    "text": "El Desarrollador garantiza que el software entregado funcionará sustancialmente conforme a las especificaciones durante 90 días a partir de la entrega final y corregirá gratuitamente cualquier defecto notificado durante dicho período. Una vez efectuado el pago íntegro, todos los derechos de propiedad intelectual sobre el código personalizado corresponderán al Cliente.",
+    "description": "'aceptación final' (final acceptance) replaced with 'entrega final' (final delivery), which changes the event that starts the warranty period.",
+    "lang": "es"
+  },
+  {
+    "type": "addition",
+    "paragraph": 5,
+    "text": "Cualquiera de las partes podrá resolver el presente Contrato mediante preaviso por escrito de 60 días, en cuyo caso el Cliente abonará todos los trabajos realizados hasta la fecha de resolución. El Desarrollador no tendrá derecho a indemnización alguna por lucro cesante. Todas las comunicaciones relativas al presente Contrato se dirigirán, en nombre del Cliente, a su director de proyecto, Daniel Moreau.",
+    "description": "Added a sentence that is not in the original, excluding the Developer's right to compensation for lost profits.",
+    "lang": "es"
+  },
+  {
+    "type": "omission",
+    "paragraph": 2,
+    "text": "El segundo plazo del 40 % (33.600,00 EUR) será exigible tras la aceptación de la versión beta, cuya entrega está prevista a más tardar el 31 de julio de 2026. El último plazo del 30 % (25.200,00 EUR) será exigible tras la aceptación de la versión de producción.",
+    "description": "Removed the condition 'y la finalización de la migración de datos' for the final instalment.",
+    "lang": "es"
+  },
+  {
+    "type": "minor",
+    "paragraph": 0,
+    "text": "El presente Contrato de Servicios de Desarrollo de Software se celebra el 3 de marzo de 2026 entre Northbridge Analytics Ltd. (el «Cliente») y Kestrel Code Labs GmbH (el «Desarrollador»). En virtud del presente Contrato, el Desarrollador diseñará, desarrollará y entregará una plataforma web de gestión de inventario conforme a las especificaciones adjuntas al mismo.",
+    "description": "'construirá' replaced with the synonym 'desarrollará'. The meaning is the same, so this is not an error.",
+    "lang": "es"
+  },
+  {
+    "type": "minor",
+    "paragraph": 3,
+    "text": "El Cliente revisará cada entregable en un plazo de 10 días hábiles desde su recepción y lo aceptará por escrito o facilitará una lista detallada de defectos. Las facturas se abonarán dentro de los 30 días siguientes a la fecha de factura, y los pagos atrasados devengarán intereses del 1,5 % mensual.",
+    "description": "'en un plazo de 30 días desde' rephrased as 'dentro de los 30 días siguientes a'. The meaning is identical, so this is not an error.",
+    "lang": "es"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 3,
+    "text": "Le Client examinera chaque livrable dans un délai de 10 jours ouvrés à compter de sa réception et soit l'acceptera par écrit, soit fournira une liste détaillée des défauts. Les factures sont payables dans un délai de 30 jours à compter de leur réception, et tout retard de paiement portera intérêt au taux de 1,5 % par mois.",
+    "description": "The start of the payment period changed from the invoice date ('date d'émission') to the date the invoice is received ('réception').",
+    "lang": "fr"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 5,
+    "text": "Chaque partie peut résilier le présent Contrat moyennant un préavis écrit de 60 jours, auquel cas le Client paiera uniquement les travaux acceptés jusqu'à la date de résiliation. Toutes les communications relatives au présent Contrat seront adressées, pour le compte du Client, à son directeur de projet, Daniel Moreau.",
+    "description": "'l'ensemble des travaux réalisés' changed to 'uniquement les travaux acceptés', which narrows what the Client must pay for on termination.",
+    "lang": "fr"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 4,
+    "text": "Le Développeur garantit que le logiciel livré fonctionnera pour l'essentiel conformément aux spécifications pendant 90 jours à compter de la livraison définitive et corrigera gratuitement tout défaut signalé pendant cette période. Dès le paiement intégral, l'ensemble des droits de propriété intellectuelle sur le code développé sur mesure sera acquis au Client.",
+    "description": "'réception définitive' (final acceptance) replaced with 'livraison définitive' (final delivery), which changes the event that starts the warranty.",
+    "lang": "fr"
+  },
+  {
+    "type": "addition",
+    "paragraph": 2,
+    "text": "Le deuxième versement de 40 % (33 600,00 EUR) devient exigible à la réception de la version bêta, dont la livraison est prévue au plus tard le 31 juillet 2026. Le dernier versement de 30 % (25 200,00 EUR) devient exigible à la réception de la version de production et à l'achèvement de la migration des données. Aucun versement ne sera exigible tant que la documentation utilisateur n'aura pas été remise.",
+    "description": "Added a payment condition that is not in the original: delivery of the user documentation.",
+    "lang": "fr"
+  },
+  {
+    "type": "omission",
+    "paragraph": 4,
+    "text": "Le Développeur garantit que le logiciel livré fonctionnera pour l'essentiel conformément aux spécifications pendant 90 jours à compter de la réception définitive. Dès le paiement intégral, l'ensemble des droits de propriété intellectuelle sur le code développé sur mesure sera acquis au Client.",
+    "description": "Removed the obligation to correct reported defects free of charge during the warranty period.",
+    "lang": "fr"
+  },
+  {
+    "type": "minor",
+    "paragraph": 0,
+    "text": "Le présent Contrat de prestation de services de développement logiciel est conclu le 3 mars 2026 entre Northbridge Analytics Ltd. (le « Client ») et Kestrel Code Labs GmbH (le « Développeur »). En vertu du présent Contrat, le Développeur concevra, réalisera et livrera une plateforme web de gestion des stocks conformément aux spécifications annexées au présent Contrat.",
+    "description": "'jointes en annexe' rephrased as 'annexées au présent Contrat'. The meaning is equivalent, so this is not an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "minor",
+    "paragraph": 1,
+    "text": "Le prix total des prestations est de 84 000,00 EUR hors TVA, payable en 3 versements liés à des jalons. Le premier versement de 30 % (25 200,00 EUR) devient exigible à la réception du prototype fonctionnel, que le Développeur devra livrer au plus tard le 15 avril 2026.",
+    "description": "'s'élève à' replaced with 'est de'. This is a synonymous wording, so it is not an error.",
+    "lang": "fr"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 1,
+    "text": "Die Gesamtvergütung für die Leistungen beträgt 84.000,00 EUR einschließlich Umsatzsteuer und ist in 3 meilensteinbezogenen Raten zahlbar. Die erste Rate in Höhe von 30 % (25.200,00 EUR) wird mit Abnahme des funktionsfähigen Prototyps fällig, den der Entwickler spätestens am 15. April 2026 zu liefern hat.",
+    "description": "'zuzüglich Umsatzsteuer' changed to 'einschließlich Umsatzsteuer', so VAT is now included in the fee instead of being added to it.",
+    "lang": "de"
+  },
+  {
+    "type": "meaning",
+    "paragraph": 4,
+    "text": "Der Entwickler gewährleistet, dass die gelieferte Software für 90 Tage nach der Endabnahme im Wesentlichen den Spezifikationen entspricht, und wird gemeldete Mängel während dieses Zeitraums kostenlos beheben. Unabhängig von der Zahlung gehen sämtliche Rechte des geistigen Eigentums am individuell entwickelten Code auf den Auftraggeber über.",
+    "description": "'Mit vollständiger Zahlung' changed to 'Unabhängig von der Zahlung', which removes full payment as the condition for the IP transfer.",
+    "lang": "de"
+  },
+  {
+    "type": "terminology",
+    "paragraph": 3,
+    "text": "Der Auftraggeber prüft jedes Liefergegenstand innerhalb von 10 Kalendertagen nach Erhalt und nimmt ihn entweder schriftlich ab oder übermittelt eine detaillierte Mängelliste. Rechnungen sind innerhalb von 30 Tagen ab Rechnungsdatum zu bezahlen, und verspätete Zahlungen werden mit 1,5 % pro Monat verzinst.",
+    "description": "'Werktagen' (business days) replaced with 'Kalendertagen' (calendar days).",
+    "lang": "de"
+  },
+  {
+    "type": "addition",
+    "paragraph": 5,
+    "text": "Jede Partei kann diesen Vertrag mit einer Frist von 60 Tagen schriftlich kündigen; in diesem Fall vergütet der Auftraggeber alle bis zum Kündigungsdatum erbrachten Arbeiten. Der Entwickler hat zudem Anspruch auf Ersatz des entgangenen Gewinns. Sämtliche Mitteilungen im Zusammenhang mit diesem Vertrag sind auf Seiten des Auftraggebers an dessen Projektleiter, Daniel Moreau, zu richten.",
+    "description": "Added a sentence that is not in the original, giving the Developer a claim for lost profits on termination.",
+    "lang": "de"
+  },
+  {
+    "type": "omission",
+    "paragraph": 2,
+    "text": "Die zweite Rate in Höhe von 40 % (33.600,00 EUR) wird mit Abnahme der Beta-Version fällig, deren Lieferung bis spätestens 31. Juli 2026 vorgesehen ist. Die letzte Rate in Höhe von 30 % (25.200,00 EUR) wird mit Abnahme der Produktivversion fällig.",
+    "description": "Removed the condition 'und Abschluss der Datenmigration' for the final instalment.",
+    "lang": "de"
+  },
+  {
+    "type": "minor",
+    "paragraph": 0,
+    "text": "Dieser Vertrag über Softwareentwicklungsleistungen wird am 3. März 2026 zwischen Northbridge Analytics Ltd. (der „Auftraggeber“) und Kestrel Code Labs GmbH (der „Entwickler“) geschlossen. Nach diesem Vertrag wird der Entwickler eine webbasierte Plattform für die Bestandsverwaltung gemäß den beigefügten Spezifikationen entwerfen, erstellen und liefern.",
+    "description": "'konzipieren' replaced with the synonym 'entwerfen'. The meaning is the same, so this is not an error.",
+    "lang": "de"
+  },
+  {
+    "type": "minor",
+    "paragraph": 3,
+    "text": "Der Auftraggeber prüft jedes Liefergegenstand innerhalb von 10 Werktagen nach Erhalt und nimmt ihn entweder schriftlich ab oder übermittelt eine ausführliche Mängelliste. Rechnungen sind innerhalb von 30 Tagen ab Rechnungsdatum zu bezahlen, und verspätete Zahlungen werden mit 1,5 % pro Monat verzinst.",
+    "description": "'detaillierte' replaced with the synonym 'ausführliche'. The meaning is identical, so this is not an error.",
+    "lang": "de"
+  }
+]
