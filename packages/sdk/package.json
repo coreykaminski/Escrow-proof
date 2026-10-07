@@ -1,0 +1,10 @@
+{
+  "name": "@proofdesk/sdk",
+  "version": "0.1.0",
+  "description": "TypeScript client for the Proof Desk API: conditional payments with verified deliverables.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "license": "UNLICENSED"
+}

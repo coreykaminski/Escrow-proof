@@ -5,7 +5,7 @@ import { SpecDraftError, type SpecDrafter } from "@proofdesk/spec-engine";
 import { createAccountWithKey } from "./accounts.ts";
 import { loadEnv } from "./load-env.ts";
 import { drafterFromEnv, paymentsFromEnv } from "./models.ts";
-import { runDue } from "./services/payments.ts";
+import { tick } from "./services/scheduler.ts";
 
 const USAGE = `Usage: npm run cli -- <command> [options]
 
@@ -15,7 +15,8 @@ Commands:
                                            Create an account + API key (printed once)
   verify-ledger                            Verify the full ledger hash chain
   run-due                                  Scheduler tick: capture expiring holds, refund
-                                           missed deadlines, settle agreements now due
+                                           missed deadlines, settle due agreements, deliver
+                                           webhooks (run it from cron every minute)
   draft-spec --request <text> [--vertical translation|code|data|general]
                                            Draft criteria for a request (calls Claude)
 
@@ -82,7 +83,8 @@ async function run(
     }
 
     case "run-due": {
-      const result = await runDue(db, paymentsFromEnv(), new Date());
+      const payments = paymentsFromEnv();
+      const result = await tick(db, payments ? { payments } : {}, new Date());
       console.log(JSON.stringify(result, null, 2));
       return result.errors.length ? 2 : 0;
     }

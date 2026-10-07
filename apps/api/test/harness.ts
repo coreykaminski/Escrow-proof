@@ -13,6 +13,8 @@ export interface Harness {
   clock: { now: Date; advance(ms: number): void };
   keys: { platformA: string; platformB: string; ops: string; live: string };
   drafter: SpecDrafter | undefined;
+  /** In-process fetch against the app, for SDK and MCP tests. */
+  fetch: typeof fetch;
   call(
     key: string | null,
     method: string,
@@ -31,6 +33,7 @@ export async function createHarness(
     verifier?: TranslationVerifier;
     /** Build the gateway from the harness clock (e.g. a FakeGateway). */
     payments?: (now: () => Date) => PaymentsGateway;
+    fetch?: typeof fetch;
   } = {},
 ): Promise<Harness> {
   const handle = createDb("memory://");
@@ -57,6 +60,7 @@ export async function createHarness(
     drafter,
     ...(opts.verifier ? { verifier: opts.verifier } : {}),
     ...(opts.payments ? { payments: opts.payments(() => clock.now) } : {}),
+    ...(opts.fetch ? { fetch: opts.fetch } : {}),
   });
 
   return {
@@ -69,6 +73,8 @@ export async function createHarness(
       live: live.apiKey,
     },
     drafter,
+    fetch: ((input: string | URL | Request, init?: RequestInit) =>
+      app.request(String(input).replace(/^https?:\/\/[^/]+/, ""), init)) as typeof fetch,
     async call(key, method, path, body, headers = {}) {
       const res = await app.request(path, {
         method,

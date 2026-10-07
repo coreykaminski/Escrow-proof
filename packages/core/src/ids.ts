@@ -13,6 +13,8 @@ export const ID_PREFIXES = {
   verification: "ver",
   seller: "sel",
   hold: "hld",
+  webhookEndpoint: "we",
+  webhookAttempt: "wa",
 } as const;
 
 export type IdKind = keyof typeof ID_PREFIXES;

@@ -172,6 +172,48 @@ export const holds = pgTable("holds", {
   updatedAt: ts("updated_at").notNull(),
 });
 
+/**
+ * A platform's endpoint for outbound webhooks. Events are ledger entries for the platform's
+ * agreements, delivered in ledger order; `cursorSeq` is the last one acknowledged.
+ */
+export const webhookEndpoints = pgTable(
+  "webhook_endpoints",
+  {
+    id: text("id").primaryKey(),
+    accountId: text("account_id")
+      .notNull()
+      .references(() => accounts.id),
+    url: text("url").notNull(),
+    secret: text("secret").notNull(),
+    /** Event type prefixes to send (e.g. "agreement.", "hold.settled"); empty = all. */
+    eventTypes: text("event_types").array().$type<string[]>().notNull().default([]),
+    enabled: boolean("enabled").notNull().default(true),
+    cursorSeq: bigint("cursor_seq", { mode: "number" }).notNull(),
+    failureCount: integer("failure_count").notNull().default(0),
+    nextAttemptAt: ts("next_attempt_at"),
+    lastError: text("last_error"),
+    createdAt: ts("created_at").notNull(),
+    updatedAt: ts("updated_at").notNull(),
+  },
+  (t) => [index("webhook_endpoints_account_idx").on(t.accountId)],
+);
+
+/** Delivery attempts, for debugging a platform's endpoint. */
+export const webhookAttempts = pgTable(
+  "webhook_attempts",
+  {
+    id: text("id").primaryKey(),
+    endpointId: text("endpoint_id")
+      .notNull()
+      .references(() => webhookEndpoints.id),
+    eventSeq: bigint("event_seq", { mode: "number" }).notNull(),
+    statusCode: integer("status_code"),
+    error: text("error"),
+    createdAt: ts("created_at").notNull(),
+  },
+  (t) => [index("webhook_attempts_endpoint_idx").on(t.endpointId, t.createdAt)],
+);
+
 /** Processed webhook deliveries, so a replayed or duplicated event is handled once. */
 export const webhookEvents = pgTable("webhook_events", {
   id: text("id").primaryKey(),

@@ -1,0 +1,22 @@
+{
+  "name": "@proofdesk/mcp",
+  "version": "0.1.0",
+  "description": "MCP server: lets AI agents buy work through Proof Desk and pay only when it's done right.",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "proofdesk-mcp": "./src/main.ts"
+  },
+  "scripts": {
+    "start": "tsx src/main.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "@proofdesk/sdk": "*",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@proofdesk/spec-engine": "*",
+    "@proofdesk/verifier": "*"
+  }
+}

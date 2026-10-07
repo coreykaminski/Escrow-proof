@@ -4,11 +4,15 @@ Conditional payments + verification for agent purchases: money is held, the deli
 checked against the approved spec, then released or refunded. Every decision goes on a
 tamper-evident ledger. See [MASTER_PLAN.md](MASTER_PLAN.md) for the strategy and build plan.
 
+**New here? Start with the [quickstart](docs/quickstart.md)** (sandbox, ~15 minutes). The API
+reference is served at `/docs` (OpenAPI at `/openapi.json`).
+
 **Status:** Part 1 (Foundation) and Part 2 (Spec Engine) are built. Part 2's eval passed its gate:
 50/50 valid specs, 96.8% of criteria rated testable (AI-rated; see docs/daily/2026-10-06.md). Part 3 (translation verifier) is built
 and wired in; its accuracy gate needs the model-based eval run (see below). Part 4 (Stripe card
 rail) is built and tested against a Stripe simulator; its live test-mode check needs a Stripe test
-key (`npm run stripe:e2e`).
+key (`npm run stripe:e2e`). Part 5 (developer surface: webhooks, TypeScript SDK, MCP server,
+sandbox helpers, OpenAPI docs, quickstart) is built.
 
 ## Quickstart
 
@@ -36,7 +40,10 @@ Set `DATABASE_URL=postgres://…` to use a real server. The server and CLI read 
 | `packages/spec-engine` | Request → drafted criteria (Claude, structured output), spec assembly, AP2 mandate import. |
 | `packages/verifier` | Translation verifier: deterministic checks (values, structure, language, injection), MQM annotator + criterion judge, ensemble and decision policy. |
 | `packages/payments` | Card rail: Stripe gateway (Connect Express, manual-capture holds, transfers, webhooks), settlement planning and fees, an in-memory Stripe simulator for tests. |
-| `apps/api` | Hono HTTP API, API-key auth, idempotency, agreement service, CLI. |
+| `packages/sdk` | `@proofdesk/sdk`: typed TypeScript client (auto idempotency keys, retries) and webhook signature verification. No dependencies. |
+| `apps/api` | Hono HTTP API, API-key auth, idempotency, agreement service, outbound webhooks, OpenAPI, CLI. |
+| `apps/mcp` | MCP server so AI agents can create, fund and track protected purchases (`create_protected_purchase` …). |
+| `examples` | The quickstart as a runnable script. |
 | `evals/spec-engine` | 50 sample requests, eval runner and human-rating scorer for the Part 2 gate. |
 | `evals/translation` | Golden set (300 labelled translation items) builders, deterministic CI gate, model eval harness. |
 

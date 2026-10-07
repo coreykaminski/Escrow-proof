@@ -129,3 +129,17 @@ export function holdJson(row: typeof schema.holds.$inferSelect) {
     updated_at: iso(row.updatedAt),
   };
 }
+
+export function webhookEndpointJson(row: typeof schema.webhookEndpoints.$inferSelect) {
+  return {
+    id: row.id,
+    object: "webhook_endpoint",
+    url: row.url,
+    event_types: row.eventTypes,
+    enabled: row.enabled,
+    failure_count: row.failureCount,
+    last_error: row.lastError,
+    next_attempt_at: iso(row.nextAttemptAt),
+    created_at: iso(row.createdAt),
+  };
+}

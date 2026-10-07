@@ -3,7 +3,8 @@ import { Hono } from "hono";
 import type { AppDeps, AppEnv } from "../env.ts";
 import { agreementJson, verificationJson } from "../serialize.ts";
 import { applyEvent, getAgreement } from "../services/agreements.ts";
-import { runDue, settleAgreement } from "../services/payments.ts";
+import { settleAgreement } from "../services/payments.ts";
+import { tick } from "../services/scheduler.ts";
 import { listVerifications, verifyAgreement } from "../services/verification.ts";
 import { DecideBody, ResolveDisputeBody, SettleBody } from "./schemas.ts";
 
@@ -12,7 +13,7 @@ import { DecideBody, ResolveDisputeBody, SettleBody } from "./schemas.ts";
  * agreements: run the automated verifier, make human decisions on escalations and disputes,
  * and settle (by hand until the payment rails in Part 4).
  */
-export function opsRoutes({ db, now, verifier, payments }: AppDeps) {
+export function opsRoutes({ db, now, verifier, payments, fetch }: AppDeps) {
   const r = new Hono<AppEnv>();
   const all = {};
   const opsActor = (apiKeyId: string) => ({ role: "ops" as const, ref: apiKeyId });
@@ -96,9 +97,14 @@ export function opsRoutes({ db, now, verifier, payments }: AppDeps) {
     return c.json(agreementJson(row));
   });
 
-  /** Scheduler tick: capture holds about to lapse, refund missed deadlines, settle due agreements. */
+  /**
+   * Scheduler tick: capture holds about to lapse, refund missed deadlines, settle due agreements,
+   * deliver webhooks.
+   */
   r.post("/run-due", async (c) => {
-    return c.json(await runDue(db, payments, now()));
+    return c.json(
+      await tick(db, { ...(payments ? { payments } : {}), ...(fetch ? { fetch } : {}) }, now()),
+    );
   });
 
   r.get("/ledger/verify", async (c) => {
