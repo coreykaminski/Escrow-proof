@@ -56,13 +56,16 @@ await check("replaying the same idempotency key returns the same hold", async ()
   expect(a.id === b.id, `${a.id} != ${b.id}`);
 });
 
-await check("extended authorization can be requested", async () => {
-  const h = await hold("extended", true);
-  expect(h.status === "requires_capture", `status ${h.status}`);
-  console.log(
-    `    extended granted: ${h.extended}, capture_before: ${h.capture_before?.toISOString()}`,
-  );
-});
+await check(
+  "a long job's hold is placed even if extended authorization isn't available",
+  async () => {
+    const h = await hold("extended", true);
+    expect(h.status === "requires_capture", `status ${h.status}`);
+    console.log(
+      `    extended granted: ${h.extended} (if false, the scheduler captures before ${h.capture_before?.toISOString()})`,
+    );
+  },
+);
 
 await check("full capture, replay-safe", async () => {
   const h = await hold("capture");

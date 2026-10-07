@@ -56,8 +56,11 @@ export class StripeGateway implements PaymentsGateway {
     return { url: link.url };
   }
 
+  /** Set once Stripe says this account can't use extended authorization. */
+  private extendedUnavailable = false;
+
   async createHold(p: Parameters<PaymentsGateway["createHold"]>[0]) {
-    const pi = await this.call(() =>
+    const create = (extended: boolean, idempotencyKey: string) =>
       this.stripe.paymentIntents.create(
         {
           amount: p.amount,
@@ -67,7 +70,7 @@ export class StripeGateway implements PaymentsGateway {
           description: p.description,
           transfer_group: p.agreementId,
           metadata: { agreement_id: p.agreementId },
-          ...(p.extendedAuthorization
+          ...(extended
             ? {
                 payment_method_options: {
                   card: { request_extended_authorization: "if_available" },
@@ -77,10 +80,20 @@ export class StripeGateway implements PaymentsGateway {
           ...(p.paymentMethod ? { payment_method: p.paymentMethod, confirm: true } : {}),
           expand: ["latest_charge"],
         },
-        { idempotencyKey: p.idempotencyKey },
-      ),
-    );
-    return toHold(pi);
+        { idempotencyKey },
+      );
+
+    const wantExtended = p.extendedAuthorization && !this.extendedUnavailable;
+    try {
+      return toHold(await this.call(() => create(wantExtended, p.idempotencyKey)));
+    } catch (err) {
+      // Accounts without extended-authorization access get a 400 for the whole request, not a
+      // silently ignored option. Fall back to a standard hold; the scheduler captures holds
+      // before they lapse, so long jobs still settle correctly.
+      if (!wantExtended || !isExtendedAuthIneligible(err)) throw err;
+      this.extendedUnavailable = true;
+      return toHold(await this.call(() => create(false, `${p.idempotencyKey}:standard`)));
+    }
   }
 
   async getHold(id: string) {
@@ -172,6 +185,14 @@ export class StripeGateway implements PaymentsGateway {
       throw err;
     }
   }
+}
+
+function isExtendedAuthIneligible(err: unknown): boolean {
+  return (
+    err instanceof GatewayError &&
+    !err.retryable &&
+    /not eligible for the requested card features|extended_authorization/i.test(err.message)
+  );
 }
 
 function toSeller(a: Stripe.Account): SellerAccountState {
