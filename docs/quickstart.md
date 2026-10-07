@@ -94,4 +94,4 @@ The criteria drafting in `create_protected_purchase` and `sandbox_run_verificati
 
 - **Drafted criteria:** with `ANTHROPIC_API_KEY` set, use `pd.agreements.createFromRequest({ request, amount, delivery_due_at, … })`. Proof Desk writes checkable acceptance criteria and lists open questions for the buyer.
 - **Translation verification:** attach the source with `pd.agreements.replaceInputs(id, [{ name, media_type: "text/plain", content }])` before approval. After delivery, `pd.testHelpers.verify(id)` runs the real verifier.
-- **Real cards (Stripe test mode):** set `STRIPE_SECRET_KEY=sk_test_…`, onboard the seller with `pd.sellers.startOnboarding(seller_ref)`, then call `pd.agreements.createCardHold(id, { payment_method: "pm_card_visa" })`.
+- **Real cards (Stripe test mode):** set `STRIPE_SECRET_KEY=sk_test_…`, onboard the seller with `pd.sellers.startOnboarding(seller_ref, { email, country: "us" })` (they finish on Stripe's hosted page), then call `pd.agreements.createCardHold(id, { payment_method: "pm_card_visa" })`.

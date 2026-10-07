@@ -26,12 +26,33 @@ export class StripeGateway implements PaymentsGateway {
     this.stripe = opts.stripe ?? new Stripe(opts.secretKey);
   }
 
-  async createSellerAccount(p: { sellerRef: string; idempotencyKey: string }) {
+  /**
+   * Sellers are Accounts v2 with Stripe-hosted onboarding (Express dashboard). Stripe no longer
+   * allows creating v1 accounts on new Connect platforms. Payouts need the recipient
+   * `stripe_transfers` capability; for US sellers Stripe also requires `card_payments`.
+   */
+  async createSellerAccount(p: {
+    sellerRef: string;
+    country: string;
+    email: string;
+    idempotencyKey: string;
+  }) {
     const account = await this.call(() =>
-      this.stripe.accounts.create(
+      this.stripe.v2.core.accounts.create(
         {
-          type: "express",
-          capabilities: { transfers: { requested: true } },
+          dashboard: "express",
+          contact_email: p.email,
+          identity: { country: p.country.toLowerCase() },
+          defaults: {
+            responsibilities: { fees_collector: "application", losses_collector: "application" },
+          },
+          configuration: {
+            merchant: { capabilities: { card_payments: { requested: true } } },
+            recipient: {
+              capabilities: { stripe_balance: { stripe_transfers: { requested: true } } },
+            },
+          },
+          include: [...SELLER_INCLUDE],
           metadata: { seller_ref: p.sellerRef },
         },
         { idempotencyKey: p.idempotencyKey },
@@ -41,16 +62,21 @@ export class StripeGateway implements PaymentsGateway {
   }
 
   async getSellerAccount(id: string) {
-    return toSeller(await this.call(() => this.stripe.accounts.retrieve(id)));
+    return toSeller(
+      await this.call(() =>
+        this.stripe.v2.core.accounts.retrieve(id, { include: [...SELLER_INCLUDE] }),
+      ),
+    );
   }
 
   async createOnboardingLink(p: { accountId: string; refreshUrl: string; returnUrl: string }) {
     const link = await this.call(() =>
-      this.stripe.accountLinks.create({
+      this.stripe.v2.core.accountLinks.create({
         account: p.accountId,
-        refresh_url: p.refreshUrl,
-        return_url: p.returnUrl,
-        type: "account_onboarding",
+        use_case: {
+          type: "account_onboarding",
+          account_onboarding: { refresh_url: p.refreshUrl, return_url: p.returnUrl },
+        },
       }),
     );
     return { url: link.url };
@@ -130,21 +156,37 @@ export class StripeGateway implements PaymentsGateway {
     return { id: refund.id };
   }
 
+  /**
+   * Pays the seller from a captured charge. The transfer has to be in the currency the charge
+   * settled in (a CAD platform settles USD charges in CAD), so the seller's share is converted
+   * at the exact rate Stripe applied to that charge.
+   */
   async transfer(p: Parameters<PaymentsGateway["transfer"]>[0]) {
+    const charge = await this.call(() =>
+      this.stripe.charges.retrieve(p.sourceCharge, { expand: ["balance_transaction"] }),
+    );
+    const bt = typeof charge.balance_transaction === "object" ? charge.balance_transaction : null;
+    let amount = p.amount;
+    let currency = p.currency;
+    if (bt && bt.currency !== p.currency.toLowerCase()) {
+      if (charge.amount_captured <= 0) throw new GatewayError("charge isn't captured", false);
+      amount = Math.floor((p.amount * bt.amount) / charge.amount_captured);
+      currency = bt.currency;
+    }
     const transfer = await this.call(() =>
       this.stripe.transfers.create(
         {
-          amount: p.amount,
-          currency: p.currency,
+          amount,
+          currency,
           destination: p.destination,
           transfer_group: p.agreementId,
           source_transaction: p.sourceCharge,
-          metadata: { agreement_id: p.agreementId },
+          metadata: { agreement_id: p.agreementId, charge_currency_amount: String(p.amount) },
         },
         { idempotencyKey: p.idempotencyKey },
       ),
     );
-    return { id: transfer.id };
+    return { id: transfer.id, amount: transfer.amount, currency: transfer.currency };
   }
 
   parseWebhook(rawBody: string, signature: string): GatewayEvent {
@@ -195,12 +237,18 @@ function isExtendedAuthIneligible(err: unknown): boolean {
   );
 }
 
-function toSeller(a: Stripe.Account): SellerAccountState {
+const SELLER_INCLUDE = ["configuration.recipient", "requirements"] as const;
+
+function toSeller(a: Stripe.V2.Core.Account): SellerAccountState {
+  const balance = a.configuration?.recipient?.capabilities?.stripe_balance;
+  const outstanding = (a.requirements?.entries ?? []).some((e) =>
+    ["currently_due", "past_due"].includes(e.minimum_deadline?.status ?? ""),
+  );
   return {
     id: a.id,
-    details_submitted: a.details_submitted ?? false,
-    transfers_active: a.capabilities?.transfers === "active",
-    payouts_enabled: a.payouts_enabled ?? false,
+    details_submitted: !outstanding,
+    transfers_active: balance?.stripe_transfers?.status === "active",
+    payouts_enabled: balance?.payouts?.status === "active",
   };
 }
 

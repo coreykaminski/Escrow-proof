@@ -90,8 +90,8 @@ All routes need `Authorization: Bearer pd_test_…`. POST/PUT accept an `Idempot
 | GET | `/v1/agreements/:id/verifications` | verifier reports |
 | GET | `/v1/agreements/:id/ledger` | |
 
-**Sellers:** `POST /v1/sellers/:seller_ref/onboarding` creates the seller's Stripe Connect
-Express account and returns a hosted onboarding link; `GET /v1/sellers/:seller_ref` shows whether
+**Sellers:** `POST /v1/sellers/:seller_ref/onboarding` `{email, country}` creates the seller's
+Stripe Connect account (Accounts v2, Express dashboard) and returns a hosted onboarding link; `GET /v1/sellers/:seller_ref` shows whether
 payouts are ready. **Webhooks:** `POST /webhooks/stripe` (signature-verified, processed once).
 
 Agreements include `spec_source` (manual, or drafted with model, prompt version, open questions
@@ -146,7 +146,8 @@ Authorizations last ~7 days (~30 with extended authorization, requested for long
 scheduler captures any hold within 24 h of lapsing before its agreement settles; a later refund
 then refunds the captured funds. Settlement checks eligibility before touching money and gives
 every Stripe call a stable idempotency key, so a retry after a crash finishes without repeating
-a capture or transfer. Open chargebacks block payout.
+a capture or transfer. Open chargebacks block payout. Payouts go out in the currency the charge
+settled in (e.g. CAD on a Canadian platform), converted at the rate Stripe applied to that charge.
 
 ### Lifecycle
 

@@ -59,7 +59,12 @@ describe("FakeGateway", () => {
 
   it("only transfers to onboarded sellers from captured charges", async () => {
     const gw = make();
-    const seller = await gw.createSellerAccount({ sellerRef: "s1", idempotencyKey: "acct:s1" });
+    const seller = await gw.createSellerAccount({
+      sellerRef: "s1",
+      country: "us",
+      email: "s1@example.com",
+      idempotencyKey: "acct:s1",
+    });
     const h = await hold(gw);
     const t = (key: string) =>
       gw.transfer({

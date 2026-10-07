@@ -197,7 +197,10 @@ export class ProofDesk {
 
   readonly sellers = {
     /** Create the seller's payout account (first call) and get a hosted onboarding link. */
-    startOnboarding: (sellerRef: string, p: { return_url?: string; refresh_url?: string } = {}) =>
+    startOnboarding: (
+      sellerRef: string,
+      p: { email: string; country?: string; return_url?: string; refresh_url?: string },
+    ) =>
       this.request<{ seller: Seller; onboarding_url: string }>(
         "POST",
         `/v1/sellers/${enc(sellerRef)}/onboarding`,

@@ -31,7 +31,9 @@ async function approved(
   opts: { onboard?: boolean; spec?: Record<string, unknown>; seller?: string } = {},
 ) {
   const seller = opts.seller ?? "agent_translator_7";
-  const onboarding = await h.call(A(), "POST", `/v1/sellers/${seller}/onboarding`, {});
+  const onboarding = await h.call(A(), "POST", `/v1/sellers/${seller}/onboarding`, {
+    email: "seller@example.com",
+  });
   expect(onboarding.status).toBe(201);
   if (opts.onboard !== false) gw.completeOnboarding(onboarding.body.seller.stripe_account_id);
   const agr = (
@@ -77,12 +79,16 @@ const ledgerTypes = async (id: string) =>
 describe("sellers", () => {
   it("creates one payout account per seller and reports onboarding status", async () => {
     await setup();
-    const first = await h.call(A(), "POST", "/v1/sellers/s1/onboarding", {});
+    const first = await h.call(A(), "POST", "/v1/sellers/s1/onboarding", {
+      email: "seller@example.com",
+    });
     expect(first.body).toMatchObject({
       seller: { seller_ref: "s1", payouts_ready: false },
       onboarding_url: expect.stringContaining(first.body.seller.stripe_account_id),
     });
-    const again = await h.call(A(), "POST", "/v1/sellers/s1/onboarding", {});
+    const again = await h.call(A(), "POST", "/v1/sellers/s1/onboarding", {
+      email: "seller@example.com",
+    });
     expect(again.body.seller.stripe_account_id).toBe(first.body.seller.stripe_account_id);
     gw.completeOnboarding(first.body.seller.stripe_account_id);
     expect((await h.call(A(), "GET", "/v1/sellers/s1")).body.payouts_ready).toBe(true);

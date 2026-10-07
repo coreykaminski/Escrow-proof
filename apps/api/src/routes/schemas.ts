@@ -110,6 +110,13 @@ export const CardHoldBody = z.object({
 });
 
 export const OnboardingBody = z.object({
+  /** Where Stripe reaches the seller about onboarding and payouts. */
+  email: z.email(),
+  /** The seller's country (ISO 3166-1 alpha-2). Stripe needs it before onboarding. */
+  country: z
+    .string()
+    .regex(/^[A-Za-z]{2}$/)
+    .default("us"),
   return_url: z.url().optional(),
   refresh_url: z.url().optional(),
 });

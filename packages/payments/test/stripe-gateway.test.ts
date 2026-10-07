@@ -80,3 +80,55 @@ describe("StripeGateway extended authorization", () => {
     );
   });
 });
+
+describe("StripeGateway transfers", () => {
+  function stripeWithCharge(bt: { currency: string; amount: number }, amountCaptured: number) {
+    const created: Record<string, unknown>[] = [];
+    const stripe = {
+      charges: {
+        retrieve: async () => ({
+          id: "ch_1",
+          amount_captured: amountCaptured,
+          balance_transaction: bt,
+        }),
+      },
+      transfers: {
+        create: async (params: Record<string, unknown>) => {
+          created.push(params);
+          return { id: "tr_1", amount: params.amount, currency: params.currency };
+        },
+      },
+    } as unknown as Stripe;
+    return { stripe, created };
+  }
+  const send = (gw: StripeGateway) =>
+    gw.transfer({
+      amount: 17_640,
+      currency: "usd",
+      destination: "acct_1",
+      agreementId: "agr_1",
+      sourceCharge: "ch_1",
+      idempotencyKey: "k",
+    });
+
+  it("converts the payout to the charge's settlement currency at the charge's own rate", async () => {
+    // $180.00 captured, settled as CA$245.70 on a Canadian platform.
+    const { stripe, created } = stripeWithCharge({ currency: "cad", amount: 24_570 }, 18_000);
+    const t = await send(new StripeGateway({ secretKey: "sk_test_x", stripe }));
+    expect(t).toEqual({ id: "tr_1", amount: 24_078, currency: "cad" });
+    expect(created[0]).toMatchObject({
+      amount: 24_078,
+      currency: "cad",
+      source_transaction: "ch_1",
+    });
+  });
+
+  it("sends the amount as-is when the settlement currency matches", async () => {
+    const { stripe } = stripeWithCharge({ currency: "usd", amount: 18_000 }, 18_000);
+    expect(await send(new StripeGateway({ secretKey: "sk_test_x", stripe }))).toEqual({
+      id: "tr_1",
+      amount: 17_640,
+      currency: "usd",
+    });
+  });
+});

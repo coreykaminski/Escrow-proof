@@ -16,12 +16,14 @@ export function sellerRoutes({ db, now, payments, publicUrl }: AppDeps) {
 
   /** Creates the seller's payout account if needed and returns a hosted onboarding link. */
   r.post("/:ref/onboarding", async (c) => {
-    const body = OnboardingBody.parse(await c.req.json().catch(() => ({})));
+    const body = OnboardingBody.parse(await c.req.json());
     const ref = c.req.param("ref");
     const base = publicUrl ?? "http://localhost:8787";
     const { seller, url } = await startOnboarding(db, gateway(), {
       accountId: c.get("auth").accountId,
       sellerRef: ref,
+      country: body.country,
+      email: body.email,
       returnUrl: body.return_url ?? `${base}/onboarding/done`,
       refreshUrl: body.refresh_url ?? `${base}/onboarding/refresh`,
       now: now(),

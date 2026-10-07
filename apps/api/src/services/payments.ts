@@ -46,12 +46,22 @@ export async function getSeller(db: Db, accountId: string, sellerRef: string) {
 export async function startOnboarding(
   db: Db,
   gw: PaymentsGateway,
-  p: { accountId: string; sellerRef: string; refreshUrl: string; returnUrl: string; now: Date },
+  p: {
+    accountId: string;
+    sellerRef: string;
+    country: string;
+    email: string;
+    refreshUrl: string;
+    returnUrl: string;
+    now: Date;
+  },
 ): Promise<{ seller: SellerRow; url: string }> {
   let seller = await getSeller(db, p.accountId, p.sellerRef);
   if (!seller) {
     const account = await gw.createSellerAccount({
       sellerRef: p.sellerRef,
+      country: p.country,
+      email: p.email,
       idempotencyKey: `seller:${p.accountId}:${p.sellerRef}`,
     });
     await db
@@ -431,6 +441,7 @@ export async function settleAgreement(
   }
 
   const done: Record<string, string> = {};
+  let paid: { amount: number; currency: string } | null = null;
   for (const step of plan.steps) {
     switch (step.op) {
       case "capture":
@@ -446,18 +457,20 @@ export async function settleAgreement(
           await gw.refund({ holdId: state.id, amount: step.amount, idempotencyKey: step.key })
         ).id;
         break;
-      case "transfer":
-        done.transfer = (
-          await gw.transfer({
-            amount: step.amount,
-            currency: agreement.currency,
-            destination: seller?.stripeAccountId ?? "",
-            agreementId: agreement.id,
-            sourceCharge: state.charge_id ?? "",
-            idempotencyKey: step.key,
-          })
-        ).id;
+      case "transfer": {
+        const t = await gw.transfer({
+          amount: step.amount,
+          currency: agreement.currency,
+          destination: seller?.stripeAccountId ?? "",
+          agreementId: agreement.id,
+          sourceCharge: state.charge_id ?? "",
+          idempotencyKey: step.key,
+        });
+        done.transfer = t.id;
+        // The seller is paid in the charge's settlement currency, which may differ.
+        paid = { amount: t.amount, currency: t.currency };
         break;
+      }
     }
   }
 
@@ -466,6 +479,7 @@ export async function settleAgreement(
     fee: plan.fee,
     seller_payout: plan.sellerPayout,
     buyer_refund: plan.buyerRefund,
+    ...(paid ? { seller_paid: paid } : {}),
     ...done,
   };
   return applyEvent(db, {

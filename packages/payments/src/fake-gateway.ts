@@ -58,7 +58,12 @@ export class FakeGateway implements PaymentsGateway {
     return result;
   }
 
-  async createSellerAccount(p: { sellerRef: string; idempotencyKey: string }) {
+  async createSellerAccount(p: {
+    sellerRef: string;
+    country: string;
+    email: string;
+    idempotencyKey: string;
+  }) {
     return this.once(p.idempotencyKey, ["account", p.sellerRef], () => {
       this.log.push(`account.create ${p.sellerRef}`);
       const account = {
@@ -237,7 +242,7 @@ export class FakeGateway implements PaymentsGateway {
         agreementId: p.agreementId,
       };
       this.transfers.push(t);
-      return { id: t.id };
+      return { id: t.id, amount: p.amount, currency: p.currency };
     });
   }
 

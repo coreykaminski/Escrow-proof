@@ -57,6 +57,10 @@ export interface PaymentsGateway {
 
   createSellerAccount(p: {
     sellerRef: string;
+    /** ISO 3166-1 alpha-2, e.g. "us"; Stripe needs it before onboarding. */
+    country: string;
+    /** Stripe requires a contact email for accounts that receive payouts. */
+    email: string;
     idempotencyKey: string;
   }): Promise<SellerAccountState>;
   getSellerAccount(id: string): Promise<SellerAccountState>;
@@ -93,7 +97,8 @@ export interface PaymentsGateway {
     agreementId: string;
     sourceCharge: string;
     idempotencyKey: string;
-  }): Promise<{ id: string }>;
+    /** What was actually sent: converted to the charge's settlement currency when it differs. */
+  }): Promise<{ id: string; amount: number; currency: string }>;
 
   /** Verify a webhook's signature and parse it; throws WebhookSignatureError if invalid. */
   parseWebhook(rawBody: string, signature: string): GatewayEvent;

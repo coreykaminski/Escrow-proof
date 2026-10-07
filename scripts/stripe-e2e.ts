@@ -108,12 +108,33 @@ if (destination) {
       idempotencyKey: `${run}:transfer`,
     });
     expect(t.id.startsWith("tr_"), t.id);
+    console.log(`    paid ${t.amount} ${t.currency} (charge was 18000 usd)`);
   });
 } else {
   console.log(
     "- transfer skipped (set STRIPE_E2E_DESTINATION to an onboarded test connected account)",
   );
 }
+
+await check("seller account (Accounts v2) and hosted onboarding link", async () => {
+  const seller = await gw.createSellerAccount({
+    sellerRef: `${run}_seller`,
+    country: "us",
+    email: "seller-e2e@example.com",
+    idempotencyKey: `${run}:seller`,
+  });
+  expect(seller.id.startsWith("acct_"), seller.id);
+  const link = await gw.createOnboardingLink({
+    accountId: seller.id,
+    refreshUrl: "https://example.com/refresh",
+    returnUrl: "https://example.com/done",
+  });
+  expect(link.url.startsWith("https://"), link.url);
+  const fresh = await gw.getSellerAccount(seller.id);
+  console.log(
+    `    ${seller.id}: onboarding pending (details_submitted=${fresh.details_submitted}, payouts ready=${fresh.transfers_active})`,
+  );
+});
 
 console.log(failures ? `\n${failures} check(s) failed` : "\nAll Stripe test-mode checks passed.");
 process.exitCode = failures ? 1 : 0;
