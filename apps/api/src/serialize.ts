@@ -96,3 +96,36 @@ export function verificationJson(row: typeof schema.verifications.$inferSelect) 
     created_at: iso(row.createdAt),
   };
 }
+
+export function sellerJson(row: typeof schema.sellerAccounts.$inferSelect) {
+  return {
+    id: row.id,
+    object: "seller",
+    seller_ref: row.sellerRef,
+    stripe_account_id: row.stripeAccountId,
+    details_submitted: row.detailsSubmitted,
+    payouts_ready: row.transfersActive,
+    payouts_enabled: row.payoutsEnabled,
+    created_at: iso(row.createdAt),
+    updated_at: iso(row.updatedAt),
+  };
+}
+
+export function holdJson(row: typeof schema.holds.$inferSelect) {
+  return {
+    id: row.id,
+    object: "hold",
+    agreement_id: row.agreementId,
+    rail: row.rail,
+    payment_intent_id: row.paymentIntentId,
+    status: row.status,
+    amount: { value: row.amount, currency: row.currency },
+    captured_amount: row.capturedAmount,
+    capture_before: iso(row.captureBefore),
+    extended_authorization: row.extended,
+    disputed: row.disputed,
+    settlement: row.settlement,
+    created_at: iso(row.createdAt),
+    updated_at: iso(row.updatedAt),
+  };
+}

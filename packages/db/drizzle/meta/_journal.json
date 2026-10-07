@@ -29,6 +29,13 @@
       "when": 1791317642150,
       "tag": "0003_inputs_verifications",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791391628647,
+      "tag": "0004_card_rail",
+      "breakpoints": true
     }
   ]
 }

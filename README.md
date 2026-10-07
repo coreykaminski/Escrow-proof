@@ -6,8 +6,9 @@ tamper-evident ledger. See [MASTER_PLAN.md](MASTER_PLAN.md) for the strategy and
 
 **Status:** Part 1 (Foundation) and Part 2 (Spec Engine) are built. Part 2's eval passed its gate:
 50/50 valid specs, 96.8% of criteria rated testable (AI-rated; see docs/daily/2026-10-06.md). Part 3 (translation verifier) is built
-and wired in; its accuracy gate needs the model-based eval run (see below). Only the `test`
-payment rail exists until Part 4.
+and wired in; its accuracy gate needs the model-based eval run (see below). Part 4 (Stripe card
+rail) is built and tested against a Stripe simulator; its live test-mode check needs a Stripe test
+key (`npm run stripe:e2e`).
 
 ## Quickstart
 
@@ -34,6 +35,7 @@ Set `DATABASE_URL=postgres://…` to use a real server. The server and CLI read 
 | `packages/db` | Drizzle schema, migrations (`drizzle/`), DB client (PGlite or Postgres), ledger append/verify. |
 | `packages/spec-engine` | Request → drafted criteria (Claude, structured output), spec assembly, AP2 mandate import. |
 | `packages/verifier` | Translation verifier: deterministic checks (values, structure, language, injection), MQM annotator + criterion judge, ensemble and decision policy. |
+| `packages/payments` | Card rail: Stripe gateway (Connect Express, manual-capture holds, transfers, webhooks), settlement planning and fees, an in-memory Stripe simulator for tests. |
 | `apps/api` | Hono HTTP API, API-key auth, idempotency, agreement service, CLI. |
 | `evals/spec-engine` | 50 sample requests, eval runner and human-rating scorer for the Part 2 gate. |
 | `evals/translation` | Golden set (300 labelled translation items) builders, deterministic CI gate, model eval harness. |
@@ -70,7 +72,9 @@ All routes need `Authorization: Bearer pd_test_…`. POST/PUT accept an `Idempot
 | PUT | `/v1/agreements/:id/spec` | replace spec (draft only) |
 | POST | `/v1/agreements/:id/approve-spec` `{spec_hash}` | buyer |
 | POST | `/v1/agreements/:id/cancel` `{actor, reason}` | buyer/seller |
-| POST | `/v1/agreements/:id/fund` `{rail:"test", hold_ref}` | buyer |
+| POST | `/v1/agreements/:id/card-hold` `{payment_method?}` | buyer: authorize the card (returns client_secret) |
+| GET | `/v1/agreements/:id/hold` | card hold status and settlement |
+| POST | `/v1/agreements/:id/fund` `{rail:"test", hold_ref}` | buyer (test rail) |
 | POST | `/v1/agreements/:id/deliveries` `{artifacts[]}` | seller |
 | GET | `/v1/agreements/:id/deliveries?include_content=true` | |
 | POST | `/v1/agreements/:id/disputes` `{opened_by, reason}` | losing party |
@@ -79,6 +83,10 @@ All routes need `Authorization: Bearer pd_test_…`. POST/PUT accept an `Idempot
 | GET | `/v1/agreements/:id/verifications` | verifier reports |
 | GET | `/v1/agreements/:id/ledger` | |
 
+**Sellers:** `POST /v1/sellers/:seller_ref/onboarding` creates the seller's Stripe Connect
+Express account and returns a hosted onboarding link; `GET /v1/sellers/:seller_ref` shows whether
+payouts are ready. **Webhooks:** `POST /webhooks/stripe` (signature-verified, processed once).
+
 Agreements include `spec_source` (manual, or drafted with model, prompt version, open questions
 and any AP2 mandate hash) and `spec_warnings` (advisory lint for vague or unverifiable criteria).
 Drafting errors: `422 spec_draft_refused`, `502 spec_draft_failed|spec_draft_invalid`,
@@ -86,7 +94,8 @@ Drafting errors: `422 spec_draft_refused`, `502 spec_draft_failed|spec_draft_inv
 
 **Ops** (scope `ops`, any agreement): `verify` (runs the automated verifier on the latest
 delivery, then decides or escalates), `start-verification`, `decide`, `miss-deadline`,
-`resolve-dispute`, `settle` under `/v1/ops/agreements/:id/…`, plus `GET /v1/ops/ledger/verify`.
+`resolve-dispute`, `settle` (card: moves the money) under `/v1/ops/agreements/:id/…`, plus
+`POST /v1/ops/run-due` (scheduler tick, also `npm run cli -- run-due`) and `GET /v1/ops/ledger/verify`.
 
 ### Spec Engine eval
 
@@ -114,6 +123,23 @@ npm run eval:translation                    # all 300; checks the MASTER_PLAN §
 
 The deterministic gate on the golden set runs with `npm test` (free). The full eval also runs from
 GitHub Actions → "Translation verifier eval" (needs the `ANTHROPIC_API_KEY` repo secret).
+
+### Card rail (Stripe)
+
+Proof Desk never holds funds itself. A card **authorization hold** (PaymentIntent, manual
+capture) stays on the buyer's card until the decision is final, i.e. after the appeal window:
+
+| Outcome | Money movement |
+|---|---|
+| release | capture the hold, transfer amount minus the 2% fee (min $0.50, cap $250) to the seller's connected account |
+| refund | cancel the hold: nothing is charged, no refund fee, no chargeback exposure |
+| partial | capture only the released share, transfer it minus the fee; the rest of the authorization lapses |
+
+Authorizations last ~7 days (~30 with extended authorization, requested for longer jobs). The
+scheduler captures any hold within 24 h of lapsing before its agreement settles; a later refund
+then refunds the captured funds. Settlement checks eligibility before touching money and gives
+every Stripe call a stable idempotency key, so a retry after a crash finishes without repeating
+a capture or transfer. Open chargebacks block payout.
 
 ### Lifecycle
 

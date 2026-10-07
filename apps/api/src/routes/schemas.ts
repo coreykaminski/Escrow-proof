@@ -98,7 +98,21 @@ export const DecideBody = z.object({
 
 export const ResolveDisputeBody = z.object({ outcome: OutcomeBody, reason });
 
-export const SettleBody = z.object({ settlement_ref: ref, force: z.boolean().default(false) });
+/** settlement_ref is required for the test rail; card settlements generate their own. */
+export const SettleBody = z.object({
+  settlement_ref: ref.optional(),
+  force: z.boolean().default(false),
+});
+
+export const CardHoldBody = z.object({
+  /** Confirm server-side with a saved/agent payment method (e.g. pm_card_visa in test mode). */
+  payment_method: z.string().min(1).max(255).optional(),
+});
+
+export const OnboardingBody = z.object({
+  return_url: z.url().optional(),
+  refresh_url: z.url().optional(),
+});
 
 export const ListQuery = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(20),

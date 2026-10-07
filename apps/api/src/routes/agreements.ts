@@ -6,6 +6,7 @@ import { ApiError } from "../errors.ts";
 import {
   agreementJson,
   deliveryJson,
+  holdJson,
   inputJson,
   ledgerEntryJson,
   verificationJson,
@@ -20,11 +21,13 @@ import {
   submitDelivery,
 } from "../services/agreements.ts";
 import { listInputs, replaceInputs } from "../services/inputs.ts";
+import { createCardHold, getHold } from "../services/payments.ts";
 import { draftAgreement, resolveMandateAmount } from "../services/spec-drafts.ts";
 import { listVerifications } from "../services/verification.ts";
 import {
   ApproveSpecBody,
   CancelBody,
+  CardHoldBody,
   CreateAgreementBody,
   DeliveryBody,
   DisputeBody,
@@ -41,7 +44,7 @@ import {
  * agreements; the actor role is fixed by the endpoint, or stated in the body where either
  * party could act.
  */
-export function agreementRoutes({ db, now, drafter }: AppDeps) {
+export function agreementRoutes({ db, now, drafter, payments }: AppDeps) {
   const r = new Hono<AppEnv>();
 
   r.post("/", async (c) => {
@@ -192,6 +195,40 @@ export function agreementRoutes({ db, now, drafter }: AppDeps) {
       },
     });
     return c.json(agreementJson(row));
+  });
+
+  /**
+   * Funds the agreement with a card authorization hold. Returns the client_secret for the buyer
+   * to confirm on the client; with payment_method it's confirmed immediately. The agreement
+   * becomes "funded" once the card is authorized (here or via the Stripe webhook).
+   */
+  r.post("/:id/card-hold", async (c) => {
+    if (!payments)
+      throw new ApiError(503, "payments_unavailable", "card payments aren't configured");
+    const body = CardHoldBody.parse(await c.req.json().catch(() => ({})));
+    const { hold, state, agreement } = await createCardHold(db, payments, {
+      agreementId: c.req.param("id"),
+      scope: { accountId: c.get("auth").accountId },
+      ...(body.payment_method ? { paymentMethod: body.payment_method } : {}),
+      now: now(),
+    });
+    return c.json(
+      {
+        hold: holdJson(hold),
+        payment_intent_status: state.status,
+        client_secret: state.client_secret,
+        agreement: agreementJson(agreement),
+      },
+      201,
+    );
+  });
+
+  r.get("/:id/hold", async (c) => {
+    const id = c.req.param("id");
+    await getAgreement(db, id, { accountId: c.get("auth").accountId });
+    const hold = await getHold(db, id);
+    if (!hold) throw new ApiError(404, "not_found", "this agreement has no card hold");
+    return c.json(holdJson(hold));
   });
 
   r.post("/:id/deliveries", async (c) => {

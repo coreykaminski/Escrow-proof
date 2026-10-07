@@ -11,6 +11,8 @@ export const ID_PREFIXES = {
   dispute: "dsp",
   input: "inp",
   verification: "ver",
+  seller: "sel",
+  hold: "hld",
 } as const;
 
 export type IdKind = keyof typeof ID_PREFIXES;

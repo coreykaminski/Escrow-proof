@@ -1,4 +1,5 @@
 import { TransitionError, type TransitionErrorCode } from "@proofdesk/core";
+import { GatewayError } from "@proofdesk/payments";
 import { MandateError, SpecDraftError, type SpecDraftErrorCode } from "@proofdesk/spec-engine";
 import { ModelCallError, VerificationInputError } from "@proofdesk/verifier";
 import type { Context } from "hono";
@@ -57,6 +58,17 @@ export function toApiError(err: unknown): ApiError {
           ? [503, "verifier_unavailable"]
           : [502, "verification_failed"];
     return new ApiError(status, code, err.message);
+  }
+  if (err instanceof GatewayError) {
+    return err.retryable
+      ? new ApiError(
+          503,
+          "payment_processor_unavailable",
+          "the card processor is unavailable; retry",
+        )
+      : new ApiError(502, "payment_processor_error", err.message, {
+          processor_code: err.code ?? null,
+        });
   }
   if (err instanceof MandateError) {
     return new ApiError(err.code === "mandate_expired" ? 409 : 400, err.code, err.message);

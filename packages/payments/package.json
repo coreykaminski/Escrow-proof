@@ -1,0 +1,12 @@
+{
+  "name": "@proofdesk/payments",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "stripe": "^23.0.0"
+  }
+}

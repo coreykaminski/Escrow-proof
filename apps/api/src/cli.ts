@@ -4,7 +4,8 @@ import { createDb, type DbHandle, verifyLedger } from "@proofdesk/db";
 import { SpecDraftError, type SpecDrafter } from "@proofdesk/spec-engine";
 import { createAccountWithKey } from "./accounts.ts";
 import { loadEnv } from "./load-env.ts";
-import { drafterFromEnv } from "./models.ts";
+import { drafterFromEnv, paymentsFromEnv } from "./models.ts";
+import { runDue } from "./services/payments.ts";
 
 const USAGE = `Usage: npm run cli -- <command> [options]
 
@@ -13,13 +14,16 @@ Commands:
   create-account --name <name> [--ops] [--live]
                                            Create an account + API key (printed once)
   verify-ledger                            Verify the full ledger hash chain
+  run-due                                  Scheduler tick: capture expiring holds, refund
+                                           missed deadlines, settle agreements now due
   draft-spec --request <text> [--vertical translation|code|data|general]
                                            Draft criteria for a request (calls Claude)
 
 Environment (also read from ./.env):
   DATABASE_URL        default "pglite:./.data/dev"
   ANTHROPIC_API_KEY   needed by draft-spec
-  SPEC_DRAFT_MODEL    default "claude-opus-5-5"`;
+  SPEC_DRAFT_MODEL    default "claude-opus-5-5"
+  STRIPE_SECRET_KEY   needed by run-due for card holds`;
 
 async function main() {
   loadEnv();
@@ -75,6 +79,12 @@ async function run(
       console.log(`API key:  ${result.apiKey}`);
       console.log("Store this key now; it can't be shown again.");
       return 0;
+    }
+
+    case "run-due": {
+      const result = await runDue(db, paymentsFromEnv(), new Date());
+      console.log(JSON.stringify(result, null, 2));
+      return result.errors.length ? 2 : 0;
     }
 
     case "verify-ledger": {

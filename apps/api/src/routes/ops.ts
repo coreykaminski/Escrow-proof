@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import type { AppDeps, AppEnv } from "../env.ts";
 import { agreementJson, verificationJson } from "../serialize.ts";
 import { applyEvent, getAgreement } from "../services/agreements.ts";
+import { runDue, settleAgreement } from "../services/payments.ts";
 import { listVerifications, verifyAgreement } from "../services/verification.ts";
 import { DecideBody, ResolveDisputeBody, SettleBody } from "./schemas.ts";
 
@@ -11,7 +12,7 @@ import { DecideBody, ResolveDisputeBody, SettleBody } from "./schemas.ts";
  * agreements: run the automated verifier, make human decisions on escalations and disputes,
  * and settle (by hand until the payment rails in Part 4).
  */
-export function opsRoutes({ db, now, verifier }: AppDeps) {
+export function opsRoutes({ db, now, verifier, payments }: AppDeps) {
   const r = new Hono<AppEnv>();
   const all = {};
   const opsActor = (apiKeyId: string) => ({ role: "ops" as const, ref: apiKeyId });
@@ -82,16 +83,22 @@ export function opsRoutes({ db, now, verifier }: AppDeps) {
     return c.json(agreementJson(row));
   });
 
+  /** Moves the money for a final decision (card: capture/cancel/refund + transfer), then settles. */
   r.post("/agreements/:id/settle", async (c) => {
     const body = SettleBody.parse(await c.req.json());
-    const row = await applyEvent(db, {
+    const row = await settleAgreement(db, payments, {
       agreementId: c.req.param("id"),
-      scope: all,
-      event: { type: "SETTLE", settlementRef: body.settlement_ref, force: body.force },
       actor: opsActor(c.get("auth").apiKeyId),
+      force: body.force,
+      ...(body.settlement_ref ? { settlementRef: body.settlement_ref } : {}),
       now: now(),
     });
     return c.json(agreementJson(row));
+  });
+
+  /** Scheduler tick: capture holds about to lapse, refund missed deadlines, settle due agreements. */
+  r.post("/run-due", async (c) => {
+    return c.json(await runDue(db, payments, now()));
   });
 
   r.get("/ledger/verify", async (c) => {

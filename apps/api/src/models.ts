@@ -1,3 +1,4 @@
+import { type PaymentsGateway, StripeGateway } from "@proofdesk/payments";
 import { ClaudeSpecDrafter, type SpecDrafter } from "@proofdesk/spec-engine";
 import { ClaudeCaller, verifyTranslation } from "@proofdesk/verifier";
 import type { TranslationVerifier } from "./services/verification.ts";
@@ -13,4 +14,13 @@ export function verifierFromEnv(env = process.env): TranslationVerifier | undefi
   if (!env.ANTHROPIC_API_KEY) return undefined;
   const caller = new ClaudeCaller();
   return (input) => verifyTranslation(input, { caller });
+}
+
+/** Stripe when STRIPE_SECRET_KEY is set (test keys for test-mode agreements). */
+export function paymentsFromEnv(env = process.env): PaymentsGateway | undefined {
+  if (!env.STRIPE_SECRET_KEY) return undefined;
+  return new StripeGateway({
+    secretKey: env.STRIPE_SECRET_KEY,
+    ...(env.STRIPE_WEBHOOK_SECRET ? { webhookSecret: env.STRIPE_WEBHOOK_SECRET } : {}),
+  });
 }

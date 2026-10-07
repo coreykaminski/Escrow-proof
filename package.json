@@ -24,7 +24,8 @@
     "golden:base": "tsx evals/translation/build-base.ts",
     "golden:corrupt": "tsx evals/translation/build-corruptions.ts",
     "golden:build": "tsx evals/translation/build-golden.ts",
-    "eval:translation": "tsx evals/translation/run.ts"
+    "eval:translation": "tsx evals/translation/run.ts",
+    "stripe:e2e": "tsx scripts/stripe-e2e.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",

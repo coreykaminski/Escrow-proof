@@ -10,6 +10,7 @@ import {
   real,
   text,
   timestamp,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 const ts = (name: string) => timestamp(name, { withTimezone: true, mode: "date" });
@@ -120,6 +121,64 @@ export const deliveries = pgTable(
   },
   (t) => [index("deliveries_agreement_idx").on(t.agreementId)],
 );
+
+/** A seller's Stripe Connect (Express) account, per platform account. */
+export const sellerAccounts = pgTable(
+  "seller_accounts",
+  {
+    id: text("id").primaryKey(),
+    accountId: text("account_id")
+      .notNull()
+      .references(() => accounts.id),
+    sellerRef: text("seller_ref").notNull(),
+    stripeAccountId: text("stripe_account_id").notNull().unique(),
+    detailsSubmitted: boolean("details_submitted").notNull().default(false),
+    transfersActive: boolean("transfers_active").notNull().default(false),
+    payoutsEnabled: boolean("payouts_enabled").notNull().default(false),
+    createdAt: ts("created_at").notNull(),
+    updatedAt: ts("updated_at").notNull(),
+  },
+  (t) => [uniqueIndex("seller_accounts_ref_idx").on(t.accountId, t.sellerRef)],
+);
+
+export type HoldStatus =
+  | "pending" // created, waiting for the buyer to confirm the card
+  | "authorized" // funds held on the card
+  | "captured" // captured to the platform balance (early, before the authorization lapsed)
+  | "settled" // final money movements done
+  | "canceled" // authorization released without settlement
+  | "expired"; // authorization lapsed before it could be captured
+
+/** A card hold backing an agreement (one per agreement). */
+export const holds = pgTable("holds", {
+  id: text("id").primaryKey(),
+  agreementId: text("agreement_id")
+    .notNull()
+    .unique()
+    .references(() => agreements.id),
+  rail: text("rail").$type<"card">().notNull(),
+  paymentIntentId: text("payment_intent_id").notNull().unique(),
+  status: text("status").$type<HoldStatus>().notNull(),
+  amount: bigint("amount", { mode: "number" }).notNull(),
+  currency: text("currency").notNull(),
+  chargeId: text("charge_id"),
+  captureBefore: ts("capture_before"),
+  extended: boolean("extended").notNull().default(false),
+  capturedAmount: bigint("captured_amount", { mode: "number" }).notNull().default(0),
+  /** Settlement result: what moved where. */
+  settlement: jsonb("settlement").$type<Record<string, unknown>>(),
+  disputed: boolean("disputed").notNull().default(false),
+  createdAt: ts("created_at").notNull(),
+  updatedAt: ts("updated_at").notNull(),
+});
+
+/** Processed webhook deliveries, so a replayed or duplicated event is handled once. */
+export const webhookEvents = pgTable("webhook_events", {
+  id: text("id").primaryKey(),
+  provider: text("provider").notNull(),
+  type: text("type").notNull(),
+  receivedAt: ts("received_at").notNull(),
+});
 
 /** Source material attached to an agreement; listed by hash in spec.inputs. */
 export const agreementInputs = pgTable(

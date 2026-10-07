@@ -1,4 +1,5 @@
 import { createDb, type DbHandle } from "@proofdesk/db";
+import type { PaymentsGateway } from "@proofdesk/payments";
 import { FakeSpecDrafter, type SpecDrafter } from "@proofdesk/spec-engine";
 import { createAccountWithKey } from "../src/accounts.ts";
 import { createApp } from "../src/app.ts";
@@ -25,7 +26,12 @@ export interface Harness {
 
 /** `drafter: undefined` simulates a server without an Anthropic key. */
 export async function createHarness(
-  opts: { drafter?: SpecDrafter | undefined; verifier?: TranslationVerifier } = {},
+  opts: {
+    drafter?: SpecDrafter | undefined;
+    verifier?: TranslationVerifier;
+    /** Build the gateway from the harness clock (e.g. a FakeGateway). */
+    payments?: (now: () => Date) => PaymentsGateway;
+  } = {},
 ): Promise<Harness> {
   const handle = createDb("memory://");
   await handle.migrate();
@@ -50,6 +56,7 @@ export async function createHarness(
     now: () => clock.now,
     drafter,
     ...(opts.verifier ? { verifier: opts.verifier } : {}),
+    ...(opts.payments ? { payments: opts.payments(() => clock.now) } : {}),
   });
 
   return {
