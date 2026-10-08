@@ -22,5 +22,6 @@ export function paymentsFromEnv(env = process.env): PaymentsGateway | undefined 
   return new StripeGateway({
     secretKey: env.STRIPE_SECRET_KEY,
     ...(env.STRIPE_WEBHOOK_SECRET ? { webhookSecret: env.STRIPE_WEBHOOK_SECRET } : {}),
+    extendedAuthorization: env.STRIPE_EXTENDED_AUTH === "on",
   });
 }

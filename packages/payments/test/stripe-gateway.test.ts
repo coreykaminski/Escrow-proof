@@ -55,9 +55,15 @@ const hold = (gw: StripeGateway, key: string) =>
   });
 
 describe("StripeGateway extended authorization", () => {
+  it("is off unless enabled, since ineligible accounts fail at confirmation", async () => {
+    const { stripe, calls } = scriptedStripe([pi]);
+    await hold(new StripeGateway({ secretKey: "sk_test_x", stripe }), "k");
+    expect(calls[0]?.params.payment_method_options).toBeUndefined();
+  });
+
   it("falls back to a standard hold when the account isn't eligible, then stops asking", async () => {
     const { stripe, calls } = scriptedStripe([ineligible(), pi, pi]);
-    const gw = new StripeGateway({ secretKey: "sk_test_x", stripe });
+    const gw = new StripeGateway({ secretKey: "sk_test_x", stripe, extendedAuthorization: true });
     const h = await hold(gw, "hold:agr_1");
     expect(h).toMatchObject({ id: "pi_1", status: "requires_capture", extended: false });
     expect(calls.map((c) => c.idempotencyKey)).toEqual(["hold:agr_1", "hold:agr_1:standard"]);

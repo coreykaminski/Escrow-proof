@@ -17,7 +17,18 @@ export class StripeGateway implements PaymentsGateway {
   private readonly stripe: Stripe;
 
   constructor(
-    private readonly opts: { secretKey: string; webhookSecret?: string; stripe?: Stripe },
+    private readonly opts: {
+      secretKey: string;
+      webhookSecret?: string;
+      stripe?: Stripe;
+      /**
+       * Request extended authorization (~30-day holds) for long jobs. Off by default: Stripe
+       * only offers it to eligible accounts, and for an ineligible one it fails the payment at
+       * *confirmation* (in the buyer's browser), not at creation. The scheduler captures holds
+       * before they lapse, so long jobs work either way.
+       */
+      extendedAuthorization?: boolean;
+    },
   ) {
     this.mode =
       opts.secretKey.startsWith("sk_live_") || opts.secretKey.startsWith("rk_live_")
@@ -109,7 +120,10 @@ export class StripeGateway implements PaymentsGateway {
         { idempotencyKey },
       );
 
-    const wantExtended = p.extendedAuthorization && !this.extendedUnavailable;
+    const wantExtended =
+      p.extendedAuthorization &&
+      this.opts.extendedAuthorization === true &&
+      !this.extendedUnavailable;
     try {
       return toHold(await this.call(() => create(wantExtended, p.idempotencyKey)));
     } catch (err) {
