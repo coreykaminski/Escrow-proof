@@ -489,3 +489,127 @@ export const PAY_JS = `(() => {
     }
   });
 })();`;
+
+/** Hosted USDC page: the buyer signs one gasless authorization in their wallet (or sends the calls). */
+export function OnchainPayPage(p: {
+  agreement: AgreementRow;
+  token: string;
+  job: {
+    status: string;
+    chainId: number;
+    network: string;
+    contract: string;
+    asset: string;
+    provider: string;
+    expiresAt: Date;
+    fundTx: string | null;
+  };
+  calls: { to: string; data: string; description: string }[];
+}) {
+  const a = p.agreement;
+  const awaiting = p.job.status === "awaiting_funding" && a.status === "spec_approved";
+  return (
+    <Page title="Fund in USDC">
+      <div class="panel" style="max-width:620px;margin:24px auto">
+        <h1>{money(a.amountValue, a.currency)}</h1>
+        <p class="sub">{a.spec.title}</p>
+        <p class="small">
+          The USDC is locked in a public job contract on {p.job.network}, not sent to Proof Desk or
+          the seller. It's paid to the seller only if the delivered work passes the agreed checks;
+          otherwise it comes back to you. If nobody decides by {when(p.job.expiresAt)}, you can
+          reclaim it from the contract yourself.
+        </p>
+        {awaiting ? (
+          <>
+            <div id="onchain" data-token={p.token} data-chain={String(p.job.chainId)} />
+            <button id="sign" class="primary" type="button">
+              Connect wallet and authorize (no gas)
+            </button>
+            <p id="message" class="small" />
+            <details style="margin-top:16px">
+              <summary class="small">Or send the transactions yourself</summary>
+              <ol class="small">
+                {p.calls.map((call) => (
+                  <li>
+                    {call.description}: to <span class="mono">{call.to}</span>
+                    <pre class="doc mono" style="max-height:120px">
+                      {call.data}
+                    </pre>
+                  </li>
+                ))}
+              </ol>
+              <p class="small">Then paste the second transaction's hash:</p>
+              <div class="row">
+                <input id="txhash" placeholder="0x…" style="flex:1" />
+                <button id="confirm" type="button">
+                  Confirm
+                </button>
+              </div>
+            </details>
+            <script src="/pay/assets/onchain.js" />
+          </>
+        ) : (
+          <p class="flash">
+            {p.job.status === "funded" || p.job.fundTx
+              ? "Funded. You can close this page."
+              : `This payment can't be completed here (status: ${a.status}).`}
+          </p>
+        )}
+        <dl class="kv" style="margin-top:16px">
+          <dt>Job contract</dt>
+          <dd class="mono">{p.job.contract}</dd>
+          <dt>Token</dt>
+          <dd class="mono">{p.job.asset}</dd>
+          <dt>Seller receives at</dt>
+          <dd class="mono">{p.job.provider}</dd>
+        </dl>
+      </div>
+    </Page>
+  );
+}
+
+/** Client script for the hosted USDC page: EIP-1193 wallet, EIP-712 signature, relay. */
+export const ONCHAIN_JS = `(() => {
+  const el = document.getElementById("onchain");
+  if (!el) return;
+  const base = "/pay/" + el.dataset.token;
+  const msg = document.getElementById("message");
+  const say = (t, bad) => { msg.textContent = t; msg.style.color = bad ? "var(--bad)" : "var(--ok)"; };
+  const post = async (path, body) => {
+    const res = await fetch(base + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error((json.error && json.error.message) || "request failed");
+    return json;
+  };
+  const sign = document.getElementById("sign");
+  sign.addEventListener("click", async () => {
+    if (!window.ethereum) return say("No browser wallet found. Use the manual option below.", true);
+    sign.disabled = true;
+    try {
+      const [from] = await window.ethereum.request({ method: "eth_requestAccounts" });
+      await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: "0x" + Number(el.dataset.chain).toString(16) }] }).catch(() => {});
+      const res = await fetch(base + "/onchain/typed-data?client=" + from);
+      const td = await res.json();
+      if (!res.ok) throw new Error((td.error && td.error.message) || "could not load the authorization");
+      say("Check your wallet to sign…");
+      const signature = await window.ethereum.request({ method: "eth_signTypedData_v4", params: [from, JSON.stringify(td)] });
+      say("Submitting…");
+      await post("/onchain/authorize", { client: from, valid_after: td.message.validAfter, valid_before: td.message.validBefore, signature });
+      location.reload();
+    } catch (e) {
+      say(e.message || String(e), true);
+      sign.disabled = false;
+    }
+  });
+  const confirm = document.getElementById("confirm");
+  confirm.addEventListener("click", async () => {
+    confirm.disabled = true;
+    try {
+      await post("/onchain/confirm", { tx_hash: document.getElementById("txhash").value.trim() });
+      location.reload();
+    } catch (e) {
+      say(e.message || String(e), true);
+      confirm.disabled = false;
+    }
+  });
+})();`;

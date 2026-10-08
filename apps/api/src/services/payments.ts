@@ -1,3 +1,4 @@
+import type { ChainGateway } from "@proofdesk/chain";
 import { type Actor, newId, TransitionError, transition } from "@proofdesk/core";
 import { appendLedgerEntry, type Db, type HoldStatus, schema, type Tx } from "@proofdesk/db";
 import {
@@ -18,6 +19,19 @@ import {
   type Scope,
   snapshotOf,
 } from "./agreements.ts";
+import {
+  chainUnavailable,
+  expiringOnchainJobs,
+  getOnchainJob,
+  settleOnchain,
+  syncOnchainJobs,
+} from "./onchain.ts";
+
+/** The money rails a deployment has configured. */
+export interface Rails {
+  payments?: PaymentsGateway | undefined;
+  chain?: ChainGateway | undefined;
+}
 
 export type HoldRow = typeof schema.holds.$inferSelect;
 export type SellerRow = typeof schema.sellerAccounts.$inferSelect;
@@ -140,6 +154,9 @@ export async function createCardHold(
       "livemode_mismatch",
       `a ${agreement.livemode ? "live" : "test"} agreement can't use the ${gw.mode} card processor`,
     );
+  }
+  if (await getOnchainJob(db, agreement.id)) {
+    throw new ApiError(409, "already_funding", "this agreement is being funded on-chain");
   }
   const existing = await getHold(db, agreement.id);
   if (existing) {
@@ -383,10 +400,20 @@ async function recordChargeback(db: Db, paymentIntentId: string, disputeId: stri
  */
 export async function settleAgreement(
   db: Db,
-  gw: PaymentsGateway | undefined,
+  rails: Rails,
   p: { agreementId: string; actor: Actor; force: boolean; settlementRef?: string; now: Date },
 ): Promise<AgreementRow> {
   const agreement = await getAgreement(db, p.agreementId, {});
+  if (agreement.holdRail === "onchain") {
+    if (!rails.chain) chainUnavailable();
+    return settleOnchain(db, rails.chain, {
+      agreement,
+      actor: p.actor,
+      force: p.force,
+      now: p.now,
+    });
+  }
+  const gw = rails.payments;
   if (agreement.holdRail !== "card") {
     if (!p.settlementRef) {
       throw new ApiError(400, "validation_error", "settlement_ref is required for the test rail");
@@ -566,16 +593,21 @@ export interface DueResult {
   captured_early: string[];
   deadlines_missed: string[];
   settled: string[];
+  /** Agreements whose on-chain job the buyer reclaimed after expiry. */
+  onchain_expired: string[];
   errors: { agreement_id: string; code: string; message: string }[];
 }
 
 /** One scheduler tick: run by cron (`npm run cli -- run-due`) or `POST /v1/ops/run-due`. */
-export async function runDue(
-  db: Db,
-  gw: PaymentsGateway | undefined,
-  now: Date,
-): Promise<DueResult> {
-  const result: DueResult = { captured_early: [], deadlines_missed: [], settled: [], errors: [] };
+export async function runDue(db: Db, rails: Rails, now: Date): Promise<DueResult> {
+  const gw = rails.payments;
+  const result: DueResult = {
+    captured_early: [],
+    deadlines_missed: [],
+    settled: [],
+    onchain_expired: [],
+    errors: [],
+  };
   const fail = (id: string, err: unknown) => {
     result.errors.push({
       agreement_id: id,
@@ -585,6 +617,21 @@ export async function runDue(
   };
 
   if (gw) result.captured_early = await captureExpiringHolds(db, gw, now);
+  // On-chain jobs can't be captured early; instead, settle before expiry (below) and flag
+  // undecided ones for ops. Jobs the buyer already reclaimed are recorded.
+  const expiringJobs = rails.chain ? await expiringOnchainJobs(db, now) : [];
+  const settleNow = new Set(
+    expiringJobs.filter((j) => j.status === "decided").map((j) => j.job.agreementId),
+  );
+  for (const j of expiringJobs) {
+    if (j.status === "decided") continue;
+    result.errors.push({
+      agreement_id: j.job.agreementId,
+      code: "onchain_expiry_near",
+      message: `the on-chain job expires at ${j.job.expiresAt.toISOString()} and the agreement is still ${j.status}; decide it before then or the buyer can reclaim the funds`,
+    });
+  }
+  if (rails.chain) result.onchain_expired = await syncOnchainJobs(db, rails.chain, now);
 
   const overdue = await db
     .select({ id: schema.agreements.id })
@@ -610,22 +657,18 @@ export async function runDue(
     .from(schema.agreements)
     .where(eq(schema.agreements.status, "decided"));
   for (const a of decided) {
+    const force = settleNow.has(a.id);
     try {
-      transition(
-        snapshotOf(a),
-        { type: "SETTLE", settlementRef: "pending", force: false },
-        SYSTEM,
-        now,
-      );
+      transition(snapshotOf(a), { type: "SETTLE", settlementRef: "pending", force }, SYSTEM, now);
     } catch {
       continue; // appeal window still open
     }
     try {
-      await settleAgreement(db, gw, {
+      await settleAgreement(db, rails, {
         agreementId: a.id,
         actor: SYSTEM,
-        force: false,
-        settlementRef: a.holdRail === "card" ? undefined : `auto:${a.id}`,
+        force,
+        settlementRef: a.holdRail === "test" || !a.holdRail ? `auto:${a.id}` : undefined,
         now,
       });
       result.settled.push(a.id);

@@ -25,7 +25,11 @@
     "golden:corrupt": "tsx evals/translation/build-corruptions.ts",
     "golden:build": "tsx evals/translation/build-golden.ts",
     "eval:translation": "tsx evals/translation/run.ts",
-    "stripe:e2e": "tsx scripts/stripe-e2e.ts"
+    "stripe:e2e": "tsx scripts/stripe-e2e.ts",
+    "contracts:build": "cd contracts && forge build && cd .. && tsx scripts/gen-chain-abi.ts && biome format --write packages/chain/src/abi.ts",
+    "contracts:test": "cd contracts && forge test",
+    "chain:deploy": "cd contracts && forge script script/Deploy.s.sol --rpc-url \"$CHAIN_RPC_URL\" --private-key \"$DEPLOYER_PRIVATE_KEY\" --broadcast",
+    "chain:e2e": "tsx scripts/chain-e2e.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",

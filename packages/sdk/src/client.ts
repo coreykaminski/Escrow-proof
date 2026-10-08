@@ -6,8 +6,11 @@ import type {
   Hold,
   LedgerEntry,
   List,
+  OnchainFunding,
+  OnchainJob,
   Outcome,
   Seller,
+  SellerWallet,
   SpecInput,
   Verification,
   WebhookEndpoint,
@@ -176,6 +179,48 @@ export class ProofDesk {
         agreement: Agreement;
       }>("POST", `/v1/agreements/${enc(id)}/card-hold`, p),
     retrieveHold: (id: string) => this.request<Hold>("GET", `/v1/agreements/${enc(id)}/hold`),
+    /**
+     * USDC funding: the job's fixed terms, the wallet calls to send, and (with `client`) the
+     * typed data the buyer signs for gasless funding.
+     */
+    createOnchainJob: (id: string, p: { client?: string } = {}) =>
+      this.request<OnchainFunding>("POST", `/v1/agreements/${enc(id)}/onchain-job`, p),
+    retrieveOnchainJob: (id: string) =>
+      this.request<OnchainJob>("GET", `/v1/agreements/${enc(id)}/onchain-job`),
+    /** The buyer sent createAndFund from their wallet; Proof Desk verifies it on-chain. */
+    confirmOnchainFunding: (id: string, txHash: string) =>
+      this.request<{ job: OnchainJob; agreement: Agreement }>(
+        "POST",
+        `/v1/agreements/${enc(id)}/onchain-job/confirm`,
+        { tx_hash: txHash },
+      ),
+    /** Gasless: relay the buyer's signature of `typed_data`. */
+    authorizeOnchainFunding: (
+      id: string,
+      p: { client: string; valid_after?: string; valid_before: string; signature: string },
+    ) =>
+      this.request<{ job: OnchainJob; agreement: Agreement }>(
+        "POST",
+        `/v1/agreements/${enc(id)}/onchain-job/authorization`,
+        p,
+      ),
+    /** A hosted page where the buyer pays by card, or in USDC (with x402 at `<url>/x402`). */
+    createPaymentLink: (
+      id: string,
+      p: { rail?: "card" | "onchain"; expires_in_days?: number } = {},
+    ) =>
+      this.request<{ url: string; expires_at: string }>(
+        "POST",
+        `/v1/agreements/${enc(id)}/payment-links`,
+        p,
+      ),
+    /** A public, read-only verdict report (never shows the documents). */
+    createReportLink: (id: string, p: { expires_in_days?: number } = {}) =>
+      this.request<{ url: string; expires_at: string }>(
+        "POST",
+        `/v1/agreements/${enc(id)}/report-links`,
+        p,
+      ),
     deliver: (id: string, artifacts: Artifact[]) =>
       this.request<{ delivery_id: string; manifest_hash: string; agreement: Agreement }>(
         "POST",
@@ -207,6 +252,11 @@ export class ProofDesk {
         p,
       ),
     retrieve: (sellerRef: string) => this.request<Seller>("GET", `/v1/sellers/${enc(sellerRef)}`),
+    /** Where the seller is paid in USDC on the stablecoin rail. */
+    setWallet: (sellerRef: string, address: string) =>
+      this.request<SellerWallet>("PUT", `/v1/sellers/${enc(sellerRef)}/wallet`, { address }),
+    retrieveWallet: (sellerRef: string) =>
+      this.request<SellerWallet>("GET", `/v1/sellers/${enc(sellerRef)}/wallet`),
   };
 
   readonly webhookEndpoints = {

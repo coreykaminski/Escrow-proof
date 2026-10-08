@@ -172,6 +172,63 @@ export const holds = pgTable("holds", {
   updatedAt: ts("updated_at").notNull(),
 });
 
+/** A seller's stablecoin payout address: the provider on on-chain jobs. */
+export const sellerWallets = pgTable(
+  "seller_wallets",
+  {
+    id: text("id").primaryKey(),
+    accountId: text("account_id")
+      .notNull()
+      .references(() => accounts.id),
+    sellerRef: text("seller_ref").notNull(),
+    /** EIP-55 checksummed. */
+    address: text("address").notNull(),
+    createdAt: ts("created_at").notNull(),
+    updatedAt: ts("updated_at").notNull(),
+  },
+  (t) => [uniqueIndex("seller_wallets_ref_idx").on(t.accountId, t.sellerRef)],
+);
+
+export type OnchainJobStatus =
+  | "awaiting_funding" // terms issued; the buyer hasn't funded yet
+  | "funded" // USDC locked in the job contract
+  | "settled" // the evaluator settled it (or it ended on-chain consistently with the decision)
+  | "expired"; // the job expired and the client reclaimed the funds on-chain
+
+/**
+ * An ERC-8183 job on the ProofDeskJobs contract backing an agreement (one per agreement). The
+ * terms are fixed when first issued so a buyer's signature stays valid.
+ */
+export const onchainJobs = pgTable(
+  "onchain_jobs",
+  {
+    id: text("id").primaryKey(),
+    agreementId: text("agreement_id")
+      .notNull()
+      .unique()
+      .references(() => agreements.id),
+    chainId: integer("chain_id").notNull(),
+    contract: text("contract").notNull(),
+    /** The contract's job id (uint256, as a decimal string); null until funded. */
+    jobId: text("job_id"),
+    client: text("client"),
+    provider: text("provider").notNull(),
+    evaluator: text("evaluator").notNull(),
+    description: text("description").notNull(),
+    /** Token base units (USDC: 6 decimals). */
+    budget: bigint("budget", { mode: "number" }).notNull(),
+    expiresAt: ts("expires_at").notNull(),
+    status: text("status").$type<OnchainJobStatus>().notNull(),
+    fundTx: text("fund_tx"),
+    settleTx: text("settle_tx"),
+    settlement: jsonb("settlement").$type<Record<string, unknown>>(),
+    createdAt: ts("created_at").notNull(),
+    updatedAt: ts("updated_at").notNull(),
+  },
+  // One on-chain job can back only one agreement.
+  (t) => [uniqueIndex("onchain_jobs_job_idx").on(t.chainId, t.contract, t.jobId)],
+);
+
 /**
  * A platform's endpoint for outbound webhooks. Events are ledger entries for the platform's
  * agreements, delivered in ledger order; `cursorSeq` is the last one acknowledged.

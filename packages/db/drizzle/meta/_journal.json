@@ -50,6 +50,13 @@
       "when": 1791472989527,
       "tag": "0006_dashboard",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791475695515,
+      "tag": "0007_onchain_rail",
+      "breakpoints": true
     }
   ]
 }

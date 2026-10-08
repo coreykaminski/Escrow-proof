@@ -18,7 +18,7 @@ export const SimulateDecisionBody = z.object({
  * Proof Desk ops: simulate the verifier's decision, run the real verifier, settle immediately.
  * Test-mode agreements only; live keys get 403.
  */
-export function testHelperRoutes({ db, now, verifier, payments }: AppDeps) {
+export function testHelperRoutes({ db, now, verifier, payments, chain }: AppDeps) {
   const r = new Hono<AppEnv>();
   const system = { role: "system" as const, ref: "sandbox" };
 
@@ -78,13 +78,17 @@ export function testHelperRoutes({ db, now, verifier, payments }: AppDeps) {
   /** Settles now, skipping the appeal window. */
   r.post("/agreements/:id/settle", async (c) => {
     const row = await ownTestAgreement(c.get("auth").accountId, c.req.param("id"));
-    const settled = await settleAgreement(db, payments, {
-      agreementId: row.id,
-      actor: system,
-      force: true,
-      settlementRef: `sandbox:${row.id}`,
-      now: now(),
-    });
+    const settled = await settleAgreement(
+      db,
+      { payments, chain },
+      {
+        agreementId: row.id,
+        actor: system,
+        force: true,
+        settlementRef: `sandbox:${row.id}`,
+        now: now(),
+      },
+    );
     return c.json(agreementJson(settled));
   });
 

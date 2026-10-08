@@ -9,6 +9,7 @@ import {
   holdJson,
   inputJson,
   ledgerEntryJson,
+  onchainJobJson,
   verificationJson,
 } from "../serialize.ts";
 import {
@@ -21,10 +22,18 @@ import {
   submitDelivery,
 } from "../services/agreements.ts";
 import { listInputs, replaceInputs } from "../services/inputs.ts";
+import {
+  chainUnavailable,
+  confirmOnchainFunding,
+  getOnchainJob,
+  prepareOnchainJob,
+  relayOnchainFunding,
+} from "../services/onchain.ts";
 import { createCardHold, getHold } from "../services/payments.ts";
 import { createShareLink } from "../services/share-links.ts";
 import { draftAgreement, resolveMandateAmount } from "../services/spec-drafts.ts";
 import { listVerifications } from "../services/verification.ts";
+import { fundingJson } from "../services/x402.ts";
 import {
   ApproveSpecBody,
   CancelBody,
@@ -38,6 +47,10 @@ import {
   InputsBody,
   LinkBody,
   ListQuery,
+  OnchainAuthorizationBody,
+  OnchainConfirmBody,
+  OnchainJobBody,
+  PaymentLinkBody,
   ReplaceSpecBody,
 } from "./schemas.ts";
 
@@ -47,7 +60,7 @@ import {
  * party could act.
  */
 export function agreementRoutes(deps: AppDeps) {
-  const { db, now, drafter, payments } = deps;
+  const { db, now, drafter, payments, chain } = deps;
   const r = new Hono<AppEnv>();
 
   r.post("/", async (c) => {
@@ -243,19 +256,31 @@ export function agreementRoutes(deps: AppDeps) {
   });
 
   /**
-   * A hosted page where the buyer enters their card (for agents and platforms that don't collect
-   * cards themselves). Creates the card hold if needed.
+   * A hosted page where the buyer pays: by card (for agents and platforms that don't collect
+   * cards themselves), or in USDC from a wallet, which also serves x402 at `<url>/x402`.
+   * Creates the card hold or issues the on-chain job terms if needed.
    */
   r.post("/:id/payment-links", async (c) => {
-    if (!payments)
-      throw new ApiError(503, "payments_unavailable", "card payments aren't configured");
-    const body = LinkBody.parse(await c.req.json().catch(() => ({})));
+    const body = PaymentLinkBody.parse(await c.req.json().catch(() => ({})));
     const auth = c.get("auth");
-    const { agreement } = await createCardHold(db, payments, {
-      agreementId: c.req.param("id"),
-      scope: { accountId: auth.accountId },
-      now: now(),
-    });
+    const scope = { accountId: auth.accountId };
+    let agreement: Awaited<ReturnType<typeof getAgreement>>;
+    if (body.rail === "onchain") {
+      if (!chain) chainUnavailable();
+      ({ agreement } = await prepareOnchainJob(db, chain, {
+        agreementId: c.req.param("id"),
+        scope,
+        now: now(),
+      }));
+    } else {
+      if (!payments)
+        throw new ApiError(503, "payments_unavailable", "card payments aren't configured");
+      ({ agreement } = await createCardHold(db, payments, {
+        agreementId: c.req.param("id"),
+        scope,
+        now: now(),
+      }));
+    }
     const { token, expiresAt } = await createShareLink(db, {
       kind: "pay",
       agreementId: agreement.id,
@@ -265,6 +290,60 @@ export function agreementRoutes(deps: AppDeps) {
     });
     const base = deps.publicUrl ?? new URL(c.req.url).origin;
     return c.json({ url: `${base}/pay/${token}`, expires_at: expiresAt.toISOString() }, 201);
+  });
+
+  /**
+   * Stablecoin funding: issues the job's fixed terms (provider = the seller's wallet, evaluator =
+   * Proof Desk, expiry, budget) and returns the wallet calls, plus typed data to sign when the
+   * buyer's address is given.
+   */
+  r.post("/:id/onchain-job", async (c) => {
+    if (!chain) chainUnavailable();
+    const body = OnchainJobBody.parse(await c.req.json().catch(() => ({})));
+    const f = await prepareOnchainJob(db, chain, {
+      agreementId: c.req.param("id"),
+      scope: { accountId: c.get("auth").accountId },
+      ...(body.client ? { client: body.client } : {}),
+      now: now(),
+    });
+    return c.json(fundingJson(f), 201);
+  });
+
+  r.get("/:id/onchain-job", async (c) => {
+    const id = c.req.param("id");
+    await getAgreement(db, id, { accountId: c.get("auth").accountId });
+    const row = await getOnchainJob(db, id);
+    if (!row) throw new ApiError(404, "not_found", "this agreement has no on-chain job");
+    return c.json(onchainJobJson(row));
+  });
+
+  /** The buyer funded from their wallet: verify the job on-chain and fund the agreement. */
+  r.post("/:id/onchain-job/confirm", async (c) => {
+    if (!chain) chainUnavailable();
+    const body = OnchainConfirmBody.parse(await c.req.json());
+    const { row, agreement } = await confirmOnchainFunding(db, chain, {
+      agreementId: c.req.param("id"),
+      scope: { accountId: c.get("auth").accountId },
+      txHash: body.tx_hash,
+      now: now(),
+    });
+    return c.json({ job: onchainJobJson(row), agreement: agreementJson(agreement) });
+  });
+
+  /** Gasless funding: relay the buyer's signed EIP-3009 authorization. */
+  r.post("/:id/onchain-job/authorization", async (c) => {
+    if (!chain) chainUnavailable();
+    const body = OnchainAuthorizationBody.parse(await c.req.json());
+    const { row, agreement } = await relayOnchainFunding(db, chain, {
+      agreementId: c.req.param("id"),
+      scope: { accountId: c.get("auth").accountId },
+      client: body.client,
+      validAfter: body.valid_after ?? 0n,
+      validBefore: body.valid_before,
+      signature: body.signature,
+      now: now(),
+    });
+    return c.json({ job: onchainJobJson(row), agreement: agreementJson(agreement) }, 201);
   });
 
   r.get("/:id/hold", async (c) => {

@@ -2,7 +2,7 @@ import { serve } from "@hono/node-server";
 import { createDb } from "@proofdesk/db";
 import { createApp } from "./app.ts";
 import { loadEnv } from "./load-env.ts";
-import { drafterFromEnv, paymentsFromEnv, verifierFromEnv } from "./models.ts";
+import { chainFromEnv, drafterFromEnv, paymentsFromEnv, verifierFromEnv } from "./models.ts";
 
 loadEnv();
 
@@ -18,12 +18,18 @@ if (!drafter) console.warn("ANTHROPIC_API_KEY not set: drafting and verification
 const payments = paymentsFromEnv();
 if (!payments)
   console.warn("STRIPE_SECRET_KEY not set: card funding and card settlement will return 503.");
+const chain = chainFromEnv();
+if (!chain)
+  console.warn(
+    "CHAIN_RPC_URL/JOBS_CONTRACT/EVALUATOR_PRIVATE_KEY not set: on-chain funding will return 503.",
+  );
 const app = createApp({
   db: handle.db,
   now: () => new Date(),
   drafter,
   verifier,
   ...(payments ? { payments } : {}),
+  ...(chain ? { chain } : {}),
   ...(process.env.PUBLIC_URL ? { publicUrl: process.env.PUBLIC_URL } : {}),
   ...(process.env.STRIPE_PUBLISHABLE_KEY
     ? { stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY }

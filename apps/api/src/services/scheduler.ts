@@ -1,6 +1,5 @@
 import type { Db } from "@proofdesk/db";
-import type { PaymentsGateway } from "@proofdesk/payments";
-import { type DueResult, runDue } from "./payments.ts";
+import { type DueResult, type Rails, runDue } from "./payments.ts";
 import { deliverWebhooks } from "./webhooks.ts";
 
 /**
@@ -9,10 +8,10 @@ import { deliverWebhooks } from "./webhooks.ts";
  */
 export async function tick(
   db: Db,
-  deps: { payments?: PaymentsGateway; fetch?: typeof fetch },
+  deps: Rails & { fetch?: typeof fetch },
   now: Date,
 ): Promise<DueResult & { webhooks: { delivered: number; failed: string[] } }> {
-  const due = await runDue(db, deps.payments, now);
+  const due = await runDue(db, deps, now);
   const webhooks = await deliverWebhooks(db, { now, ...(deps.fetch ? { fetch: deps.fetch } : {}) });
   return { ...due, webhooks };
 }

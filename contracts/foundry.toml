@@ -1,0 +1,24 @@
+[profile.default]
+src = "src"
+test = "test"
+script = "script"
+out = "out"
+libs = ["lib"]
+solc_version = "0.8.30"
+evm_version = "cancun"
+optimizer = true
+optimizer_runs = 10000
+bytecode_hash = "none"
+via_ir = true
+
+[fuzz]
+runs = 2000
+
+[invariant]
+runs = 256
+depth = 64
+fail_on_revert = false
+
+[profile.ci.invariant]
+runs = 512
+depth = 128

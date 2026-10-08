@@ -143,3 +143,42 @@ export function webhookEndpointJson(row: typeof schema.webhookEndpoints.$inferSe
     created_at: iso(row.createdAt),
   };
 }
+
+/** JSON can't carry bigints; on-chain amounts and ids go out as decimal strings. */
+export function jsonSafe<T>(value: T): unknown {
+  return JSON.parse(JSON.stringify(value, (_k, v) => (typeof v === "bigint" ? v.toString() : v)));
+}
+
+export function sellerWalletJson(row: typeof schema.sellerWallets.$inferSelect) {
+  return {
+    id: row.id,
+    object: "seller_wallet",
+    seller_ref: row.sellerRef,
+    address: row.address,
+    created_at: iso(row.createdAt),
+    updated_at: iso(row.updatedAt),
+  };
+}
+
+export function onchainJobJson(row: typeof schema.onchainJobs.$inferSelect) {
+  return {
+    id: row.id,
+    object: "onchain_job",
+    agreement_id: row.agreementId,
+    chain_id: row.chainId,
+    contract: row.contract,
+    job_id: row.jobId,
+    status: row.status,
+    client: row.client,
+    provider: row.provider,
+    evaluator: row.evaluator,
+    description: row.description,
+    budget: { value: row.budget, currency: "usdc" },
+    expires_at: iso(row.expiresAt),
+    fund_tx: row.fundTx,
+    settle_tx: row.settleTx,
+    settlement: row.settlement,
+    created_at: iso(row.createdAt),
+    updated_at: iso(row.updatedAt),
+  };
+}

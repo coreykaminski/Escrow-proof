@@ -4,7 +4,7 @@ import { createDb, type DbHandle, verifyLedger } from "@proofdesk/db";
 import { SpecDraftError, type SpecDrafter } from "@proofdesk/spec-engine";
 import { createAccountWithKey } from "./accounts.ts";
 import { loadEnv } from "./load-env.ts";
-import { drafterFromEnv, paymentsFromEnv } from "./models.ts";
+import { chainFromEnv, drafterFromEnv, paymentsFromEnv } from "./models.ts";
 import { tick } from "./services/scheduler.ts";
 
 const USAGE = `Usage: npm run cli -- <command> [options]
@@ -83,8 +83,11 @@ async function run(
     }
 
     case "run-due": {
-      const payments = paymentsFromEnv();
-      const result = await tick(db, payments ? { payments } : {}, new Date());
+      const result = await tick(
+        db,
+        { payments: paymentsFromEnv(), chain: chainFromEnv() },
+        new Date(),
+      );
       console.log(JSON.stringify(result, null, 2));
       return result.errors.length ? 2 : 0;
     }

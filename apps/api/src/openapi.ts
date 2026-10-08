@@ -14,8 +14,13 @@ import {
   InputsBody,
   LinkBody,
   OnboardingBody,
+  OnchainAuthorizationBody,
+  OnchainConfirmBody,
+  OnchainJobBody,
+  PaymentLinkBody,
   ReplaceSpecBody,
   ResolveDisputeBody,
+  SellerWalletBody,
   SettleBody,
 } from "./routes/schemas.ts";
 import { SimulateDecisionBody } from "./routes/test-helpers.ts";
@@ -141,8 +146,9 @@ export const OPERATIONS: Op[] = [
     method: "post",
     path: "/v1/agreements/{id}/payment-links",
     tag: "Funding",
-    summary: "Create a hosted page where the buyer authorizes their card",
-    body: LinkBody,
+    summary:
+      "Create a hosted page where the buyer pays: card authorization, or USDC from a wallet (also serves x402 at <url>/x402)",
+    body: PaymentLinkBody,
     created: true,
   },
   // Funding
@@ -159,6 +165,36 @@ export const OPERATIONS: Op[] = [
     path: "/v1/agreements/{id}/hold",
     tag: "Funding",
     summary: "Card hold status and settlement",
+  },
+  {
+    method: "post",
+    path: "/v1/agreements/{id}/onchain-job",
+    tag: "Funding",
+    summary:
+      "Issue the agreement's on-chain job terms (USDC on Base) and how to fund them: wallet calls, or typed data to sign gaslessly",
+    body: OnchainJobBody,
+    created: true,
+  },
+  {
+    method: "get",
+    path: "/v1/agreements/{id}/onchain-job",
+    tag: "Funding",
+    summary: "On-chain job status and settlement",
+  },
+  {
+    method: "post",
+    path: "/v1/agreements/{id}/onchain-job/confirm",
+    tag: "Funding",
+    summary: "Fund the agreement from the buyer's createAndFund transaction (verified on-chain)",
+    body: OnchainConfirmBody,
+  },
+  {
+    method: "post",
+    path: "/v1/agreements/{id}/onchain-job/authorization",
+    tag: "Funding",
+    summary: "Gasless funding: relay the buyer's signed EIP-3009 authorization",
+    body: OnchainAuthorizationBody,
+    created: true,
   },
   {
     method: "post",
@@ -193,6 +229,19 @@ export const OPERATIONS: Op[] = [
     created: true,
   },
   { method: "get", path: "/v1/sellers/{ref}", tag: "Sellers", summary: "Seller payout status" },
+  {
+    method: "put",
+    path: "/v1/sellers/{ref}/wallet",
+    tag: "Sellers",
+    summary: "Set the seller's USDC payout address (stablecoin rail)",
+    body: SellerWalletBody,
+  },
+  {
+    method: "get",
+    path: "/v1/sellers/{ref}/wallet",
+    tag: "Sellers",
+    summary: "The seller's USDC payout address",
+  },
   // Webhooks
   {
     method: "post",

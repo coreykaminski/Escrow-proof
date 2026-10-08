@@ -13,7 +13,7 @@ import { DecideBody, ResolveDisputeBody, SettleBody } from "./schemas.ts";
  * agreements: run the automated verifier, make human decisions on escalations and disputes,
  * and settle (by hand until the payment rails in Part 4).
  */
-export function opsRoutes({ db, now, verifier, payments, fetch }: AppDeps) {
+export function opsRoutes({ db, now, verifier, payments, chain, fetch }: AppDeps) {
   const r = new Hono<AppEnv>();
   const all = {};
   const opsActor = (apiKeyId: string) => ({ role: "ops" as const, ref: apiKeyId });
@@ -87,13 +87,17 @@ export function opsRoutes({ db, now, verifier, payments, fetch }: AppDeps) {
   /** Moves the money for a final decision (card: capture/cancel/refund + transfer), then settles. */
   r.post("/agreements/:id/settle", async (c) => {
     const body = SettleBody.parse(await c.req.json());
-    const row = await settleAgreement(db, payments, {
-      agreementId: c.req.param("id"),
-      actor: opsActor(c.get("auth").apiKeyId),
-      force: body.force,
-      ...(body.settlement_ref ? { settlementRef: body.settlement_ref } : {}),
-      now: now(),
-    });
+    const row = await settleAgreement(
+      db,
+      { payments, chain },
+      {
+        agreementId: c.req.param("id"),
+        actor: opsActor(c.get("auth").apiKeyId),
+        force: body.force,
+        ...(body.settlement_ref ? { settlementRef: body.settlement_ref } : {}),
+        now: now(),
+      },
+    );
     return c.json(agreementJson(row));
   });
 
@@ -102,9 +106,7 @@ export function opsRoutes({ db, now, verifier, payments, fetch }: AppDeps) {
    * deliver webhooks.
    */
   r.post("/run-due", async (c) => {
-    return c.json(
-      await tick(db, { ...(payments ? { payments } : {}), ...(fetch ? { fetch } : {}) }, now()),
-    );
+    return c.json(await tick(db, { payments, chain, ...(fetch ? { fetch } : {}) }, now()));
   });
 
   r.get("/ledger/verify", async (c) => {

@@ -1,3 +1,4 @@
+import type { ChainGateway } from "@proofdesk/chain";
 import { createDb, type DbHandle } from "@proofdesk/db";
 import type { PaymentsGateway } from "@proofdesk/payments";
 import { FakeSpecDrafter, type SpecDrafter } from "@proofdesk/spec-engine";
@@ -33,6 +34,8 @@ export async function createHarness(
     verifier?: TranslationVerifier;
     /** Build the gateway from the harness clock (e.g. a FakeGateway). */
     payments?: (now: () => Date) => PaymentsGateway;
+    /** Build the stablecoin rail from the harness clock (e.g. a FakeChainGateway). */
+    chain?: (now: () => Date) => ChainGateway;
     fetch?: typeof fetch;
     stripePublishableKey?: string;
   } = {},
@@ -61,6 +64,7 @@ export async function createHarness(
     drafter,
     ...(opts.verifier ? { verifier: opts.verifier } : {}),
     ...(opts.payments ? { payments: opts.payments(() => clock.now) } : {}),
+    ...(opts.chain ? { chain: opts.chain(() => clock.now) } : {}),
     ...(opts.fetch ? { fetch: opts.fetch } : {}),
     ...(opts.stripePublishableKey ? { stripePublishableKey: opts.stripePublishableKey } : {}),
   });

@@ -146,6 +146,72 @@ export interface Seller {
   updated_at: string;
 }
 
+export interface SellerWallet {
+  id: string;
+  object: "seller_wallet";
+  seller_ref: string;
+  address: string;
+  created_at: string;
+  updated_at: string;
+}
+
+/** An ERC-8183 job on the ProofDeskJobs contract holding the agreement's USDC. */
+export interface OnchainJob {
+  id: string;
+  object: "onchain_job";
+  agreement_id: string;
+  chain_id: number;
+  contract: string;
+  job_id: string | null;
+  status: "awaiting_funding" | "funded" | "settled" | "expired";
+  client: string | null;
+  provider: string;
+  evaluator: string;
+  description: string;
+  budget: { value: number; currency: "usdc" };
+  expires_at: string;
+  fund_tx: string | null;
+  settle_tx: string | null;
+  settlement: Record<string, unknown> | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** EIP-712 typed data for eth_signTypedData_v4 (amounts as decimal strings). */
+export interface WalletTypedData {
+  types: Record<string, { name: string; type: string }[]>;
+  primaryType: "ReceiveWithAuthorization";
+  domain: { name: string; version: string; chainId: number; verifyingContract: string };
+  message: {
+    from: string;
+    to: string;
+    value: string;
+    validAfter: string;
+    validBefore: string;
+    nonce: string;
+  };
+}
+
+export interface OnchainFunding {
+  object: "onchain_funding";
+  chain_id: number;
+  network: string;
+  contract: string;
+  token: string;
+  terms: {
+    provider: string;
+    evaluator: string;
+    expired_at: number;
+    description: string;
+    budget: string;
+  };
+  /** Send in order from the buyer's wallet, then confirm with the second transaction's hash. */
+  calls: { to: string; data: string; description: string }[];
+  /** Present when `client` was given: sign it for gasless funding. */
+  typed_data: WalletTypedData | null;
+  job: OnchainJob;
+}
+
 export interface WebhookEndpoint {
   id: string;
   object: "webhook_endpoint";

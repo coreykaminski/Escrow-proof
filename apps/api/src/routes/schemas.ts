@@ -127,3 +127,37 @@ export const ListQuery = z.object({
 });
 
 export const LinkBody = z.object({ expires_in_days: z.number().int().min(1).max(90).default(30) });
+
+/** Payment links: a hosted card page (default) or a hosted stablecoin page with x402. */
+export const PaymentLinkBody = LinkBody.extend({
+  rail: z.enum(["card", "onchain"]).default("card"),
+});
+
+const evmAddress = z.string().regex(/^0x[0-9a-fA-F]{40}$/, "a 0x-prefixed 20-byte address");
+/** uint256 as a decimal string or a safe integer. */
+const uint = z
+  .union([z.string().regex(/^\d{1,78}$/), z.number().int().nonnegative()])
+  .transform((v) => BigInt(v));
+
+export const SellerWalletBody = z.object({
+  /** Where the seller is paid on the stablecoin rail (Base). */
+  address: evmAddress,
+});
+
+export const OnchainJobBody = z.object({
+  /** The buyer's wallet; with it the response includes the typed data to sign for gasless funding. */
+  client: evmAddress.optional(),
+});
+
+export const OnchainConfirmBody = z.object({
+  /** The buyer's createAndFund transaction. */
+  tx_hash: z.string().regex(/^0x[0-9a-fA-F]{64}$/),
+});
+
+export const OnchainAuthorizationBody = z.object({
+  client: evmAddress,
+  valid_after: uint.optional(),
+  valid_before: uint,
+  /** EIP-712 signature of the ReceiveWithAuthorization typed data. */
+  signature: z.string().regex(/^0x[0-9a-fA-F]{130}$/),
+});

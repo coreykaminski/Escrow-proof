@@ -204,6 +204,70 @@ export function createServer(pd: ProofDesk): McpServer {
   );
 
   server.registerTool(
+    "fund_purchase_with_usdc",
+    {
+      title: "Hold the payment in USDC",
+      description:
+        "Fund an approved purchase in USDC on Base. The money is locked in a public job contract (not sent to Proof Desk or the seller) and released only if the work passes. Returns typed data for the buyer's wallet to sign (no gas), a hosted payment page, and an x402 URL. After signing, call submit_usdc_authorization.",
+      inputSchema: {
+        agreement_id: z.string(),
+        wallet_address: z
+          .string()
+          .optional()
+          .describe("The buyer's wallet (0x…); include it to get the typed data to sign"),
+      },
+    },
+    (args) =>
+      run(async () => {
+        const f = await pd.agreements.createOnchainJob(args.agreement_id, {
+          ...(args.wallet_address ? { client: args.wallet_address } : {}),
+        });
+        const link = await pd.agreements.createPaymentLink(args.agreement_id, { rail: "onchain" });
+        return {
+          network: f.network,
+          contract: f.contract,
+          token: f.token,
+          amount: { base_units: f.terms.budget, currency: "USDC" },
+          refundable_by_buyer_after: new Date(f.terms.expired_at * 1000).toISOString(),
+          typed_data: f.typed_data,
+          payment_page: link.url,
+          x402_url: `${link.url}/x402`,
+          note: f.typed_data
+            ? "Sign typed_data with eth_signTypedData_v4 from wallet_address, then call submit_usdc_authorization."
+            : "Open payment_page in a browser wallet, or pass wallet_address to sign directly.",
+        };
+      }),
+  );
+
+  server.registerTool(
+    "submit_usdc_authorization",
+    {
+      title: "Submit the signed USDC authorization",
+      description:
+        "Submit the buyer's signature of the typed data from fund_purchase_with_usdc. Proof Desk relays it (and pays the gas); the purchase becomes funded.",
+      inputSchema: {
+        agreement_id: z.string(),
+        wallet_address: z.string(),
+        valid_before: z.string().describe("typed_data.message.validBefore"),
+        signature: z.string().describe("0x… 65-byte signature"),
+      },
+    },
+    (args) =>
+      run(async () => {
+        const res = await pd.agreements.authorizeOnchainFunding(args.agreement_id, {
+          client: args.wallet_address,
+          valid_before: args.valid_before,
+          signature: args.signature,
+        });
+        return {
+          ...summarize(res.agreement, sandbox),
+          job_id: res.job.job_id,
+          tx: res.job.fund_tx,
+        };
+      }),
+  );
+
+  server.registerTool(
     "get_purchase",
     {
       title: "Check a purchase",

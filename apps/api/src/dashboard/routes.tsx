@@ -1,12 +1,22 @@
+import { authorizationNonce, networkName } from "@proofdesk/chain";
 import { AGREEMENT_STATES, TransitionError } from "@proofdesk/core";
 import { schema } from "@proofdesk/db";
 import { desc, eq } from "drizzle-orm";
-import { Hono } from "hono";
+import { type Context, Hono } from "hono";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
+import { getAddress, isAddress } from "viem";
 import type { AppDeps } from "../env.ts";
 import { ApiError } from "../errors.ts";
+import { OnchainAuthorizationBody, OnchainConfirmBody } from "../routes/schemas.ts";
 import { applyEvent, listAgreements } from "../services/agreements.ts";
 import { ledgerIntact, loadCaseFile, reviewerStats, reviewQueue } from "../services/case-file.ts";
+import {
+  confirmOnchainFunding,
+  getOnchainJob,
+  prepareOnchainJob,
+  relayOnchainFunding,
+  termsOf,
+} from "../services/onchain.ts";
 import { getHold, syncHold } from "../services/payments.ts";
 import {
   endSession,
@@ -17,9 +27,18 @@ import {
 } from "../services/sessions.ts";
 import { createShareLink, resolveShareLink } from "../services/share-links.ts";
 import {
+  fundingJson,
+  parsePaymentHeader,
+  paymentRequired,
+  paymentResponseHeader,
+  walletTypedData,
+} from "../services/x402.ts";
+import {
   AgreementsPage,
   CasePage,
   LoginPage,
+  ONCHAIN_JS,
+  OnchainPayPage,
   PAY_JS,
   PayPage,
   QueuePage,
@@ -202,7 +221,7 @@ export function dashboardRoutes(deps: AppDeps) {
 
 /** Public pages reached by unguessable links: verdict reports and the hosted card page. */
 export function publicLinkRoutes(deps: AppDeps) {
-  const { db, now, payments } = deps;
+  const { db, now, payments, chain } = deps;
   const r = new Hono();
 
   r.get("/r/:token", async (c) => {
@@ -235,11 +254,155 @@ export function publicLinkRoutes(deps: AppDeps) {
     );
   };
 
+  r.get("/pay/assets/onchain.js", (c) =>
+    c.body(ONCHAIN_JS, 200, { "Content-Type": "text/javascript; charset=utf-8" }),
+  );
+
+  /** The agreement behind a live pay link that funds on-chain, or null. */
+  const onchainLink = async (token: string) => {
+    const id = await resolveShareLink(db, token, "pay", now());
+    if (!id || !chain) return null;
+    const row = await getOnchainJob(db, id);
+    return row ? { id, row } : null;
+  };
+  const gone = () => new ApiError(404, "link_gone", "this link has expired or doesn't exist");
+
   // Stripe sends the buyer back here after confirming; the page re-syncs the hold.
   r.get("/pay/:token", async (c) => {
-    const page = await payPage(c.req.param("token"), c.req.url);
+    const token = c.req.param("token");
+    const link = await onchainLink(token);
+    if (link && chain) {
+      const f = await prepareOnchainJob(db, chain, { agreementId: link.id, scope: {}, now: now() });
+      return c.html(
+        <OnchainPayPage
+          agreement={f.agreement}
+          token={token}
+          job={{
+            status: f.row.status,
+            chainId: f.config.chainId,
+            network: networkName(f.config.chainId),
+            contract: f.config.contract,
+            asset: f.config.token,
+            provider: f.row.provider,
+            expiresAt: f.row.expiresAt,
+            fundTx: f.row.fundTx,
+          }}
+          calls={f.calls}
+        />,
+      );
+    }
+    const page = await payPage(token, c.req.url);
     return page ? c.html(page) : c.html(<LinkGone />, 404);
   });
+
+  r.get("/pay/:token/onchain/typed-data", async (c) => {
+    const link = await onchainLink(c.req.param("token"));
+    if (!link || !chain) throw gone();
+    const client = c.req.query("client") ?? "";
+    const f = await prepareOnchainJob(db, chain, {
+      agreementId: link.id,
+      scope: {},
+      client,
+      now: now(),
+    });
+    return c.json(f.typedData ? walletTypedData(f.typedData) : null);
+  });
+
+  r.post("/pay/:token/onchain/authorize", async (c) => {
+    const link = await onchainLink(c.req.param("token"));
+    if (!link || !chain) throw gone();
+    const body = OnchainAuthorizationBody.parse(await c.req.json());
+    const { agreement } = await relayOnchainFunding(db, chain, {
+      agreementId: link.id,
+      scope: {},
+      client: body.client,
+      validAfter: body.valid_after ?? 0n,
+      validBefore: body.valid_before,
+      signature: body.signature,
+      now: now(),
+    });
+    return c.json({ status: agreement.status });
+  });
+
+  r.post("/pay/:token/onchain/confirm", async (c) => {
+    const link = await onchainLink(c.req.param("token"));
+    if (!link || !chain) throw gone();
+    const body = OnchainConfirmBody.parse(await c.req.json());
+    const { agreement } = await confirmOnchainFunding(db, chain, {
+      agreementId: link.id,
+      scope: {},
+      txHash: body.tx_hash,
+      now: now(),
+    });
+    return c.json({ status: agreement.status });
+  });
+
+  /**
+   * x402: an agent requests the link, gets 402 with the job's payment requirements, signs the
+   * authorization and retries with X-PAYMENT; we relay it and answer 200 with X-PAYMENT-RESPONSE.
+   */
+  const x402 = async (c: Context) => {
+    const link = await onchainLink(c.req.param("token") ?? "");
+    if (!link || !chain) throw gone();
+    const resource = `${baseUrl(deps, c.req.url)}/pay/${c.req.param("token")}/x402`;
+    const f = await prepareOnchainJob(db, chain, { agreementId: link.id, scope: {}, now: now() });
+    if (f.row.status !== "awaiting_funding") {
+      return c.json(
+        { status: f.agreement.status, job: fundingJson(f).job },
+        200,
+        f.row.fundTx
+          ? {
+              "X-PAYMENT-RESPONSE": paymentResponseHeader({
+                transaction: f.row.fundTx,
+                network: networkName(f.config.chainId),
+                payer: f.row.client ?? "",
+              }),
+            }
+          : {},
+      );
+    }
+    const header = c.req.header("X-PAYMENT");
+    if (!header) return c.json(paymentRequired(f, resource), 402);
+    const pay = parsePaymentHeader(header);
+    if (!pay || !isAddress(pay.from, { strict: false })) {
+      return c.json(paymentRequired(f, resource, "unreadable X-PAYMENT payload"), 402);
+    }
+    const expectedNonce = authorizationNonce(f.config, termsOf(f.row, getAddress(pay.from)));
+    const problem =
+      pay.to.toLowerCase() !== f.config.contract.toLowerCase()
+        ? "authorization must pay the job contract"
+        : pay.value !== f.terms.budget
+          ? `authorization must be for exactly ${f.terms.budget} base units`
+          : pay.nonce.toLowerCase() !== expectedNonce.toLowerCase()
+            ? "authorization nonce doesn't match the job terms"
+            : null;
+    if (problem) return c.json(paymentRequired(f, resource, problem), 402);
+    try {
+      const { row, agreement } = await relayOnchainFunding(db, chain, {
+        agreementId: link.id,
+        scope: {},
+        client: pay.from,
+        validAfter: pay.validAfter,
+        validBefore: pay.validBefore,
+        signature: pay.signature,
+        now: now(),
+      });
+      return c.json({ status: agreement.status, job_id: row.jobId }, 200, {
+        "X-PAYMENT-RESPONSE": paymentResponseHeader({
+          transaction: row.fundTx,
+          network: networkName(f.config.chainId),
+          payer: getAddress(pay.from),
+        }),
+      });
+    } catch (err) {
+      if (err instanceof ApiError && err.code === "authorization_rejected") {
+        return c.json(paymentRequired(f, resource, err.message), 402);
+      }
+      throw err;
+    }
+  };
+  r.get("/pay/:token/x402", x402);
+  r.post("/pay/:token/x402", x402);
 
   return r;
 }

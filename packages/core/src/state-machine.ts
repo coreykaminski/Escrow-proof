@@ -39,7 +39,7 @@ export type Outcome =
   | { kind: "refund" }
   | { kind: "partial"; releasePercent: number };
 
-export type HoldRail = "test" | "card";
+export type HoldRail = "test" | "card" | "onchain";
 
 export interface AgreementSnapshot {
   status: AgreementState;

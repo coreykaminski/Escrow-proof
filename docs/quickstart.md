@@ -95,3 +95,8 @@ The criteria drafting in `create_protected_purchase` and `sandbox_run_verificati
 - **Drafted criteria:** with `ANTHROPIC_API_KEY` set, use `pd.agreements.createFromRequest({ request, amount, delivery_due_at, … })`. Proof Desk writes checkable acceptance criteria and lists open questions for the buyer.
 - **Translation verification:** attach the source with `pd.agreements.replaceInputs(id, [{ name, media_type: "text/plain", content }])` before approval. After delivery, `pd.testHelpers.verify(id)` runs the real verifier.
 - **Real cards (Stripe test mode):** set `STRIPE_SECRET_KEY=sk_test_…`, onboard the seller with `pd.sellers.startOnboarding(seller_ref, { email, country: "us" })` (they finish on Stripe's hosted page), then call `pd.agreements.createCardHold(id, { payment_method: "pm_card_visa" })`.
+- **USDC on Base (stablecoin rail):** set the `CHAIN_*`, `JOBS_CONTRACT` and `EVALUATOR_PRIVATE_KEY` variables (see `.env.example`), give the seller a payout address with `pd.sellers.setWallet(seller_ref, "0x…")`, and use an agreement priced in `usdc` (6 decimals: `{ value: 180_000_000, currency: "usdc" }` is 180 USDC). Then either:
+  - `pd.agreements.createOnchainJob(id, { client: buyerAddress })`: the buyer signs `typed_data` in their wallet (no gas), and you pass the signature to `pd.agreements.authorizeOnchainFunding(id, { client, valid_before, signature })`; or
+  - `pd.agreements.createPaymentLink(id, { rail: "onchain" })`: a hosted page for browser wallets. Agents can pay the same link over **x402** at `<url>/x402`.
+
+  The USDC sits in the public job contract, not with Proof Desk. Proof Desk can only settle it between the job's buyer and seller, and after the job's expiry the buyer can always reclaim it themselves.

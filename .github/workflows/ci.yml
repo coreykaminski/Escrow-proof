@@ -11,11 +11,19 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
+      # Foundry: contract tests, and anvil for the chain package's integration test.
+      - uses: foundry-rs/foundry-toolchain@v1
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
+      - name: Contract tests (unit, fuzz, invariants)
+        run: cd contracts && FOUNDRY_PROFILE=ci forge test
+      - name: Generated ABI is up to date
+        run: npm run contracts:build && git diff --exit-code packages/chain/src/abi.ts
       - run: npm test

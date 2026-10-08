@@ -9,3 +9,8 @@ coverage/
 
 # Eval response caches (re-creatable; may contain model output)
 evals/**/.cache/
+
+# Foundry build output
+contracts/out/
+contracts/cache/
+contracts/broadcast/*/31337/

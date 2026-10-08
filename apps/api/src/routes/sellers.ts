@@ -1,11 +1,15 @@
 import { Hono } from "hono";
 import type { AppDeps, AppEnv } from "../env.ts";
 import { ApiError, notFound } from "../errors.ts";
-import { sellerJson } from "../serialize.ts";
+import { sellerJson, sellerWalletJson } from "../serialize.ts";
+import { getSellerWallet, setSellerWallet } from "../services/onchain.ts";
 import { getSeller, refreshSeller, startOnboarding } from "../services/payments.ts";
-import { OnboardingBody } from "./schemas.ts";
+import { OnboardingBody, SellerWalletBody } from "./schemas.ts";
 
-/** Seller payout accounts (Stripe Connect Express), keyed by the platform's own seller_ref. */
+/**
+ * Seller payout destinations, keyed by the platform's own seller_ref: a Stripe connected account
+ * for card payouts, and/or a wallet address for stablecoin payouts.
+ */
 export function sellerRoutes({ db, now, payments, publicUrl }: AppDeps) {
   const r = new Hono<AppEnv>();
   const gateway = () => {
@@ -29,6 +33,24 @@ export function sellerRoutes({ db, now, payments, publicUrl }: AppDeps) {
       now: now(),
     });
     return c.json({ seller: sellerJson(seller), onboarding_url: url }, 201);
+  });
+
+  /** Sets the seller's USDC payout address (the provider on on-chain jobs). */
+  r.put("/:ref/wallet", async (c) => {
+    const body = SellerWalletBody.parse(await c.req.json());
+    const row = await setSellerWallet(db, {
+      accountId: c.get("auth").accountId,
+      sellerRef: c.req.param("ref"),
+      address: body.address,
+      now: now(),
+    });
+    return c.json(sellerWalletJson(row));
+  });
+
+  r.get("/:ref/wallet", async (c) => {
+    const row = await getSellerWallet(db, c.get("auth").accountId, c.req.param("ref"));
+    if (!row) throw notFound("seller wallet");
+    return c.json(sellerWalletJson(row));
   });
 
   r.get("/:ref", async (c) => {
