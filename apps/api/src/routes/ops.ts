@@ -1,8 +1,10 @@
 import { verifyLedger } from "@proofdesk/db";
 import { Hono } from "hono";
 import { type AppDeps, type AppEnv, verifiersOf } from "../env.ts";
+import { ApiError } from "../errors.ts";
 import { agreementJson, verificationJson } from "../serialize.ts";
 import { applyEvent, getAgreement } from "../services/agreements.ts";
+import { anchorLedger, verifyAnchors } from "../services/anchoring.ts";
 import { settleAgreement } from "../services/payments.ts";
 import { tick } from "../services/scheduler.ts";
 import { listVerifications, verifyAgreement } from "../services/verification.ts";
@@ -121,6 +123,20 @@ export function opsRoutes(deps: AppDeps) {
         : { ok: false, seq: result.seq, reason: result.reason },
       result.ok ? 200 : 500,
     );
+  });
+
+  /** Post the ledger head on-chain now (the worker also does it daily). */
+  r.post("/ledger/anchor", async (c) => {
+    if (!deps.anchor)
+      throw new ApiError(503, "anchoring_unavailable", "ANCHOR_CONTRACT isn't configured");
+    return c.json(await anchorLedger(db, deps.anchor, now()));
+  });
+
+  /** Check every on-chain anchor against the database. */
+  r.get("/ledger/anchors", async (c) => {
+    if (!deps.anchor)
+      throw new ApiError(503, "anchoring_unavailable", "ANCHOR_CONTRACT isn't configured");
+    return c.json(await verifyAnchors(db, deps.anchor));
   });
 
   return r;

@@ -11,7 +11,7 @@ describe("API reference", () => {
       app.routes
         .filter((r) => r.method !== "ALL")
         // HTML pages (dashboard, share and pay links, status, pricing) aren't part of the API.
-        .filter((r) => !/^\/(dashboard|r\/|pay\/|status$|pricing$)/.test(r.path))
+        .filter((r) => !/^\/(dashboard|r\/|pay\/|status$|pricing$|accuracy$)/.test(r.path))
         .map((r) => `${r.method.toLowerCase()} ${r.path.replace(/:(\w+)/g, "{$1}")}`),
     );
     const documented = new Set(OPERATIONS.map((o) => `${o.method} ${o.path}`));

@@ -9,7 +9,9 @@ import type { AppDeps } from "../env.ts";
 import { ApiError } from "../errors.ts";
 import { OnchainAuthorizationBody, OnchainConfirmBody } from "../routes/schemas.ts";
 import { isHttps } from "../security.ts";
+import { accuracyReport } from "../services/accuracy.ts";
 import { applyEvent, listAgreements } from "../services/agreements.ts";
+import { lastAnchor } from "../services/anchoring.ts";
 import { ledgerIntact, loadCaseFile, reviewerStats, reviewQueue } from "../services/case-file.ts";
 import {
   confirmOnchainFunding,
@@ -36,6 +38,7 @@ import {
   walletTypedData,
 } from "../services/x402.ts";
 import {
+  AccuracyPage,
   AgreementsPage,
   CasePage,
   LoginPage,
@@ -237,12 +240,17 @@ export function publicLinkRoutes(deps: AppDeps) {
     return c.json({ ...s, checked_at: now().toISOString() }, s.status === "down" ? 503 : 200);
   });
   r.get("/pricing", (c) => c.html(<PricingPage pricing={PRICING} />));
+  const accuracy = () => accuracyReport(db, { since: new Date(now().getTime() - 90 * 86_400_000) });
+  r.get("/accuracy", async (c) => c.html(<AccuracyPage report={await accuracy()} />));
+  r.get("/accuracy.json", async (c) => c.json(await accuracy()));
 
   r.get("/r/:token", async (c) => {
     const id = await resolveShareLink(db, c.req.param("token"), "report", now());
     if (!id) return c.html(<LinkGone />, 404);
     const file = await loadCaseFile(db, id, {});
-    return c.html(<ReportPage file={file} ledgerOk={await ledgerIntact(db)} />);
+    return c.html(
+      <ReportPage file={file} ledgerOk={await ledgerIntact(db)} anchor={await lastAnchor(db)} />,
+    );
   });
 
   r.get("/pay/assets/pay.js", (c) =>

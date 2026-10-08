@@ -3,10 +3,12 @@ import { createDb } from "@proofdesk/db";
 import { loadEnv } from "./load-env.ts";
 import {
   allowPrivateNetworkFromEnv,
+  anchorFromEnv,
   chainFromEnv,
   paymentsFromEnv,
   reviewerRatesFromEnv,
 } from "./models.ts";
+import { anchorLedger } from "./services/anchoring.ts";
 import { invoicePeriod, payReviewers } from "./services/billing.ts";
 import { tick } from "./services/scheduler.ts";
 import { checkLedger, getState, setState } from "./services/status.ts";
@@ -25,6 +27,8 @@ const chain = chainFromEnv();
 const allowPrivateNetwork = allowPrivateNetworkFromEnv();
 const TICK_MS = Number(process.env.TICK_INTERVAL_S ?? 60) * 1000;
 const LEDGER_MS = Number(process.env.LEDGER_CHECK_INTERVAL_H ?? 6) * 3_600_000;
+const ANCHOR_MS = Number(process.env.ANCHOR_INTERVAL_H ?? 24) * 3_600_000;
+const anchor = anchorFromEnv();
 
 const stop = new AbortController();
 for (const sig of ["SIGTERM", "SIGINT"] as const) process.once(sig, () => stop.abort());
@@ -68,6 +72,7 @@ console.log(
   `worker: tick every ${TICK_MS / 1000}s; card ${payments ? payments.mode : "off"}; chain ${chain ? "on" : "off"}`,
 );
 let lastLedgerCheck = 0;
+let lastAnchor = 0;
 while (!stop.signal.aborted) {
   const now = new Date();
   try {
@@ -96,6 +101,11 @@ while (!stop.signal.aborted) {
       const result = await checkLedger(db, now);
       lastLedgerCheck = Date.now();
       if (!result.ok) console.error(`LEDGER CHECK FAILED at seq ${result.seq}: ${result.reason}`);
+    }
+    if (anchor && Date.now() - lastAnchor > ANCHOR_MS) {
+      const a = await anchorLedger(db, anchor, now);
+      lastAnchor = Date.now();
+      if (a.status === "anchored") console.log(`ledger anchored at seq ${a.seq}: ${a.tx_hash}`);
     }
     await monthlyBilling(now);
   } catch (err) {

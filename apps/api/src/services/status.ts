@@ -82,6 +82,18 @@ export async function systemStatus(
         : "hash chain check failed; investigating",
   });
 
+  if (deps.anchor) {
+    const a = await getState(db, "ledger.anchor");
+    const ageH = a ? (now.getTime() - a.updatedAt.getTime()) / 3_600_000 : null;
+    components.push({
+      name: "Ledger anchoring (on-chain)",
+      status: ageH === null ? "degraded" : ageH < 48 ? "operational" : "degraded",
+      detail:
+        ageH === null
+          ? "no anchor yet"
+          : `head seq ${String(a?.value.seq)} anchored ${Math.round(ageH)} h ago on chain ${String(a?.value.chain_id)}`,
+    });
+  }
   components.push({
     name: "Card payments (Stripe)",
     status: deps.payments ? "operational" : "not_configured",

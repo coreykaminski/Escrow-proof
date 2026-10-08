@@ -1,0 +1,107 @@
+/** Part 10: the public accuracy report (production stats, live only, aggregates only). */
+import { newId } from "@proofdesk/core";
+import { schema } from "@proofdesk/db";
+import { afterEach, describe, expect, it } from "vitest";
+import { createHarness, type Harness, specFixture } from "./harness.ts";
+
+let h: Harness;
+afterEach(async () => {
+  await h?.close();
+});
+
+async function decided(
+  key: string,
+  vertical: string,
+  p: { action: "decide" | "escalate"; dispute?: "upheld" | "overturned" },
+) {
+  const agr = (
+    await h.call(key, "POST", "/v1/agreements", {
+      buyer_ref: "b",
+      seller_ref: "s",
+      spec: specFixture({ vertical }),
+    })
+  ).body;
+  const db = h.handle.db;
+  const at = h.clock.now;
+  const deliveryId = newId("delivery");
+  await db.insert(schema.deliveries).values({
+    id: deliveryId,
+    agreementId: agr.id,
+    artifacts: [],
+    manifestHash: "0".repeat(64),
+    submittedAt: at,
+  });
+  await db.insert(schema.verifications).values({
+    id: newId("verification"),
+    agreementId: agr.id,
+    deliveryId,
+    engineVersion: "test",
+    report: {},
+    reportHash: "0".repeat(64),
+    action: p.action,
+    outcome: p.action === "decide" ? { kind: "release" } : null,
+    confidence: 0.9,
+    costUsd: 0,
+    createdAt: at,
+  });
+  if (p.action !== "decide") return;
+  await db.insert(schema.decisions).values({
+    id: newId("decision"),
+    agreementId: agr.id,
+    kind: "verification",
+    outcome: { kind: "release" },
+    decidedBy: "auto",
+    actorRef: "verifier",
+    confidence: 0.9,
+    reason: "passed",
+    createdAt: at,
+  });
+  if (!p.dispute) return;
+  await db.insert(schema.decisions).values({
+    id: newId("decision"),
+    agreementId: agr.id,
+    kind: "dispute_resolution",
+    outcome: p.dispute === "overturned" ? { kind: "refund" } : { kind: "release" },
+    decidedBy: "human",
+    actorRef: "key_ops",
+    confidence: null,
+    reason: "reviewed",
+    createdAt: new Date(at.getTime() + 1000),
+  });
+}
+
+describe("accuracy report", () => {
+  it("publishes live rates per verifier once there's enough data, and counts overturns", async () => {
+    h = await createHarness();
+    const live = h.keys.live;
+    for (let i = 0; i < 22; i++) await decided(live, "code", { action: "decide" });
+    await decided(live, "code", { action: "decide", dispute: "upheld" });
+    await decided(live, "code", { action: "decide", dispute: "overturned" });
+    await decided(live, "code", { action: "decide", dispute: "overturned" });
+    for (let i = 0; i < 5; i++) await decided(live, "code", { action: "escalate" });
+    for (let i = 0; i < 3; i++) await decided(live, "data", { action: "decide" });
+    // Test mode never counts.
+    for (let i = 0; i < 5; i++)
+      await decided(h.keys.platformA, "code", { action: "decide", dispute: "overturned" });
+
+    const report = (await h.call(null, "GET", "/accuracy.json")).body;
+    const code = report.verticals.find((v: { vertical: string }) => v.vertical === "code");
+    expect(code).toMatchObject({
+      verifications: 30,
+      auto_decisions: 25,
+      escalated: 5,
+      disputed: 3,
+      overturned: 2,
+      published: true,
+    });
+    expect(code.overturn_rate).toBeCloseTo(0.08);
+    expect(code.escalation_rate).toBeCloseTo(5 / 30);
+    const data = report.verticals.find((v: { vertical: string }) => v.vertical === "data");
+    expect(data).toMatchObject({ auto_decisions: 3, published: false, overturn_rate: null });
+
+    const html = await (await h.fetch("http://x/accuracy")).text();
+    expect(html).toContain("8.0%");
+    expect(html).toContain("not enough data");
+    expect(html).not.toMatch(/agr_|acct_/);
+  });
+});

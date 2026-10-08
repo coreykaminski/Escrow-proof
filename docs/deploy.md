@@ -36,6 +36,7 @@ One Docker image runs two processes: **web** (the API, dashboard and public page
 4. **Sandbox host** (for code verification): a small VM (any cloud) with Docker and gVisor (`runsc`). Create a `sandbox` user in the `docker` group whose SSH key is the Fly app's (`fly ssh` → generate a key → add it to `authorized_keys`, restricted to the Fly egress IPs). Pre-pull `node:24-alpine` and `python:3.13-alpine`. Nothing else should run on it. Until it exists, code verification returns 503 and code jobs wait in `verifying`; nothing is decided on an infrastructure failure.
 5. **Stripe webhook:** Dashboard → Developers → Webhooks → add `https://<PUBLIC_URL>/webhooks/stripe` for `payment_intent.*`, `charge.dispute.created` and `account.updated`. Put the signing secret in `STRIPE_WEBHOOK_SECRET`.
 6. **Contract (optional):** `DEPLOYER_PRIVATE_KEY=0x… PAYMENT_TOKEN=0x036CbD53842c5426634e7929541eC2318f3dCF7e CHAIN_RPC_URL=https://sepolia.base.org npm run chain:deploy`. Fund the evaluator address with a little Base Sepolia ETH.
+7. **Ledger anchoring (optional):** `ANCHORER=<anchor key address> npm run chain:deploy-anchor`, then set `ANCHOR_CONTRACT` (and `ANCHOR_PRIVATE_KEY`, or reuse the evaluator key). The worker posts the verified ledger head daily; `GET /v1/ops/ledger/anchors` checks every anchor against the database.
 
 ## 2. Deploy
 

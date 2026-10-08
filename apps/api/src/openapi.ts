@@ -408,7 +408,28 @@ export const OPERATIONS: Op[] = [
     summary: "Stripe webhook receiver (signature-verified)",
     scope: "none",
   },
+  {
+    method: "post",
+    path: "/v1/ops/ledger/anchor",
+    tag: "Ops",
+    summary: "Post the ledger head to the on-chain LedgerAnchor now",
+    scope: "ops",
+  },
+  {
+    method: "get",
+    path: "/v1/ops/ledger/anchors",
+    tag: "Ops",
+    summary: "Check every on-chain anchor against the ledger",
+    scope: "ops",
+  },
   { method: "get", path: "/health", tag: "Meta", summary: "Health check", scope: "none" },
+  {
+    method: "get",
+    path: "/accuracy.json",
+    tag: "Meta",
+    summary: "Production verifier accuracy (live jobs, last 90 days, aggregates only)",
+    scope: "none",
+  },
   {
     method: "get",
     path: "/status.json",

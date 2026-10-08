@@ -18,11 +18,14 @@ import {
   authorizationNonce,
   authorizationTypedData,
   fundingCalls,
+  ledgerAnchorAbi,
+  ledgerAnchorBytecode,
   mockUsdcAbi,
   mockUsdcBytecode,
   proofDeskJobsAbi,
   proofDeskJobsBytecode,
   splitBudget,
+  ViemAnchorGateway,
   ViemChainGateway,
 } from "../src/index.ts";
 
@@ -189,5 +192,30 @@ describe.skipIf(!anvilBin)("ProofDeskJobs on anvil", () => {
       retryable: false,
       code: "InvalidState",
     });
+  });
+
+  it("anchors ledger heads forward-only and reads them back", async () => {
+    const deployer = wallet(KEYS.deployer);
+    const hash = await deployer.deployContract({
+      abi: ledgerAnchorAbi,
+      bytecode: ledgerAnchorBytecode,
+      args: [addr(KEYS.deployer), addr(KEYS.evaluator)],
+    } as never);
+    const address = getAddress(
+      (await pub.waitForTransactionReceipt({ hash })).contractAddress as Address,
+    );
+    const anchors = new ViemAnchorGateway({
+      rpcUrl,
+      chainId: foundry.id,
+      contract: address,
+      anchorerKey: KEYS.evaluator,
+      pollingIntervalMs: 50,
+    });
+    expect(await anchors.latest()).toBeNull();
+    await anchors.anchor(7, "a".repeat(64));
+    await anchors.anchor(12, "b".repeat(64));
+    await expect(anchors.anchor(12, "c".repeat(64))).rejects.toThrow();
+    expect(await anchors.latest()).toMatchObject({ seq: 12, headHash: "b".repeat(64) });
+    expect((await anchors.list()).map((a) => a.seq)).toEqual([7, 12]);
   });
 });

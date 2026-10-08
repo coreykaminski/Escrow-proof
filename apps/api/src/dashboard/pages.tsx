@@ -371,7 +371,11 @@ export function ReviewersPage(p: {
 }
 
 /** Public, shareable: verdicts and proof, but not the documents themselves. */
-export function ReportPage(p: { file: CaseFile; ledgerOk: boolean }) {
+export function ReportPage(p: {
+  file: CaseFile;
+  ledgerOk: boolean;
+  anchor?: { seq: number; tx_hash: string; chain_id: number; contract: string; at: Date } | null;
+}) {
   const { agreement: a, verification: v } = p.file;
   const decision = p.file.decisions.at(-1);
   return (
@@ -417,6 +421,17 @@ export function ReportPage(p: { file: CaseFile; ledgerOk: boolean }) {
               <span class="pill fail">chain check failed</span>
             )}
           </dd>
+          {p.anchor && (p.file.ledger.at(-1)?.seq ?? Number.POSITIVE_INFINITY) <= p.anchor.seq ? (
+            <>
+              <dt>Anchored on-chain</dt>
+              <dd class="small">
+                Ledger head #{p.anchor.seq} posted {when(p.anchor.at)} on chain {p.anchor.chain_id}{" "}
+                to <span class="mono">{p.anchor.contract}</span> (tx{" "}
+                <span class="mono">{p.anchor.tx_hash.slice(0, 18)}…</span>). Every entry above is
+                covered.
+              </dd>
+            </>
+          ) : null}
         </dl>
       </div>
       <h2>Criteria</h2>
@@ -811,6 +826,69 @@ export function PricingPage(p: {
         Card processing and network fees are passed through at cost. Verification and dispute fees
         are invoiced monthly; test mode is free. Enterprise: custom verifiers, SLA, private ledger
         export.
+      </p>
+    </Page>
+  );
+}
+
+export function AccuracyPage(p: {
+  report: {
+    since: string;
+    min_sample: number;
+    verticals: {
+      vertical: string;
+      verifications: number;
+      auto_decisions: number;
+      escalated: number;
+      disputed: number;
+      overturned: number;
+      escalation_rate: number | null;
+      overturn_rate: number | null;
+      published: boolean;
+    }[];
+  };
+}) {
+  const pct = (x: number | null) => (x === null ? "—" : `${(x * 100).toFixed(1)}%`);
+  return (
+    <Page title="Accuracy">
+      <h1>Verifier accuracy</h1>
+      <p class="sub">
+        Live jobs since {p.report.since.slice(0, 10)}. An automatic decision counts as overturned
+        when a human reviewer changed it on dispute. Rates are shown once a verifier has made at
+        least {p.report.min_sample} automatic decisions.
+      </p>
+      {p.report.verticals.length === 0 ? (
+        <div class="panel empty">No live verifications in this period yet.</div>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Verifier</th>
+              <th>Checks</th>
+              <th>Automatic decisions</th>
+              <th>Sent to a human</th>
+              <th>Disputed</th>
+              <th>Overturned</th>
+            </tr>
+          </thead>
+          <tbody>
+            {p.report.verticals.map((v) => (
+              <tr>
+                <td>{v.vertical}</td>
+                <td>{v.verifications}</td>
+                <td>{v.auto_decisions}</td>
+                <td>{v.published ? pct(v.escalation_rate) : "—"}</td>
+                <td>{v.disputed}</td>
+                <td>{v.published ? pct(v.overturn_rate) : "not enough data"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      <h2>Targets</h2>
+      <p class="small muted">
+        Every verifier is gated on a labelled golden set before release: false release ≤ 1%, false
+        refund ≤ 3%, critical-error recall ≥ 99%, every known attack never paid out.
       </p>
     </Page>
   );

@@ -1,4 +1,4 @@
-import type { ChainGateway } from "@proofdesk/chain";
+import type { AnchorGateway, ChainGateway } from "@proofdesk/chain";
 import type { ApiScope, Db } from "@proofdesk/db";
 import type { PaymentsGateway } from "@proofdesk/payments";
 import type { SpecDrafter } from "@proofdesk/spec-engine";
@@ -27,6 +27,8 @@ export interface AppDeps {
   payments?: PaymentsGateway;
   /** Stablecoin rail (ProofDeskJobs on Base). Absent → on-chain funding returns 503. */
   chain?: ChainGateway;
+  /** Posts the ledger head on-chain (LedgerAnchor). Absent → anchoring is off. */
+  anchor?: AnchorGateway;
   /** Public base URL of this API, for Stripe onboarding return/refresh links. */
   publicUrl?: string;
   /** Stripe publishable key (pk_…), for the hosted card page. */

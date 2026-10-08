@@ -4,6 +4,7 @@ import { createApp } from "./app.ts";
 import { loadEnv } from "./load-env.ts";
 import {
   allowPrivateNetworkFromEnv,
+  anchorFromEnv,
   chainFromEnv,
   codeVerifierFromEnv,
   dataVerifierFromEnv,
@@ -45,6 +46,7 @@ const app = createApp({
   dataVerifier: dataVerifierFromEnv(),
   ...(payments ? { payments } : {}),
   ...(chain ? { chain } : {}),
+  ...(anchorFromEnv() ? { anchor: anchorFromEnv() } : {}),
   ...(process.env.PUBLIC_URL ? { publicUrl: process.env.PUBLIC_URL } : {}),
   ...(process.env.STRIPE_PUBLISHABLE_KEY
     ? { stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY }

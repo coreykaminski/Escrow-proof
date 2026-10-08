@@ -1,4 +1,9 @@
-import { type ChainGateway, ViemChainGateway } from "@proofdesk/chain";
+import {
+  type AnchorGateway,
+  type ChainGateway,
+  ViemAnchorGateway,
+  ViemChainGateway,
+} from "@proofdesk/chain";
 import { type PaymentsGateway, StripeGateway } from "@proofdesk/payments";
 import { ClaudeSpecDrafter, type SpecDrafter } from "@proofdesk/spec-engine";
 import {
@@ -91,4 +96,19 @@ export function reviewerRatesFromEnv(env = process.env): ReviewerRates {
       env.REVIEWER_RATE_DISPUTE ?? DEFAULT_REVIEWER_RATES.disputeResolution,
     ),
   };
+}
+
+/**
+ * Ledger anchoring when ANCHOR_CONTRACT is set (same chain as CHAIN_RPC_URL/CHAIN_ID). Signs with
+ * ANCHOR_PRIVATE_KEY, or the evaluator key.
+ */
+export function anchorFromEnv(env = process.env): AnchorGateway | undefined {
+  const key = env.ANCHOR_PRIVATE_KEY ?? env.EVALUATOR_PRIVATE_KEY;
+  if (!env.ANCHOR_CONTRACT || !env.CHAIN_RPC_URL || !env.CHAIN_ID || !key) return undefined;
+  return new ViemAnchorGateway({
+    rpcUrl: env.CHAIN_RPC_URL,
+    chainId: Number(env.CHAIN_ID),
+    contract: env.ANCHOR_CONTRACT as `0x${string}`,
+    anchorerKey: key as `0x${string}`,
+  });
 }
