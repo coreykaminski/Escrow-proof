@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { dashboardRoutes, publicLinkRoutes } from "./dashboard/routes.tsx";
 import type { AppDeps, AppEnv } from "./env.ts";
 import { ApiError, errorResponse } from "./errors.ts";
 import { authenticate, idempotency, requireScope } from "./middleware.ts";
@@ -20,6 +21,8 @@ export function createApp(deps: AppDeps) {
   app.get("/openapi.json", (c) => c.json(openApiDocument(deps.publicUrl)));
   app.get("/docs", (c) => c.html(DOCS_HTML));
   app.route("/webhooks", webhookRoutes(deps));
+  app.route("/dashboard", dashboardRoutes(deps));
+  app.route("/", publicLinkRoutes(deps));
 
   app.use("/v1/*", authenticate(deps), idempotency(deps));
   app.use("/v1/agreements/*", requireScope("platform"));

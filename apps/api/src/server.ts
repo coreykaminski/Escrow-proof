@@ -25,6 +25,9 @@ const app = createApp({
   verifier,
   ...(payments ? { payments } : {}),
   ...(process.env.PUBLIC_URL ? { publicUrl: process.env.PUBLIC_URL } : {}),
+  ...(process.env.STRIPE_PUBLISHABLE_KEY
+    ? { stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY }
+    : {}),
 });
 const server = serve({ fetch: app.fetch, port }, (info) => {
   console.log(`Proof Desk API listening on http://localhost:${info.port} (${handle.driver})`);

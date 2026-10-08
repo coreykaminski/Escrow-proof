@@ -43,6 +43,13 @@
       "when": 1791392454746,
       "tag": "0005_outbound_webhooks",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791472989527,
+      "tag": "0006_dashboard",
+      "breakpoints": true
     }
   ]
 }

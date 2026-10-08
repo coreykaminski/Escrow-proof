@@ -7,6 +7,21 @@ import { hashApiKey } from "./accounts.ts";
 import type { AppDeps, AppEnv } from "./env.ts";
 import { ApiError } from "./errors.ts";
 
+/** The active (unrevoked) key matching a plaintext API key, or undefined. */
+export async function findApiKey(db: AppDeps["db"], key: string) {
+  const [row] = await db
+    .select({
+      id: schema.apiKeys.id,
+      accountId: schema.apiKeys.accountId,
+      mode: schema.apiKeys.mode,
+      scopes: schema.apiKeys.scopes,
+    })
+    .from(schema.apiKeys)
+    .where(and(eq(schema.apiKeys.keyHash, hashApiKey(key)), isNull(schema.apiKeys.revokedAt)))
+    .limit(1);
+  return row;
+}
+
 export function authenticate({ db, now }: AppDeps): MiddlewareHandler<AppEnv> {
   return async (c, next) => {
     const header = c.req.header("Authorization") ?? "";
@@ -15,18 +30,7 @@ export function authenticate({ db, now }: AppDeps): MiddlewareHandler<AppEnv> {
       throw new ApiError(401, "unauthenticated", "missing or malformed API key");
     }
 
-    const [row] = await db
-      .select({
-        id: schema.apiKeys.id,
-        accountId: schema.apiKeys.accountId,
-        mode: schema.apiKeys.mode,
-        scopes: schema.apiKeys.scopes,
-      })
-      .from(schema.apiKeys)
-      .where(
-        and(eq(schema.apiKeys.keyHash, hashApiKey(match[1])), isNull(schema.apiKeys.revokedAt)),
-      )
-      .limit(1);
+    const row = await findApiKey(db, match[1]);
     if (!row) throw new ApiError(401, "unauthenticated", "invalid or revoked API key");
 
     await db.update(schema.apiKeys).set({ lastUsedAt: now() }).where(eq(schema.apiKeys.id, row.id));

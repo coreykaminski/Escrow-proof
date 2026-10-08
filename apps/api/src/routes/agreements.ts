@@ -22,6 +22,7 @@ import {
 } from "../services/agreements.ts";
 import { listInputs, replaceInputs } from "../services/inputs.ts";
 import { createCardHold, getHold } from "../services/payments.ts";
+import { createShareLink } from "../services/share-links.ts";
 import { draftAgreement, resolveMandateAmount } from "../services/spec-drafts.ts";
 import { listVerifications } from "../services/verification.ts";
 import {
@@ -35,6 +36,7 @@ import {
   FromRequestBody,
   FundBody,
   InputsBody,
+  LinkBody,
   ListQuery,
   ReplaceSpecBody,
 } from "./schemas.ts";
@@ -44,7 +46,8 @@ import {
  * agreements; the actor role is fixed by the endpoint, or stated in the body where either
  * party could act.
  */
-export function agreementRoutes({ db, now, drafter, payments }: AppDeps) {
+export function agreementRoutes(deps: AppDeps) {
+  const { db, now, drafter, payments } = deps;
   const r = new Hono<AppEnv>();
 
   r.post("/", async (c) => {
@@ -221,6 +224,47 @@ export function agreementRoutes({ db, now, drafter, payments }: AppDeps) {
       },
       201,
     );
+  });
+
+  /** A public, read-only verdict report link to share with the buyer and seller. */
+  r.post("/:id/report-links", async (c) => {
+    const body = LinkBody.parse(await c.req.json().catch(() => ({})));
+    const auth = c.get("auth");
+    const agreement = await getAgreement(db, c.req.param("id"), { accountId: auth.accountId });
+    const { token, expiresAt } = await createShareLink(db, {
+      kind: "report",
+      agreementId: agreement.id,
+      createdByKeyId: auth.apiKeyId,
+      ttlDays: body.expires_in_days,
+      now: now(),
+    });
+    const base = deps.publicUrl ?? new URL(c.req.url).origin;
+    return c.json({ url: `${base}/r/${token}`, expires_at: expiresAt.toISOString() }, 201);
+  });
+
+  /**
+   * A hosted page where the buyer enters their card (for agents and platforms that don't collect
+   * cards themselves). Creates the card hold if needed.
+   */
+  r.post("/:id/payment-links", async (c) => {
+    if (!payments)
+      throw new ApiError(503, "payments_unavailable", "card payments aren't configured");
+    const body = LinkBody.parse(await c.req.json().catch(() => ({})));
+    const auth = c.get("auth");
+    const { agreement } = await createCardHold(db, payments, {
+      agreementId: c.req.param("id"),
+      scope: { accountId: auth.accountId },
+      now: now(),
+    });
+    const { token, expiresAt } = await createShareLink(db, {
+      kind: "pay",
+      agreementId: agreement.id,
+      createdByKeyId: auth.apiKeyId,
+      ttlDays: body.expires_in_days,
+      now: now(),
+    });
+    const base = deps.publicUrl ?? new URL(c.req.url).origin;
+    return c.json({ url: `${base}/pay/${token}`, expires_at: expiresAt.toISOString() }, 201);
   });
 
   r.get("/:id/hold", async (c) => {

@@ -34,6 +34,7 @@ export async function createHarness(
     /** Build the gateway from the harness clock (e.g. a FakeGateway). */
     payments?: (now: () => Date) => PaymentsGateway;
     fetch?: typeof fetch;
+    stripePublishableKey?: string;
   } = {},
 ): Promise<Harness> {
   const handle = createDb("memory://");
@@ -61,6 +62,7 @@ export async function createHarness(
     ...(opts.verifier ? { verifier: opts.verifier } : {}),
     ...(opts.payments ? { payments: opts.payments(() => clock.now) } : {}),
     ...(opts.fetch ? { fetch: opts.fetch } : {}),
+    ...(opts.stripePublishableKey ? { stripePublishableKey: opts.stripePublishableKey } : {}),
   });
 
   return {

@@ -214,6 +214,37 @@ export const webhookAttempts = pgTable(
   (t) => [index("webhook_attempts_endpoint_idx").on(t.endpointId, t.createdAt)],
 );
 
+/** Dashboard sign-ins: an API key exchanged for a session cookie. Only hashes are stored. */
+export const dashboardSessions = pgTable("dashboard_sessions", {
+  idHash: text("id_hash").primaryKey(),
+  apiKeyId: text("api_key_id")
+    .notNull()
+    .references(() => apiKeys.id),
+  csrfToken: text("csrf_token").notNull(),
+  expiresAt: ts("expires_at").notNull(),
+  createdAt: ts("created_at").notNull(),
+});
+
+/**
+ * Unguessable links: "report" opens an agreement's public verdict report, "pay" opens the
+ * hosted card page for its hold. Stored as hashes; revocable; expiring.
+ */
+export const shareLinks = pgTable(
+  "share_links",
+  {
+    tokenHash: text("token_hash").primaryKey(),
+    kind: text("kind").$type<"report" | "pay">().notNull(),
+    agreementId: text("agreement_id")
+      .notNull()
+      .references(() => agreements.id),
+    createdByKeyId: text("created_by_key_id").notNull(),
+    expiresAt: ts("expires_at").notNull(),
+    revokedAt: ts("revoked_at"),
+    createdAt: ts("created_at").notNull(),
+  },
+  (t) => [index("share_links_agreement_idx").on(t.agreementId)],
+);
+
 /** Processed webhook deliveries, so a replayed or duplicated event is handled once. */
 export const webhookEvents = pgTable("webhook_events", {
   id: text("id").primaryKey(),

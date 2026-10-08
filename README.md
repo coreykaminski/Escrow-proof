@@ -12,7 +12,7 @@ reference is served at `/docs` (OpenAPI at `/openapi.json`).
 and wired in; its accuracy gate needs the model-based eval run (see below). Part 4 (Stripe card
 rail) is built and tested against a Stripe simulator; its live test-mode check needs a Stripe test
 key (`npm run stripe:e2e`). Part 5 (developer surface: webhooks, TypeScript SDK, MCP server,
-sandbox helpers, OpenAPI docs, quickstart) is built.
+sandbox helpers, OpenAPI docs, quickstart) and Part 6 (dashboard + human review) are built.
 
 ## Quickstart
 
@@ -130,6 +130,23 @@ npm run eval:translation                    # all 300; checks the MASTER_PLAN §
 
 The deterministic gate on the golden set runs with `npm test` (free). The full eval also runs from
 GitHub Actions → "Translation verifier eval" (needs the `ANTHROPIC_API_KEY` repo secret).
+
+### Dashboard and human review
+
+`/dashboard`: sign in with an API key, which gives an HttpOnly session cookie, and every form carries a
+CSRF token.
+- **Platform keys:** your agreements, each with its criteria, verdicts and evidence, the source and the
+  delivered documents side by side, the card hold, and the ledger.
+- **Ops keys** (one per reviewer: `npm run cli -- create-account --name "Reviewer Jane" --ops`)
+  also get the **review queue** (escalated or disputed, oldest first), a decision form (a decision on an
+  escalation, or a final dispute resolution), and **reviewer stats** for payouts.
+
+Shareable links (random tokens, stored hashed, expiring):
+- `POST /v1/agreements/:id/report-links` → `/r/…`: a public **verdict report** with the criteria,
+  verdicts, decision, spec/delivery/report hashes and the ledger with a chain check. It never shows the
+  documents themselves.
+- `POST /v1/agreements/:id/payment-links` → `/pay/…`: a hosted page where the buyer authorizes
+  their card with Stripe.js. It needs `STRIPE_PUBLISHABLE_KEY`.
 
 ### Card rail (Stripe)
 

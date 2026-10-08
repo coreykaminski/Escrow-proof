@@ -125,3 +125,5 @@ export const ListQuery = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(20),
   status: z.enum(AGREEMENT_STATES).optional(),
 });
+
+export const LinkBody = z.object({ expires_in_days: z.number().int().min(1).max(90).default(30) });

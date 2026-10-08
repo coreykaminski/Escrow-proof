@@ -12,6 +12,7 @@ import {
   FromRequestBody,
   FundBody,
   InputsBody,
+  LinkBody,
   OnboardingBody,
   ReplaceSpecBody,
   ResolveDisputeBody,
@@ -127,6 +128,22 @@ export const OPERATIONS: Op[] = [
     path: "/v1/agreements/{id}/verifications",
     tag: "Agreements",
     summary: "Verification reports",
+  },
+  {
+    method: "post",
+    path: "/v1/agreements/{id}/report-links",
+    tag: "Agreements",
+    summary: "Create a shareable, read-only verdict report link",
+    body: LinkBody,
+    created: true,
+  },
+  {
+    method: "post",
+    path: "/v1/agreements/{id}/payment-links",
+    tag: "Funding",
+    summary: "Create a hosted page where the buyer authorizes their card",
+    body: LinkBody,
+    created: true,
   },
   // Funding
   {

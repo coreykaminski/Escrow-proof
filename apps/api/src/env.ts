@@ -15,6 +15,8 @@ export interface AppDeps {
   payments?: PaymentsGateway;
   /** Public base URL of this API, for Stripe onboarding return/refresh links. */
   publicUrl?: string;
+  /** Stripe publishable key (pk_…), for the hosted card page. */
+  stripePublishableKey?: string;
   /** HTTP client for outbound webhooks (injectable for tests). */
   fetch?: typeof fetch;
 }
