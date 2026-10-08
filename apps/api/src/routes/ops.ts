@@ -1,6 +1,6 @@
 import { verifyLedger } from "@proofdesk/db";
 import { Hono } from "hono";
-import type { AppDeps, AppEnv } from "../env.ts";
+import { type AppDeps, type AppEnv, verifiersOf } from "../env.ts";
 import { agreementJson, verificationJson } from "../serialize.ts";
 import { applyEvent, getAgreement } from "../services/agreements.ts";
 import { settleAgreement } from "../services/payments.ts";
@@ -13,7 +13,8 @@ import { DecideBody, ResolveDisputeBody, SettleBody } from "./schemas.ts";
  * agreements: run the automated verifier, make human decisions on escalations and disputes,
  * and settle (by hand until the payment rails in Part 4).
  */
-export function opsRoutes({ db, now, verifier, payments, chain, fetch }: AppDeps) {
+export function opsRoutes(deps: AppDeps) {
+  const { db, now, payments, chain, fetch } = deps;
   const r = new Hono<AppEnv>();
   const all = {};
   const opsActor = (apiKeyId: string) => ({ role: "ops" as const, ref: apiKeyId });
@@ -35,7 +36,10 @@ export function opsRoutes({ db, now, verifier, payments, chain, fetch }: AppDeps
 
   /** Runs the automated verifier on the latest delivery, then decides or escalates. */
   r.post("/agreements/:id/verify", async (c) => {
-    const result = await verifyAgreement(db, verifier, { agreementId: c.req.param("id"), now });
+    const result = await verifyAgreement(db, verifiersOf(deps), {
+      agreementId: c.req.param("id"),
+      now,
+    });
     const [latest] = await listVerifications(db, result.agreement.id);
     return c.json({
       agreement: agreementJson(result.agreement),

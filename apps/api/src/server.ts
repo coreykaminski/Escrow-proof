@@ -2,7 +2,14 @@ import { serve } from "@hono/node-server";
 import { createDb } from "@proofdesk/db";
 import { createApp } from "./app.ts";
 import { loadEnv } from "./load-env.ts";
-import { chainFromEnv, drafterFromEnv, paymentsFromEnv, verifierFromEnv } from "./models.ts";
+import {
+  chainFromEnv,
+  codeVerifierFromEnv,
+  dataVerifierFromEnv,
+  drafterFromEnv,
+  paymentsFromEnv,
+  verifierFromEnv,
+} from "./models.ts";
 
 loadEnv();
 
@@ -28,6 +35,8 @@ const app = createApp({
   now: () => new Date(),
   drafter,
   verifier,
+  codeVerifier: codeVerifierFromEnv(),
+  dataVerifier: dataVerifierFromEnv(),
   ...(payments ? { payments } : {}),
   ...(chain ? { chain } : {}),
   ...(process.env.PUBLIC_URL ? { publicUrl: process.env.PUBLIC_URL } : {}),

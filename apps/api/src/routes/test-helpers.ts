@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { z } from "zod";
-import type { AppDeps, AppEnv } from "../env.ts";
+import { type AppDeps, type AppEnv, verifiersOf } from "../env.ts";
 import { ApiError } from "../errors.ts";
 import { agreementJson, verificationJson } from "../serialize.ts";
 import { applyEvent, getAgreement } from "../services/agreements.ts";
@@ -18,7 +18,8 @@ export const SimulateDecisionBody = z.object({
  * Proof Desk ops: simulate the verifier's decision, run the real verifier, settle immediately.
  * Test-mode agreements only; live keys get 403.
  */
-export function testHelperRoutes({ db, now, verifier, payments, chain }: AppDeps) {
+export function testHelperRoutes(deps: AppDeps) {
+  const { db, now, payments, chain } = deps;
   const r = new Hono<AppEnv>();
   const system = { role: "system" as const, ref: "sandbox" };
 
@@ -67,7 +68,7 @@ export function testHelperRoutes({ db, now, verifier, payments, chain }: AppDeps
   /** Runs the real verifier (needs an Anthropic key on the server). */
   r.post("/agreements/:id/verify", async (c) => {
     const row = await ownTestAgreement(c.get("auth").accountId, c.req.param("id"));
-    const result = await verifyAgreement(db, verifier, { agreementId: row.id, now });
+    const result = await verifyAgreement(db, verifiersOf(deps), { agreementId: row.id, now });
     const [latest] = await listVerifications(db, row.id);
     return c.json({
       agreement: agreementJson(result.agreement),

@@ -4,7 +4,11 @@ import type { PaymentsGateway } from "@proofdesk/payments";
 import { FakeSpecDrafter, type SpecDrafter } from "@proofdesk/spec-engine";
 import { createAccountWithKey } from "../src/accounts.ts";
 import { createApp } from "../src/app.ts";
-import type { TranslationVerifier } from "../src/services/verification.ts";
+import type {
+  CodeVerifier,
+  DataVerifier,
+  TranslationVerifier,
+} from "../src/services/verification.ts";
 
 export const T0 = new Date("2026-10-06T12:00:00.000Z");
 export const HOUR = 3_600_000;
@@ -32,6 +36,8 @@ export async function createHarness(
   opts: {
     drafter?: SpecDrafter | undefined;
     verifier?: TranslationVerifier;
+    codeVerifier?: CodeVerifier;
+    dataVerifier?: DataVerifier;
     /** Build the gateway from the harness clock (e.g. a FakeGateway). */
     payments?: (now: () => Date) => PaymentsGateway;
     /** Build the stablecoin rail from the harness clock (e.g. a FakeChainGateway). */
@@ -63,6 +69,8 @@ export async function createHarness(
     now: () => clock.now,
     drafter,
     ...(opts.verifier ? { verifier: opts.verifier } : {}),
+    ...(opts.codeVerifier ? { codeVerifier: opts.codeVerifier } : {}),
+    ...(opts.dataVerifier ? { dataVerifier: opts.dataVerifier } : {}),
     ...(opts.payments ? { payments: opts.payments(() => clock.now) } : {}),
     ...(opts.chain ? { chain: opts.chain(() => clock.now) } : {}),
     ...(opts.fetch ? { fetch: opts.fetch } : {}),

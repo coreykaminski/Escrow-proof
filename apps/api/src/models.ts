@@ -1,8 +1,15 @@
 import { type ChainGateway, ViemChainGateway } from "@proofdesk/chain";
 import { type PaymentsGateway, StripeGateway } from "@proofdesk/payments";
 import { ClaudeSpecDrafter, type SpecDrafter } from "@proofdesk/spec-engine";
-import { ClaudeCaller, verifyTranslation } from "@proofdesk/verifier";
-import type { TranslationVerifier } from "./services/verification.ts";
+import {
+  ClaudeCaller,
+  DockerSandbox,
+  NodePermissionSandbox,
+  verifyCode,
+  verifyData,
+  verifyTranslation,
+} from "@proofdesk/verifier";
+import type { CodeVerifier, DataVerifier, TranslationVerifier } from "./services/verification.ts";
 
 /** The Claude drafter when an API key is configured; otherwise drafting endpoints return 503. */
 export function drafterFromEnv(env = process.env): SpecDrafter | undefined {
@@ -40,4 +47,26 @@ export function chainFromEnv(env = process.env): ChainGateway | undefined {
     contract: JOBS_CONTRACT as `0x${string}`,
     evaluatorKey: EVALUATOR_PRIVATE_KEY as `0x${string}`,
   });
+}
+
+/**
+ * The code verifier. Its sandboxed test layer needs no API key; the model judge joins when
+ * ANTHROPIC_API_KEY is set. CODE_SANDBOX picks the sandbox: "docker" (production default:
+ * no network, read-only, unprivileged; DOCKER_RUNTIME=runsc for gVisor) or "node" (Node's
+ * permission model; development and CI only).
+ */
+export function codeVerifierFromEnv(env = process.env): CodeVerifier {
+  const kind = env.CODE_SANDBOX ?? (env.NODE_ENV === "production" ? "docker" : "node");
+  const sandbox =
+    kind === "docker"
+      ? new DockerSandbox(env.DOCKER_RUNTIME ? { ociRuntime: env.DOCKER_RUNTIME } : {})
+      : new NodePermissionSandbox();
+  const caller = env.ANTHROPIC_API_KEY ? new ClaudeCaller() : undefined;
+  return (input) => verifyCode(input, { sandbox, ...(caller ? { caller } : {}) });
+}
+
+/** The data/research verifier: deterministic checks always; the model judge with a key. */
+export function dataVerifierFromEnv(env = process.env): DataVerifier {
+  const caller = env.ANTHROPIC_API_KEY ? new ClaudeCaller() : undefined;
+  return (input) => verifyData(input, caller ? { caller } : {});
 }

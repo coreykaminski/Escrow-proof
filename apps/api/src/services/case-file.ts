@@ -1,6 +1,6 @@
 import { appealWindowEndsAt } from "@proofdesk/core";
 import { type Db, listLedgerForAgreement, schema, verifyLedger } from "@proofdesk/db";
-import type { VerificationReport } from "@proofdesk/verifier";
+import type { AnyReport, BaseReport } from "@proofdesk/verifier";
 import { and, asc, count, desc, eq, inArray, sql } from "drizzle-orm";
 import {
   type AgreementRow,
@@ -19,7 +19,7 @@ export interface CaseFile {
   inputs: Awaited<ReturnType<typeof listInputs>>;
   delivery: Awaited<ReturnType<typeof listDeliveries>>[number] | null;
   verification:
-    | (Awaited<ReturnType<typeof listVerifications>>[number] & { report: VerificationReport })
+    | (Awaited<ReturnType<typeof listVerifications>>[number] & { report: AnyReport })
     | null;
   disputes: (typeof schema.disputes.$inferSelect)[];
   decisions: (typeof schema.decisions.$inferSelect)[];
@@ -53,7 +53,7 @@ export async function loadCaseFile(db: Db, agreementId: string, scope: Scope): P
     appealEndsAt: appealWindowEndsAt(snapshotOf(agreement)),
     inputs,
     delivery: deliveries[0] ?? null,
-    verification: latest ? { ...latest, report: latest.report as VerificationReport } : null,
+    verification: latest ? { ...latest, report: latest.report as AnyReport } : null,
     disputes,
     decisions,
     hold: hold ?? null,
@@ -89,7 +89,7 @@ export async function reviewQueue(db: Db) {
     const verification = verifications.find((v) => v.agreementId === a.id);
     const reason = dispute
       ? `Dispute by ${dispute.openedBy}: ${dispute.reason}`
-      : ((verification?.report as VerificationReport | undefined)?.decision.reason ?? "Escalated");
+      : ((verification?.report as BaseReport | undefined)?.decision.reason ?? "Escalated");
     return { agreement: a, reason, waitingSince: a.updatedAt };
   });
 }

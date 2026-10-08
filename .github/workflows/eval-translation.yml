@@ -1,12 +1,18 @@
-name: Translation verifier eval
+name: Verifier eval (model)
 
-# Runs the full model-based eval against the golden set. It calls the Anthropic API (costs money),
-# so it only runs when triggered by hand. The free deterministic gate runs in CI on every push.
+# Runs a model-based verifier eval against its golden set. It calls the Anthropic API (costs
+# money), so it only runs when triggered by hand. The free deterministic/sandbox gates run in CI
+# on every push.
 on:
   workflow_dispatch:
     inputs:
+      suite:
+        description: "Which verifier"
+        type: choice
+        options: [translation, code, data]
+        default: translation
       sample:
-        description: "Stratified sample size (empty = all 300 items)"
+        description: "Translation only: stratified sample size (empty = all 300 items)"
         required: false
         default: "60"
 
@@ -24,9 +30,14 @@ jobs:
       - name: Run eval
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: npm run eval:translation -- ${{ inputs.sample && format('--sample {0}', inputs.sample) || '' }}
+        run: |
+          case "${{ inputs.suite }}" in
+            translation) npm run eval:translation -- ${{ inputs.sample && format('--sample {0}', inputs.sample) || '' }} ;;
+            code) npm run eval:code -- --judge ;;
+            data) npm run eval:data -- --judge ;;
+          esac
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: translation-eval
-          path: evals/translation/runs/
+          name: ${{ inputs.suite }}-eval
+          path: evals/${{ inputs.suite }}/runs/

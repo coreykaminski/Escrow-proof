@@ -29,7 +29,11 @@
     "contracts:build": "cd contracts && forge build && cd .. && tsx scripts/gen-chain-abi.ts && biome format --write packages/chain/src/abi.ts",
     "contracts:test": "cd contracts && forge test",
     "chain:deploy": "cd contracts && forge script script/Deploy.s.sol --rpc-url \"$CHAIN_RPC_URL\" --private-key \"$DEPLOYER_PRIVATE_KEY\" --broadcast",
-    "chain:e2e": "tsx scripts/chain-e2e.ts"
+    "chain:e2e": "tsx scripts/chain-e2e.ts",
+    "golden:code": "tsx evals/code/build-golden.ts",
+    "eval:code": "tsx evals/code/run.ts",
+    "golden:data": "tsx evals/data/build-golden.ts",
+    "eval:data": "tsx evals/data/run.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",

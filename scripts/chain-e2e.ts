@@ -101,11 +101,16 @@ const signature = await buyer.signTypedData({
     validBefore: BigInt(td.message.validBefore),
   },
 });
-const funded = await call(platform.apiKey, "POST", `/v1/agreements/${agr.id}/onchain-job/authorization`, {
-  client: buyer.address,
-  valid_before: td.message.validBefore,
-  signature,
-});
+const funded = await call(
+  platform.apiKey,
+  "POST",
+  `/v1/agreements/${agr.id}/onchain-job/authorization`,
+  {
+    client: buyer.address,
+    valid_before: td.message.validBefore,
+    signature,
+  },
+);
 console.log(`✓ funded: job ${funded.job.job_id}, tx ${funded.job.fund_tx}`);
 
 await call(platform.apiKey, "POST", `/v1/agreements/${agr.id}/deliveries`, {

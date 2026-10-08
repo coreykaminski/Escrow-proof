@@ -63,7 +63,7 @@ export function detectLang(text: string): Lang | null {
  * translation of a document that itself talks about reviewers would also contain them, so the
  * check only counts phrases that appear in the deliverable but not in the source.
  */
-const INJECTION_PATTERNS: RegExp[] = [
+export const INJECTION_PATTERNS: RegExp[] = [
   /\bignore\s+(all\s+|any\s+)?(the\s+)?(previous|prior|above|earlier|preceding)\s+(instructions|criteria|rules)/i,
   /\b(note|message|instructions?)\s+(to|for)\s+(the\s+)?(reviewer|verifier|evaluator|grader|judge|assistant|ai|model|llm)\b/i,
   /\b(mark|rate|grade|treat|consider)\s+(this|the)\s+(translation|deliverable|document|text|work)\s+as\s+(accurate|correct|passed|passing|complete|approved|compliant)/i,

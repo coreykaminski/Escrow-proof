@@ -2,7 +2,12 @@ import type { ChainGateway } from "@proofdesk/chain";
 import type { ApiScope, Db } from "@proofdesk/db";
 import type { PaymentsGateway } from "@proofdesk/payments";
 import type { SpecDrafter } from "@proofdesk/spec-engine";
-import type { TranslationVerifier } from "./services/verification.ts";
+import type {
+  CodeVerifier,
+  DataVerifier,
+  TranslationVerifier,
+  Verifiers,
+} from "./services/verification.ts";
 
 export interface AppDeps {
   db: Db;
@@ -12,6 +17,10 @@ export interface AppDeps {
   drafter?: SpecDrafter;
   /** Automated translation verifier. Absent → POST /v1/ops/agreements/:id/verify returns 503. */
   verifier?: TranslationVerifier;
+  /** Code verifier (sandboxed tests). Absent → code jobs return 503 on verify. */
+  codeVerifier?: CodeVerifier;
+  /** Data/research verifier. Absent → data jobs return 503 on verify. */
+  dataVerifier?: DataVerifier;
   /** Card processor (Stripe). Absent → card funding and card settlement return 503. */
   payments?: PaymentsGateway;
   /** Stablecoin rail (ProofDeskJobs on Base). Absent → on-chain funding returns 503. */
@@ -36,3 +45,9 @@ export interface AppEnv {
     auth: AuthContext;
   };
 }
+
+export const verifiersOf = (d: AppDeps): Verifiers => ({
+  translation: d.verifier,
+  code: d.codeVerifier,
+  data: d.dataVerifier,
+});

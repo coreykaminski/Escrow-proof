@@ -1,3 +1,4 @@
+import type { CodeReport, DataReport } from "@proofdesk/verifier";
 import type { AgreementRow } from "../services/agreements.ts";
 import type { CaseFile, reviewerStats, reviewQueue } from "../services/case-file.ts";
 import { Criteria, Flash, Ledger, money, OutcomePill, Page, Status, when } from "./ui.tsx";
@@ -285,7 +286,7 @@ export function CasePage(p: {
                 <tr>
                   <td>
                     <span class={`pill ${f.confidence === "high" ? "fail" : "uncertain"}`}>
-                      {f.kind.replace("_", " ")}
+                      {f.kind.replaceAll("_", " ")}
                     </span>
                   </td>
                   <td class="small">{f.message}</td>
@@ -294,6 +295,13 @@ export function CasePage(p: {
             </tbody>
           </table>
         </>
+      ) : null}
+
+      {v && "vertical" in v.report && v.report.vertical === "code" ? (
+        <TestRun tests={v.report.tests} />
+      ) : null}
+      {v && "vertical" in v.report && v.report.vertical === "data" ? (
+        <Sources data={v.report.data} />
       ) : null}
 
       <h2>Documents</h2>
@@ -613,3 +621,80 @@ export const ONCHAIN_JS = `(() => {
     }
   });
 })();`;
+
+function TestRun({ tests }: { tests: CodeReport["tests"] }) {
+  return (
+    <>
+      <h2>Test run</h2>
+      <p class="small muted">
+        {tests.passed} passed · {tests.failed} failed · {tests.runtime} in the {tests.sandbox}{" "}
+        sandbox · {(tests.duration_ms / 1000).toFixed(1)} s{tests.timed_out ? " · timed out" : ""}
+      </p>
+      <table>
+        <tbody>
+          {tests.cases.map((t) => (
+            <tr>
+              <td>
+                <span
+                  class={`pill ${t.status === "pass" ? "pass" : t.status === "fail" ? "fail" : ""}`}
+                >
+                  {t.status}
+                </span>
+              </td>
+              <td class="small">
+                {t.name}
+                {t.message ? <div class="ev">{t.message}</div> : null}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  );
+}
+
+function Sources({ data }: { data: DataReport["data"] }) {
+  if (data.citations.length === 0 && data.schema_errors.length === 0) return null;
+  return (
+    <>
+      {data.schema_errors.length ? (
+        <>
+          <h2>Schema errors</h2>
+          <table>
+            <tbody>
+              {data.schema_errors.slice(0, 20).map((e) => (
+                <tr>
+                  <td class="mono small">{e.path}</td>
+                  <td class="small">{e.message}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      ) : null}
+      {data.citations.length ? (
+        <>
+          <h2>Cited sources</h2>
+          <table>
+            <tbody>
+              {data.citations.map((c) => (
+                <tr>
+                  <td>
+                    <span class={`pill ${c.status === "ok" ? "pass" : "fail"}`}>{c.status}</span>
+                  </td>
+                  <td class="small mono">{c.url}</td>
+                  <td class="small muted">
+                    {data.quotes
+                      .filter((q) => q.url === c.url)
+                      .map((q) => `${q.found ? "✓" : "✗"} “${q.quote.slice(0, 80)}”`)
+                      .join(" ")}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      ) : null}
+    </>
+  );
+}

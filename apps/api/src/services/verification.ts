@@ -1,6 +1,15 @@
 import { hashValue, newId } from "@proofdesk/core";
 import { appendLedgerEntry, type Db, schema, type Tx } from "@proofdesk/db";
-import type { TranslationInput, VerificationReport } from "@proofdesk/verifier";
+import {
+  type AnyReport,
+  type CodeInput,
+  CodeInputError,
+  type CodeReport,
+  type DataInput,
+  type DataReport,
+  type TranslationInput,
+  type VerificationReport,
+} from "@proofdesk/verifier";
 import { desc, eq } from "drizzle-orm";
 import { ApiError } from "../errors.ts";
 import { type AgreementRow, applyEvent, getAgreement, listDeliveries } from "./agreements.ts";
@@ -8,6 +17,16 @@ import { listInputs } from "./inputs.ts";
 
 /** Runs the translation verifier; injected so tests can use a stubbed model caller. */
 export type TranslationVerifier = (input: TranslationInput) => Promise<VerificationReport>;
+/** Runs the buyer's tests against delivered code in a sandbox (+ the model judge if configured). */
+export type CodeVerifier = (input: CodeInput) => Promise<CodeReport>;
+/** Validates delivered data / checks a research report's citations (+ the model judge). */
+export type DataVerifier = (input: DataInput) => Promise<DataReport>;
+
+export interface Verifiers {
+  translation?: TranslationVerifier | undefined;
+  code?: CodeVerifier | undefined;
+  data?: DataVerifier | undefined;
+}
 
 const isText = (mediaType: string) => /^text\//i.test(mediaType);
 
@@ -20,20 +39,25 @@ const isText = (mediaType: string) => /^text\//i.test(mediaType);
  */
 export async function verifyAgreement(
   db: Db,
-  verifier: TranslationVerifier | undefined,
+  verifiers: Verifiers,
   params: { agreementId: string; now: () => Date },
-): Promise<{ agreement: AgreementRow; verificationId: string; report: VerificationReport }> {
+): Promise<{ agreement: AgreementRow; verificationId: string; report: AnyReport }> {
   const all = {};
   let agreement = await getAgreement(db, params.agreementId, all);
-  if (agreement.spec.vertical !== "translation") {
+  const vertical = agreement.spec.vertical;
+  if (vertical === "general") {
     throw new ApiError(
       422,
       "no_automated_verifier",
-      `there's no automated verifier for "${agreement.spec.vertical}" jobs yet; decide by hand`,
+      `there's no automated verifier for "${vertical}" jobs; decide by hand`,
     );
   }
-  if (!verifier) {
-    throw new ApiError(503, "verifier_unavailable", "the verifier isn't configured on this server");
+  if (!verifiers[vertical]) {
+    throw new ApiError(
+      503,
+      "verifier_unavailable",
+      `the ${vertical} verifier isn't configured on this server`,
+    );
   }
   if (agreement.status !== "delivered" && agreement.status !== "verifying") {
     throw new ApiError(
@@ -43,20 +67,10 @@ export async function verifyAgreement(
     );
   }
 
-  const inputs = (await listInputs(db, agreement.id)).filter((i) => isText(i.mediaType));
-  if (inputs.length === 0) {
-    throw new ApiError(
-      422,
-      "missing_source",
-      "a translation agreement needs its source document attached as a text input",
-    );
-  }
+  const inputs = await listInputs(db, agreement.id);
   const [delivery] = await listDeliveries(db, agreement.id);
   if (!delivery) throw new ApiError(409, "no_delivery", "nothing has been delivered");
-  const target = delivery.artifacts.filter((a) => isText(a.mediaType));
-  if (target.length === 0) {
-    throw new ApiError(422, "unsupported_deliverable", "the delivery has no text artifacts");
-  }
+  const run = await prepareRun(agreement, inputs, delivery.artifacts, verifiers);
 
   if (agreement.status === "delivered") {
     agreement = await applyEvent(db, {
@@ -68,13 +82,15 @@ export async function verifyAgreement(
     });
   }
 
-  const report = await verifier({
-    spec: agreement.spec,
-    source: inputs.map((i) => i.content).join("\n\n"),
-    target: target.map((a) => a.content).join("\n\n"),
-  });
+  let report: AnyReport;
+  try {
+    report = await run();
+  } catch (err) {
+    if (err instanceof CodeInputError) throw new ApiError(422, "missing_tests", err.message);
+    throw err;
+  }
   // Round-trip through JSON so the stored and hashed report are exactly the same value.
-  const stored = JSON.parse(JSON.stringify(report)) as VerificationReport;
+  const stored = JSON.parse(JSON.stringify(report)) as AnyReport;
   const reportHash = hashValue(stored);
   const at = params.now();
   const verificationId = newId("verification", at.getTime());
@@ -127,6 +143,70 @@ export async function verifyAgreement(
     afterTransition: (tx) => recordVerification(tx),
   });
   return { agreement: updated, verificationId, report: stored };
+}
+
+type Input = Awaited<ReturnType<typeof listInputs>>[number];
+type Artifact = { name: string; mediaType: string; content: string };
+
+/** Checks the agreement has what its vertical's verifier needs; returns the call to make. */
+async function prepareRun(
+  agreement: AgreementRow,
+  inputs: Input[],
+  artifacts: Artifact[],
+  verifiers: Verifiers,
+): Promise<() => Promise<AnyReport>> {
+  const spec = agreement.spec;
+  switch (spec.vertical) {
+    case "translation": {
+      const source = inputs.filter((i) => isText(i.mediaType));
+      if (source.length === 0) {
+        throw new ApiError(
+          422,
+          "missing_source",
+          "a translation agreement needs its source document attached as a text input",
+        );
+      }
+      const target = artifacts.filter((a) => isText(a.mediaType));
+      if (target.length === 0) {
+        throw new ApiError(422, "unsupported_deliverable", "the delivery has no text artifacts");
+      }
+      const verify = verifiers.translation as TranslationVerifier;
+      return () =>
+        verify({
+          spec,
+          source: source.map((i) => i.content).join("\n\n"),
+          target: target.map((a) => a.content).join("\n\n"),
+        });
+    }
+    case "code": {
+      const verify = verifiers.code as CodeVerifier;
+      return () =>
+        verify({
+          spec,
+          inputs: inputs.map((i) => ({ name: i.name, content: i.content })),
+          deliverable: artifacts.map((a) => ({ name: a.name, content: a.content })),
+        });
+    }
+    case "data": {
+      const verify = verifiers.data as DataVerifier;
+      return () =>
+        verify({
+          spec,
+          inputs: inputs.map((i) => ({
+            name: i.name,
+            media_type: i.mediaType,
+            content: i.content,
+          })),
+          deliverable: artifacts.map((a) => ({
+            name: a.name,
+            media_type: a.mediaType,
+            content: a.content,
+          })),
+        });
+    }
+    default:
+      throw new ApiError(422, "no_automated_verifier", "no automated verifier for this job");
+  }
 }
 
 export async function listVerifications(db: Db, agreementId: string) {
