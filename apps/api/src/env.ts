@@ -2,6 +2,8 @@ import type { ChainGateway } from "@proofdesk/chain";
 import type { ApiScope, Db } from "@proofdesk/db";
 import type { PaymentsGateway } from "@proofdesk/payments";
 import type { SpecDrafter } from "@proofdesk/spec-engine";
+import type { RateLimitStore } from "./security.ts";
+import type { ReviewerRates } from "./services/billing.ts";
 import type {
   CodeVerifier,
   DataVerifier,
@@ -29,6 +31,21 @@ export interface AppDeps {
   publicUrl?: string;
   /** Stripe publishable key (pk_…), for the hosted card page. */
   stripePublishableKey?: string;
+  /**
+   * Development only: let webhook endpoints be http://localhost or private addresses and skip
+   * the outbound SSRF guard. Never in production.
+   */
+  allowPrivateNetwork?: boolean;
+  /** Reviewer pay per decision, in the platform's payout currency. */
+  reviewerRates?: ReviewerRates;
+  /** Behind a TLS-terminating proxy (Fly): trust Fly-Client-IP / X-Forwarded-For. */
+  trustProxy?: boolean;
+  rateLimits?: Partial<{
+    apiPerMinute: number;
+    loginPer15Minutes: number;
+    publicPerMinute: number;
+  }>;
+  rateLimitStore?: RateLimitStore;
   /** HTTP client for outbound webhooks (injectable for tests). */
   fetch?: typeof fetch;
 }

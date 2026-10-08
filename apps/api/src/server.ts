@@ -3,11 +3,13 @@ import { createDb } from "@proofdesk/db";
 import { createApp } from "./app.ts";
 import { loadEnv } from "./load-env.ts";
 import {
+  allowPrivateNetworkFromEnv,
   chainFromEnv,
   codeVerifierFromEnv,
   dataVerifierFromEnv,
   drafterFromEnv,
   paymentsFromEnv,
+  reviewerRatesFromEnv,
   verifierFromEnv,
 } from "./models.ts";
 
@@ -17,7 +19,8 @@ const databaseUrl = process.env.DATABASE_URL ?? "pglite:./.data/dev";
 const port = Number(process.env.PORT ?? 8787);
 
 const handle = createDb(databaseUrl);
-await handle.migrate();
+// In production, migrations run once per deploy (fly.toml release_command), not on every boot.
+if (process.env.MIGRATE_ON_BOOT !== "0") await handle.migrate();
 
 const drafter = drafterFromEnv();
 const verifier = verifierFromEnv();
@@ -36,6 +39,9 @@ const app = createApp({
   drafter,
   verifier,
   codeVerifier: codeVerifierFromEnv(),
+  allowPrivateNetwork: allowPrivateNetworkFromEnv(),
+  reviewerRates: reviewerRatesFromEnv(),
+  trustProxy: process.env.TRUST_PROXY === "1" || Boolean(process.env.FLY_APP_NAME),
   dataVerifier: dataVerifierFromEnv(),
   ...(payments ? { payments } : {}),
   ...(chain ? { chain } : {}),

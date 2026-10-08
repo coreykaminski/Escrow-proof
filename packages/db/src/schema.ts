@@ -18,6 +18,12 @@ const ts = (name: string) => timestamp(name, { withTimezone: true, mode: "date" 
 export const accounts = pgTable("accounts", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
+  /** Where invoices go. */
+  billingEmail: text("billing_email"),
+  /** Stripe Billing customer, created on the first invoice. */
+  stripeCustomerId: text("stripe_customer_id"),
+  /** "verify_only" accounts pay a monthly minimum on verification fees. */
+  plan: text("plan").$type<"standard" | "verify_only">().notNull().default("standard"),
   createdAt: ts("created_at").notNull().defaultNow(),
 });
 
@@ -415,3 +421,83 @@ export const ledgerEntries = pgTable(
   },
   (t) => [index("ledger_agreement_idx").on(t.agreementId, t.seq)],
 );
+
+/**
+ * A billable usage event (a verification run, a dispute resolution), written in the same
+ * transaction as the event it bills for. `ref` is the verification/dispute id, so it's billed
+ * once. Only live-mode events are invoiced.
+ */
+export const billingEvents = pgTable(
+  "billing_events",
+  {
+    id: text("id").primaryKey(),
+    accountId: text("account_id")
+      .notNull()
+      .references(() => accounts.id),
+    kind: text("kind").$type<"verification" | "dispute">().notNull(),
+    ref: text("ref").notNull(),
+    agreementId: text("agreement_id").references(() => agreements.id),
+    livemode: boolean("livemode").notNull(),
+    /** USD cents. */
+    amount: integer("amount").notNull(),
+    description: text("description").notNull(),
+    /** "YYYY-MM" */
+    period: text("period").notNull(),
+    invoiceId: text("invoice_id"),
+    occurredAt: ts("occurred_at").notNull(),
+  },
+  (t) => [
+    uniqueIndex("billing_events_ref_idx").on(t.kind, t.ref),
+    index("billing_events_account_period_idx").on(t.accountId, t.period),
+  ],
+);
+
+/** One invoice per account per period. */
+export const invoices = pgTable(
+  "invoices",
+  {
+    id: text("id").primaryKey(),
+    accountId: text("account_id")
+      .notNull()
+      .references(() => accounts.id),
+    period: text("period").notNull(),
+    stripeInvoiceId: text("stripe_invoice_id"),
+    status: text("status").notNull(),
+    /** USD cents. */
+    total: integer("total").notNull(),
+    hostedUrl: text("hosted_url"),
+    lines: jsonb("lines").$type<{ description: string; amount: number }[]>().notNull(),
+    createdAt: ts("created_at").notNull(),
+  },
+  (t) => [uniqueIndex("invoices_account_period_idx").on(t.accountId, t.period)],
+);
+
+/** What a human reviewer was paid for a period (one row per reviewer key per period). */
+export const reviewerPayouts = pgTable(
+  "reviewer_payouts",
+  {
+    id: text("id").primaryKey(),
+    apiKeyId: text("api_key_id")
+      .notNull()
+      .references(() => apiKeys.id),
+    period: text("period").notNull(),
+    decisions: integer("decisions").notNull(),
+    disputeResolutions: integer("dispute_resolutions").notNull(),
+    /** In `currency` minor units. */
+    amount: integer("amount").notNull(),
+    currency: text("currency").notNull(),
+    destination: text("destination").notNull(),
+    transferId: text("transfer_id"),
+    status: text("status").$type<"paid" | "failed">().notNull(),
+    error: text("error"),
+    createdAt: ts("created_at").notNull(),
+  },
+  (t) => [uniqueIndex("reviewer_payouts_key_period_idx").on(t.apiKeyId, t.period)],
+);
+
+/** Small operational facts (scheduler heartbeat), keyed by name. */
+export const systemState = pgTable("system_state", {
+  key: text("key").primaryKey(),
+  value: jsonb("value").$type<Record<string, unknown>>().notNull(),
+  updatedAt: ts("updated_at").notNull(),
+});

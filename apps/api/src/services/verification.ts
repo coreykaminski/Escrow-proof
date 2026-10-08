@@ -13,6 +13,7 @@ import {
 import { desc, eq } from "drizzle-orm";
 import { ApiError } from "../errors.ts";
 import { type AgreementRow, applyEvent, getAgreement, listDeliveries } from "./agreements.ts";
+import { recordVerificationFee } from "./billing.ts";
 import { listInputs } from "./inputs.ts";
 
 /** Runs the translation verifier; injected so tests can use a stubbed model caller. */
@@ -111,6 +112,7 @@ export async function verifyAgreement(
       costUsd: stored.usage.cost_usd,
       createdAt: at,
     });
+    await recordVerificationFee(tx, { agreement, verificationId, report: stored, now: at });
     await appendLedgerEntry(tx, {
       agreementId: agreement.id,
       type: "agreement.verification_recorded",

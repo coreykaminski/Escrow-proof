@@ -1,5 +1,5 @@
 import { authorizationNonce, networkName } from "@proofdesk/chain";
-import { AGREEMENT_STATES, TransitionError } from "@proofdesk/core";
+import { AGREEMENT_STATES, PRICING, TransitionError } from "@proofdesk/core";
 import { schema } from "@proofdesk/db";
 import { desc, eq } from "drizzle-orm";
 import { type Context, Hono } from "hono";
@@ -8,6 +8,7 @@ import { getAddress, isAddress } from "viem";
 import type { AppDeps } from "../env.ts";
 import { ApiError } from "../errors.ts";
 import { OnchainAuthorizationBody, OnchainConfirmBody } from "../routes/schemas.ts";
+import { isHttps } from "../security.ts";
 import { applyEvent, listAgreements } from "../services/agreements.ts";
 import { ledgerIntact, loadCaseFile, reviewerStats, reviewQueue } from "../services/case-file.ts";
 import {
@@ -26,6 +27,7 @@ import {
   startSession,
 } from "../services/sessions.ts";
 import { createShareLink, resolveShareLink } from "../services/share-links.ts";
+import { systemStatus } from "../services/status.ts";
 import {
   fundingJson,
   parsePaymentHeader,
@@ -41,9 +43,11 @@ import {
   OnchainPayPage,
   PAY_JS,
   PayPage,
+  PricingPage,
   QueuePage,
   ReportPage,
   ReviewersPage,
+  StatusPage,
   type Viewer,
 } from "./pages.tsx";
 
@@ -79,7 +83,7 @@ export function dashboardRoutes(deps: AppDeps) {
     setCookie(c, COOKIE, id, {
       httpOnly: true,
       sameSite: "Lax",
-      secure: new URL(c.req.url).protocol === "https:",
+      secure: isHttps(c, deps.publicUrl),
       path: "/",
       maxAge: SESSION_HOURS * 3600,
     });
@@ -223,6 +227,16 @@ export function dashboardRoutes(deps: AppDeps) {
 export function publicLinkRoutes(deps: AppDeps) {
   const { db, now, payments, chain } = deps;
   const r = new Hono();
+
+  r.get("/status", async (c) => {
+    const s = await systemStatus(deps);
+    return c.html(<StatusPage {...s} checkedAt={now()} />, s.status === "down" ? 503 : 200);
+  });
+  r.get("/status.json", async (c) => {
+    const s = await systemStatus(deps);
+    return c.json({ ...s, checked_at: now().toISOString() }, s.status === "down" ? 503 : 200);
+  });
+  r.get("/pricing", (c) => c.html(<PricingPage pricing={PRICING} />));
 
   r.get("/r/:token", async (c) => {
     const id = await resolveShareLink(db, c.req.param("token"), "report", now());

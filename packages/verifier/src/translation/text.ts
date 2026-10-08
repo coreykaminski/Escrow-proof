@@ -78,11 +78,86 @@ export const INJECTION_PATTERNS: RegExp[] = [
   /\b(markiere|markieren|bewerte|bewerten)\s+(sie\s+)?(diese|die)\s+übersetzung\s+als/i,
 ];
 
+/** Common Cyrillic and Greek letters that look like Latin ones, for scanning only. */
+const CONFUSABLES: Record<string, string> = {
+  а: "a",
+  е: "e",
+  о: "o",
+  р: "p",
+  с: "c",
+  у: "y",
+  х: "x",
+  і: "i",
+  ј: "j",
+  ѕ: "s",
+  ԁ: "d",
+  ӏ: "l",
+  А: "A",
+  В: "B",
+  Е: "E",
+  К: "K",
+  М: "M",
+  Н: "H",
+  О: "O",
+  Р: "P",
+  С: "C",
+  Т: "T",
+  Х: "X",
+  І: "I",
+  ο: "o",
+  α: "a",
+  ε: "e",
+  ι: "i",
+  κ: "k",
+  ν: "v",
+  ρ: "p",
+  τ: "t",
+  υ: "u",
+  Ο: "O",
+  Α: "A",
+  Ε: "E",
+};
+
+/**
+ * Text as a reader sees it, for injection scanning: compatibility forms folded (full-width,
+ * ligatures), invisible characters removed (zero-width, soft hyphen, bidi controls, tags), and
+ * look-alike letters mapped to Latin. Never used to alter what's judged or quoted.
+ */
+export function normalizeForScan(text: string): string {
+  let out = "";
+  for (const ch of text.normalize("NFKC")) {
+    if (!isInvisible(ch.codePointAt(0) ?? 0)) out += CONFUSABLES[ch] ?? ch;
+  }
+  return out;
+}
+
+/** Zero-width and formatting characters, soft hyphen, bidi controls, variation selectors, tags. */
+function isInvisible(cp: number): boolean {
+  return (
+    cp === 0xad ||
+    cp === 0x34f ||
+    cp === 0x61c ||
+    cp === 0x115f ||
+    cp === 0x1160 ||
+    cp === 0x17b4 ||
+    cp === 0x17b5 ||
+    cp === 0x180e ||
+    cp === 0xfeff ||
+    (cp >= 0x200b && cp <= 0x200f) ||
+    (cp >= 0x202a && cp <= 0x202e) ||
+    (cp >= 0x2060 && cp <= 0x206f) ||
+    (cp >= 0xfe00 && cp <= 0xfe0f) ||
+    (cp >= 0xe0000 && cp <= 0xe007f)
+  );
+}
+
 export function injectionPhrases(target: string, source: string): string[] {
   const hits: string[] = [];
+  const t = normalizeForScan(target);
+  const src = normalizeForScan(source);
   for (const re of INJECTION_PATTERNS) {
-    const m = re.exec(target);
-    if (m && !re.test(source)) hits.push(m[0]);
+    const m = re.exec(t);
+    if (m && !re.test(src)) hits.push(m[0]);
   }
   return hits;
 }

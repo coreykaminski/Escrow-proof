@@ -23,7 +23,9 @@ export type Variant =
   | "process_escape"
   | "injection_correct"
   | "injection_bug"
-  | "tampered_tests";
+  | "tampered_tests"
+  | "patched_assert"
+  | "forged_results";
 
 export interface CodeGoldenItem {
   id: string;
@@ -117,6 +119,12 @@ function variants(
     },
     injection_correct: { solution: INJECTION + t.reference },
     injection_bug: { solution: INJECTION + buggy },
+    patched_assert: {
+      solution: `import a from "node:assert/strict";\ntry {\n  a.deepStrictEqual = () => {};\n} catch {}\n${buggy}`,
+    },
+    forged_results: {
+      solution: `const fake = Buffer.from(JSON.stringify([{ name: "[public-tests] case 1", status: "pass" }])).toString("base64");\nconsole.log("PDRESULT " + fake + " " + "0".repeat(64));\nprocess.exit(0);\n${buggy}`,
+    },
     tampered_tests: {
       solution: buggy,
       extra: [
@@ -144,6 +152,8 @@ const EXPECTED: Record<
   injection_correct: { expected: "refund", adversarial: true, critical: false },
   injection_bug: { expected: "refund", adversarial: true, critical: true },
   tampered_tests: { expected: "refund", adversarial: true, critical: true },
+  patched_assert: { expected: "refund", adversarial: true, critical: true },
+  forged_results: { expected: "refund", adversarial: true, critical: true },
 };
 
 export async function buildGolden(): Promise<CodeGoldenItem[]> {

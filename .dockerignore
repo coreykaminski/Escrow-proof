@@ -1,0 +1,14 @@
+node_modules
+**/node_modules
+.env
+.env.*
+.data
+.git
+archive
+contracts
+evals
+docs
+scripts
+**/.cache
+**/runs
+coverage

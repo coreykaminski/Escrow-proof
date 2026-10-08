@@ -21,6 +21,7 @@ import {
 } from "@proofdesk/db";
 import { and, desc, eq, type SQL } from "drizzle-orm";
 import { ApiError, notFound } from "../errors.ts";
+import { recordDisputeFee } from "./billing.ts";
 
 export type AgreementRow = typeof schema.agreements.$inferSelect;
 
@@ -372,6 +373,14 @@ export async function applyEvent(
 
     await params.afterTransition?.(tx, row, result);
     const records = await writeEventRecords(tx, agreementId, event, actor, now);
+    if (event.type === "RESOLVE_DISPUTE") {
+      await recordDisputeFee(tx, {
+        agreement: row,
+        ref: String(records.dispute_id ?? records.decision_id),
+        outcome: event.outcome,
+        now,
+      });
+    }
 
     await appendLedgerEntry(tx, {
       agreementId,

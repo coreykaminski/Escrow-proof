@@ -9,6 +9,7 @@ import {
   verifyData,
   verifyTranslation,
 } from "@proofdesk/verifier";
+import { DEFAULT_REVIEWER_RATES, type ReviewerRates } from "./services/billing.ts";
 import type { CodeVerifier, DataVerifier, TranslationVerifier } from "./services/verification.ts";
 
 /** The Claude drafter when an API key is configured; otherwise drafting endpoints return 503. */
@@ -69,4 +70,25 @@ export function codeVerifierFromEnv(env = process.env): CodeVerifier {
 export function dataVerifierFromEnv(env = process.env): DataVerifier {
   const caller = env.ANTHROPIC_API_KEY ? new ClaudeCaller() : undefined;
   return (input) => verifyData(input, caller ? { caller } : {});
+}
+
+/** Development conveniences that must be off in production. */
+export function allowPrivateNetworkFromEnv(env = process.env): boolean {
+  if (env.ALLOW_PRIVATE_NETWORK === "1") return true;
+  if (env.ALLOW_PRIVATE_NETWORK === "0") return false;
+  return env.NODE_ENV !== "production";
+}
+
+/**
+ * Reviewer payout currency and rates (minor units). On a Canadian Stripe account, payouts from
+ * the balance must be in CAD: REVIEWER_PAYOUT_CURRENCY=cad.
+ */
+export function reviewerRatesFromEnv(env = process.env): ReviewerRates {
+  return {
+    currency: env.REVIEWER_PAYOUT_CURRENCY ?? DEFAULT_REVIEWER_RATES.currency,
+    decision: Number(env.REVIEWER_RATE_DECISION ?? DEFAULT_REVIEWER_RATES.decision),
+    disputeResolution: Number(
+      env.REVIEWER_RATE_DISPUTE ?? DEFAULT_REVIEWER_RATES.disputeResolution,
+    ),
+  };
 }

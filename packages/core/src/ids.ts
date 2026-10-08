@@ -17,6 +17,9 @@ export const ID_PREFIXES = {
   webhookAttempt: "wa",
   wallet: "wal",
   onchainJob: "ocj",
+  billingEvent: "bev",
+  invoice: "inv",
+  reviewerPayout: "rpo",
 } as const;
 
 export type IdKind = keyof typeof ID_PREFIXES;

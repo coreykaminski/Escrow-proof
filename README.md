@@ -7,12 +7,23 @@ tamper-evident ledger. See [MASTER_PLAN.md](MASTER_PLAN.md) for the strategy and
 **New here? Start with the [quickstart](docs/quickstart.md)** (sandbox, ~15 minutes). The API
 reference is served at `/docs` (OpenAPI at `/openapi.json`).
 
-**Status:** Part 1 (Foundation) and Part 2 (Spec Engine) are built. Part 2's eval passed its gate:
-50/50 valid specs, 96.8% of criteria rated testable (AI-rated; see docs/daily/2026-10-06.md). Part 3 (translation verifier) is built
-and wired in; its accuracy gate needs the model-based eval run (see below). Part 4 (Stripe card
-rail) is built and tested against a Stripe simulator; its live test-mode check needs a Stripe test
-key (`npm run stripe:e2e`). Part 5 (developer surface: webhooks, TypeScript SDK, MCP server,
-sandbox helpers, OpenAPI docs, quickstart) and Part 6 (dashboard + human review) are built.
+**Status:** Parts 1–9 of the build plan are built and tested (616 Vitest tests, 21 Foundry tests,
+golden-set gates in CI):
+
+- **Spec Engine (2):** its eval passed (AI-rated).
+- **Verifiers (3, 8):**
+  - Translation needs its model eval (Anthropic credits).
+  - Code (sandboxed tests) and data/research (schemas, citations, quotes) meet every §6 target
+    on their free layers; their model judges are measured with credits.
+- **Card rail (4):** passes live Stripe test mode (`npm run stripe:e2e`).
+- **Developer surface (5)** and **dashboard (6)** are built.
+- **Stablecoin rail (7):** an ERC-8183 contract with invariants, gasless USDC funding and x402.
+  Passes on a local chain; Base Sepolia needs keys.
+- **Billing and hardening (9):** Stripe Billing invoices and reviewer payouts (live test mode
+  passes), rate limits, CSP, SSRF guards, status and pricing pages, worker, Fly config.
+
+Still open: the model evals and the go-live gates (lawyer, pen test, contract audit). See
+[docs/launch/runbook.md](docs/launch/runbook.md).
 
 ## Quickstart
 
@@ -38,7 +49,9 @@ Set `DATABASE_URL=postgres://…` to use a real server. The server and CLI read 
 | `packages/core` | Pure domain logic: spec schema + hashing, agreement state machine, ledger hash chain, canonical JSON, ids. No I/O. |
 | `packages/db` | Drizzle schema, migrations (`drizzle/`), DB client (PGlite or Postgres), ledger append/verify. |
 | `packages/spec-engine` | Request → drafted criteria (Claude, structured output), spec assembly, AP2 mandate import. |
-| `packages/verifier` | Translation verifier: deterministic checks (values, structure, language, injection), MQM annotator + criterion judge, ensemble and decision policy. |
+| `packages/verifier` | Verifiers and the shared decision policy. Translation: deterministic checks, MQM annotator + judge. Code: sandboxes (Docker, Node permission model), trusted signed test runner, judge. Data/research: JSON Schema, counts, duplicates, SSRF-safe citation and quote checks, judge. |
+| `packages/chain` | Stablecoin rail: viem gateway for the ProofDeskJobs contract, in-memory fake, generated ABI. |
+| `contracts` | Foundry project: `ProofDeskJobs.sol` (ERC-8183 job escrow, Proof Desk as evaluator only), unit/fuzz/invariant tests, deploy script. |
 | `packages/payments` | Card rail: Stripe gateway (Connect Express, manual-capture holds, transfers, webhooks), settlement planning and fees, an in-memory Stripe simulator for tests. |
 | `packages/sdk` | `@proofdesk/sdk`: typed TypeScript client (auto idempotency keys, retries) and webhook signature verification. No dependencies. |
 | `apps/api` | Hono HTTP API, API-key auth, idempotency, agreement service, outbound webhooks, OpenAPI, CLI. |
@@ -46,6 +59,8 @@ Set `DATABASE_URL=postgres://…` to use a real server. The server and CLI read 
 | `examples` | The quickstart as a runnable script. |
 | `evals/spec-engine` | 50 sample requests, eval runner and human-rating scorer for the Part 2 gate. |
 | `evals/translation` | Golden set (300 labelled translation items) builders, deterministic CI gate, model eval harness. |
+| `evals/code`, `evals/data` | Golden sets (130 code, 50 data/research items, attacks included), CI gates, eval runners (`--judge` for the model layer). |
+| `docs/` | Quickstart, deploy guide, security review, red-team catalog, SOC 2 readiness, launch runbook, daily logs. |
 
 ## Key design rules
 

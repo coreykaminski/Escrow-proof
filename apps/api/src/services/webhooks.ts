@@ -1,5 +1,5 @@
 import { createHmac, randomBytes } from "node:crypto";
-import { newId } from "@proofdesk/core";
+import { checkOutboundUrl, newId, safeRequest } from "@proofdesk/core";
 import { type Db, schema } from "@proofdesk/db";
 import { and, asc, desc, eq, gt, isNull, lte, or } from "drizzle-orm";
 import { ApiError } from "../errors.ts";
@@ -17,21 +17,55 @@ export function signPayload(secret: string, body: string, timestamp: number): st
 }
 
 /** Retry delay after the nth consecutive failure: 1 min, 2, 4… capped at 6 hours. */
+/** fetch-shaped POST through safeRequest (no redirects, bounded, public addresses only). */
+const guardedFetch = (async (url: string, init?: RequestInit) => {
+  const r = await safeRequest(String(url), {
+    method: "POST",
+    headers: init?.headers as Record<string, string>,
+    body: String(init?.body ?? ""),
+    timeoutMs: TIMEOUT_MS,
+    maxBytes: 64_000,
+    requireHttps: true,
+  });
+  if (r.status === "blocked" || r.http_status === undefined) {
+    throw new Error(r.error ?? "unreachable");
+  }
+  return new Response(null, { status: r.http_status });
+}) as typeof fetch;
+
 export function backoffMs(failures: number): number {
   return Math.min(6 * 3_600_000, 60_000 * 2 ** Math.max(0, failures - 1));
 }
 
 export async function createEndpoint(
   db: Db,
-  p: { accountId: string; url: string; eventTypes: string[]; now: Date },
+  p: {
+    accountId: string;
+    url: string;
+    eventTypes: string[];
+    now: Date;
+    /** Development only: allow http://localhost and private addresses. */
+    allowPrivate?: boolean;
+  },
 ): Promise<EndpointRow> {
   const url = new URL(p.url);
-  if (url.protocol !== "https:" && !["localhost", "127.0.0.1"].includes(url.hostname)) {
-    throw new ApiError(
-      400,
-      "insecure_url",
-      "webhook URLs must use https (http only for localhost)",
-    );
+  if (p.allowPrivate) {
+    if (url.protocol !== "https:" && !["localhost", "127.0.0.1"].includes(url.hostname)) {
+      throw new ApiError(
+        400,
+        "insecure_url",
+        "webhook URLs must use https (http only for localhost)",
+      );
+    }
+  } else {
+    const checked = checkOutboundUrl(p.url, { requireHttps: true });
+    if (typeof checked === "string") {
+      throw new ApiError(
+        400,
+        url.protocol === "https:" ? "url_not_allowed" : "insecure_url",
+        `webhook URL not allowed: ${checked}`,
+      );
+    }
   }
   // New endpoints start at the current head of the ledger: they get events from now on.
   const [head] = await db
@@ -99,9 +133,11 @@ const wanted = (endpoint: EndpointRow, type: string) =>
  */
 export async function deliverWebhooks(
   db: Db,
-  p: { now: Date; fetch?: typeof fetch },
+  p: { now: Date; fetch?: typeof fetch; allowPrivate?: boolean },
 ): Promise<{ delivered: number; failed: string[] }> {
-  const send = p.fetch ?? fetch;
+  // In production every delivery goes through the SSRF guard: an endpoint whose hostname later
+  // resolves to a private address (DNS rebinding) is refused at connect time.
+  const send: typeof fetch = p.fetch ?? (p.allowPrivate ? fetch : guardedFetch);
   const endpoints = await db
     .select()
     .from(schema.webhookEndpoints)

@@ -100,6 +100,33 @@ export interface PaymentsGateway {
     /** What was actually sent: converted to the charge's settlement currency when it differs. */
   }): Promise<{ id: string; amount: number; currency: string }>;
 
+  // --- Proof Desk's own billing (Stripe Billing) and payouts ---
+
+  /** A billing customer for a platform account. */
+  createCustomer(p: {
+    accountId: string;
+    name: string;
+    email: string;
+    idempotencyKey: string;
+  }): Promise<{ id: string }>;
+  /** Creates, finalizes and emails one invoice with these lines (amounts in minor units). */
+  createInvoice(p: {
+    customerId: string;
+    currency: string;
+    period: string;
+    lines: { description: string; amount: number }[];
+    daysUntilDue: number;
+    idempotencyKey: string;
+  }): Promise<{ id: string; status: string; hostedUrl: string | null; total: number }>;
+  /** Pays a connected account from the platform balance (reviewer payouts). */
+  payout(p: {
+    amount: number;
+    currency: string;
+    destination: string;
+    description: string;
+    idempotencyKey: string;
+  }): Promise<{ id: string; amount: number; currency: string }>;
+
   /** Verify a webhook's signature and parse it; throws WebhookSignatureError if invalid. */
   parseWebhook(rawBody: string, signature: string): GatewayEvent;
 }

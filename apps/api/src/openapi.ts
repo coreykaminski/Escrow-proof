@@ -1,6 +1,12 @@
 import type { z } from "zod";
 import { z as zod } from "zod";
 import {
+  BillingSettingsBody,
+  PeriodBody,
+  PlanBody,
+  ReviewerOnboardingBody,
+} from "./routes/billing.ts";
+import {
   ApproveSpecBody,
   CancelBody,
   CardHoldBody,
@@ -219,6 +225,55 @@ export const OPERATIONS: Op[] = [
     summary: "List deliveries",
     query: { include_content: "true to include artifact contents" },
   },
+  // Billing
+  {
+    method: "get",
+    path: "/v1/billing/usage",
+    tag: "Billing",
+    summary: "This period's usage and fees (live and test), and what will be invoiced",
+    query: { period: "YYYY-MM (default: current month)" },
+  },
+  { method: "get", path: "/v1/billing/invoices", tag: "Billing", summary: "Your invoices" },
+  {
+    method: "put",
+    path: "/v1/billing/settings",
+    tag: "Billing",
+    summary: "Set the email invoices are sent to",
+    body: BillingSettingsBody,
+  },
+  {
+    method: "post",
+    path: "/v1/ops/billing/invoice",
+    tag: "Ops",
+    summary: "Invoice every account's live usage for a closed month (Stripe Billing)",
+    body: PeriodBody,
+    scope: "ops",
+  },
+  {
+    method: "post",
+    path: "/v1/ops/billing/reviewer-payouts",
+    tag: "Ops",
+    summary: "Pay human reviewers for a closed month",
+    body: PeriodBody,
+    scope: "ops",
+  },
+  {
+    method: "put",
+    path: "/v1/ops/accounts/{id}/plan",
+    tag: "Ops",
+    summary: "Set an account's plan (standard or verify_only)",
+    body: PlanBody,
+    scope: "ops",
+  },
+  {
+    method: "post",
+    path: "/v1/ops/reviewers/me/onboarding",
+    tag: "Ops",
+    summary: "Link the calling reviewer's payout account (hosted Stripe onboarding)",
+    body: ReviewerOnboardingBody,
+    scope: "ops",
+    created: true,
+  },
   // Sellers
   {
     method: "post",
@@ -354,6 +409,13 @@ export const OPERATIONS: Op[] = [
     scope: "none",
   },
   { method: "get", path: "/health", tag: "Meta", summary: "Health check", scope: "none" },
+  {
+    method: "get",
+    path: "/status.json",
+    tag: "Meta",
+    summary: "Component status (scheduler, ledger integrity, payment rails, verifiers)",
+    scope: "none",
+  },
 ];
 
 const errorSchema = {
@@ -461,6 +523,22 @@ function stripMeta(schema: Record<string, unknown>) {
   return rest;
 }
 
+/**
+ * The reference UI is Scalar, pinned to an exact version with Subresource Integrity, under its
+ * own CSP: no inline script, no third-party connections (Scalar's request proxy is blocked, so
+ * "try it" calls go straight to this API).
+ */
+export const DOCS_CSP = [
+  "default-src 'self'",
+  "script-src 'self' https://cdn.jsdelivr.net",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: https:",
+  "font-src 'self' data: https://cdn.jsdelivr.net https://fonts.scalar.com",
+  "connect-src 'self'",
+  "base-uri 'none'",
+  "frame-ancestors 'none'",
+].join("; ");
+
 export const DOCS_HTML = `<!doctype html>
 <html lang="en">
   <head>
@@ -470,6 +548,10 @@ export const DOCS_HTML = `<!doctype html>
   </head>
   <body>
     <script id="api-reference" data-url="/openapi.json"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.73.1/dist/browser/standalone.js"
+      integrity="sha384-kYDGzV91Jnn3TbHINV3nt54riK2uMJDfN5Al8dAkz4FssELTBWbD8rgw32sTKfOi"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>`;

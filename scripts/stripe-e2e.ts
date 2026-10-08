@@ -136,5 +136,74 @@ await check("seller account (Accounts v2) and hosted onboarding link", async () 
   );
 });
 
+await check("billing: customer + invoice with lines, finalized and sent", async () => {
+  const customer = await gw.createCustomer({
+    accountId: `${run}_platform`,
+    name: "E2E Platform",
+    email: "billing-e2e@example.com",
+    idempotencyKey: `${run}:customer`,
+  });
+  expect(customer.id.startsWith("cus_"), customer.id);
+  const lines = [
+    { description: "Verification: translation × 3 @ $1.50", amount: 450 },
+    { description: "Dispute resolution (losing party: buyer)", amount: 2_500 },
+  ];
+  const inv = await gw.createInvoice({
+    customerId: customer.id,
+    currency: "usd",
+    period: "2026-10",
+    lines,
+    daysUntilDue: 14,
+    idempotencyKey: `${run}:invoice`,
+  });
+  expect(inv.total === 2_950, `total ${inv.total}`);
+  expect(inv.status === "open", `status ${inv.status}`);
+  expect(inv.hostedUrl?.startsWith("https://"), "no hosted invoice URL");
+  const again = await gw.createInvoice({
+    customerId: customer.id,
+    currency: "usd",
+    period: "2026-10",
+    lines,
+    daysUntilDue: 14,
+    idempotencyKey: `${run}:invoice`,
+  });
+  expect(again.id === inv.id, "a retried run created a second invoice");
+  console.log(`    ${inv.id}: ${inv.total} usd, ${inv.status}`);
+});
+
+if (destination) {
+  await check("reviewer payout: transfer from the platform balance", async () => {
+    // Make funds available right away (Stripe's bypass-pending test card), then pay out.
+    const topUp = await gw.createHold({
+      amount: 2_000,
+      currency: "usd",
+      agreementId: `${run}_topup`,
+      description: "Proof Desk e2e balance top-up",
+      paymentMethod: "pm_card_bypassPending",
+      extendedAuthorization: false,
+      idempotencyKey: `${run}:topup`,
+    });
+    await gw.capture(topUp.id, 2_000, `${run}:topup:capture`);
+    try {
+      const t = await gw.payout({
+        amount: 100,
+        currency: process.env.REVIEWER_PAYOUT_CURRENCY ?? "usd",
+        destination,
+        description: "Proof Desk reviews e2e",
+        idempotencyKey: `${run}:payout`,
+      });
+      expect(t.id.startsWith("tr_"), t.id);
+      console.log(`    paid ${t.amount} ${t.currency}`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      if (/insufficient|balance/i.test(msg)) {
+        console.log(`    skipped: test balance has no available funds (${msg.slice(0, 120)})`);
+        return;
+      }
+      throw err;
+    }
+  });
+}
+
 console.log(failures ? `\n${failures} check(s) failed` : "\nAll Stripe test-mode checks passed.");
 process.exitCode = failures ? 1 : 0;

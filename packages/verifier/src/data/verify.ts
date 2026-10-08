@@ -1,7 +1,7 @@
 import type { Spec } from "@proofdesk/core";
 import type { StructuredCaller } from "../llm/claude.ts";
 import { combine, decide } from "../policy.ts";
-import { INJECTION_PATTERNS } from "../translation/text.ts";
+import { INJECTION_PATTERNS, normalizeForScan } from "../translation/text.ts";
 import type { CriterionSignal, DataReport, Finding } from "../types.ts";
 import { type CitationCheck, checkCitations, checkSchema, type SchemaResult } from "./checks.ts";
 import { safeTransport, type Transport } from "./fetch.ts";
@@ -204,7 +204,9 @@ export async function verifyData(
     }
   }
 
-  const scanned = data !== null && format !== "markdown" ? stringsIn(data).join("\n") : text;
+  const scanned = normalizeForScan(
+    data !== null && format !== "markdown" ? stringsIn(data).join("\n") : text,
+  );
   for (const re of INJECTION_PATTERNS) {
     const m = re.exec(scanned);
     if (m) {

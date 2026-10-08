@@ -1,5 +1,5 @@
 import type { Spec } from "@proofdesk/core";
-import { INJECTION_PATTERNS } from "../translation/text.ts";
+import { INJECTION_PATTERNS, normalizeForScan } from "../translation/text.ts";
 import type { Finding } from "../types.ts";
 import { type Runtime, type SandboxFile, safePath } from "./sandbox.ts";
 
@@ -139,8 +139,9 @@ export function prepareWorkspace(input: CodeInput): {
         }
       }
     }
+    const scanned = normalizeForScan(f.content);
     for (const re of CODE_INJECTION) {
-      const m = re.exec(f.content);
+      const m = re.exec(scanned);
       if (m) {
         findings.push({
           kind: "injection_suspected",

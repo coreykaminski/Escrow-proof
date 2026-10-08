@@ -1,9 +1,10 @@
+import { randomBytes } from "node:crypto";
 import type { StructuredCaller } from "../llm/claude.ts";
 import { combine, decide } from "../policy.ts";
 import type { CodeReport, CriterionSignal, Finding, TestCaseResult } from "../types.ts";
 import { type CodeInput, prepareWorkspace } from "./prepare.ts";
-import { parseTap, parseUnittest } from "./results.ts";
 import { CODE_REVIEW_PROMPT_VERSION, judgeCode } from "./review.ts";
+import { parseSignedResults } from "./runner.ts";
 import type { Sandbox } from "./sandbox.ts";
 
 export const CODE_ENGINE_VERSION = `code-v1/${CODE_REVIEW_PROMPT_VERSION}`;
@@ -35,14 +36,17 @@ export async function verifyCode(
     throw new Error(`the ${deps.sandbox.name} sandbox can't run ${ws.runtime} tests`);
   }
   const findings: Finding[] = [...ws.findings];
+  // A fresh key per run (ASCII hex, so it's the same bytes on stdin, in a file, or in Python).
+  const key = Buffer.from(randomBytes(32).toString("hex"));
   const run = await deps.sandbox.run({
     runtime: ws.runtime,
     files: ws.files,
     tests: ws.tests,
     timeoutMs: deps.timeoutMs ?? DEFAULT_TIMEOUT_MS,
+    key,
   });
-  const cases: TestCaseResult[] =
-    ws.runtime === "node" ? parseTap(run.stdout) : parseUnittest(run.stderr);
+  // Only the runner's signed line counts; anything else in the output could be forged.
+  const cases: TestCaseResult[] = parseSignedResults(run.stdout, key) ?? [];
   const output = `${run.stdout}\n${run.stderr}`;
 
   if (run.timedOut) {
@@ -53,7 +57,9 @@ export async function verifyCode(
       message: "The tests didn't finish in time (possible infinite loop or hang).",
     });
   }
-  const denied = /ERR_ACCESS_DENIED[^\n]*/.exec(output);
+  const denied = /ERR_ACCESS_DENIED[^\n]*|Access to this API has been restricted[^\n]*/.exec(
+    `${output}\n${cases.map((c) => c.message ?? "").join("\n")}`,
+  );
   if (denied) {
     findings.push({
       kind: "sandbox_violation",

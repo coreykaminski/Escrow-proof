@@ -698,3 +698,120 @@ function Sources({ data }: { data: DataReport["data"] }) {
     </>
   );
 }
+
+const HEALTH_LABEL = {
+  operational: "Operational",
+  degraded: "Degraded",
+  down: "Down",
+  not_configured: "Not enabled",
+} as const;
+
+export function StatusPage(p: {
+  status: keyof typeof HEALTH_LABEL;
+  components: { name: string; status: keyof typeof HEALTH_LABEL; detail: string }[];
+  checkedAt: Date;
+}) {
+  const pill = (s: keyof typeof HEALTH_LABEL) =>
+    s === "operational" ? "pass" : s === "degraded" ? "uncertain" : s === "down" ? "fail" : "";
+  return (
+    <Page title="Status">
+      <h1>
+        Proof Desk status: <span class={`pill ${pill(p.status)}`}>{HEALTH_LABEL[p.status]}</span>
+      </h1>
+      <p class="sub">Checked {when(p.checkedAt)}. Machine-readable at /status.json.</p>
+      <table>
+        <tbody>
+          {p.components.map((c) => (
+            <tr>
+              <td>{c.name}</td>
+              <td>
+                <span class={`pill ${pill(c.status)}`}>{HEALTH_LABEL[c.status]}</span>
+              </td>
+              <td class="small muted">{c.detail}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </Page>
+  );
+}
+
+const usd = (cents: number) => `$${(cents / 100).toFixed(2).replace(/\.00$/, "")}`;
+
+export function PricingPage(p: {
+  pricing: {
+    conditionalPayment: { rate: number; minCents: number; capCents: number };
+    verification: { translation: number; code: number; data: number; research: number };
+    dispute: { minCents: number; rate: number };
+    verifyOnlyMonthlyMinimumCents: number;
+  };
+}) {
+  const { conditionalPayment: cp, verification: v, dispute: d } = p.pricing;
+  return (
+    <Page title="Pricing">
+      <h1>Pricing</h1>
+      <p class="sub">
+        Pay only when the work is done right. Funds stay with the card network or in a public
+        contract until the delivery passes the checks both sides agreed to.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>What</th>
+            <th>Price</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Conditional payment</td>
+            <td>{cp.rate * 100}% of the released amount</td>
+            <td class="small muted">
+              Min {usd(cp.minCents)}, max {usd(cp.capCents)} per job. Nothing on refunds. Volume
+              tiers down to 1%.
+            </td>
+          </tr>
+          <tr>
+            <td>Verification: structured data</td>
+            <td>{usd(v.data)} per check</td>
+            <td class="small muted">Schema, record counts, duplicates.</td>
+          </tr>
+          <tr>
+            <td>Verification: translation</td>
+            <td>{usd(v.translation)} per check</td>
+            <td class="small muted">
+              Numbers, dates, omissions and meaning, with quoted evidence.
+            </td>
+          </tr>
+          <tr>
+            <td>Verification: research</td>
+            <td>{usd(v.research)} per check</td>
+            <td class="small muted">Every cited source loads; every quote is verbatim.</td>
+          </tr>
+          <tr>
+            <td>Verification: code</td>
+            <td>{usd(v.code)} per check</td>
+            <td class="small muted">Your tests, run in an isolated sandbox.</td>
+          </tr>
+          <tr>
+            <td>Human dispute review</td>
+            <td>
+              {usd(d.minCents)} or {d.rate * 100}%, whichever is higher
+            </td>
+            <td class="small muted">Charged for the losing side. The decision is final.</td>
+          </tr>
+          <tr>
+            <td>Verify API only (no payments)</td>
+            <td>Verification fees, {usd(p.pricing.verifyOnlyMonthlyMinimumCents)}/month minimum</td>
+            <td class="small muted">For checking agent output without moving money.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="small muted" style="margin-top:16px">
+        Card processing and network fees are passed through at cost. Verification and dispute fees
+        are invoiced monthly; test mode is free. Enterprise: custom verifiers, SLA, private ledger
+        export.
+      </p>
+    </Page>
+  );
+}

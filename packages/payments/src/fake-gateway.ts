@@ -246,6 +246,75 @@ export class FakeGateway implements PaymentsGateway {
     });
   }
 
+  readonly customers = new Map<string, { name: string; email: string; accountId: string }>();
+  readonly invoices: {
+    id: string;
+    customerId: string;
+    currency: string;
+    period: string;
+    lines: { description: string; amount: number }[];
+    total: number;
+  }[] = [];
+  readonly payouts: { id: string; amount: number; currency: string; destination: string }[] = [];
+
+  async createCustomer(p: Parameters<PaymentsGateway["createCustomer"]>[0]) {
+    const { idempotencyKey, ...request } = p;
+    return this.once(idempotencyKey, request, () => {
+      const id = this.id("cus");
+      this.customers.set(id, { name: p.name, email: p.email, accountId: p.accountId });
+      this.log.push(`customer ${p.accountId}`);
+      return { id };
+    });
+  }
+
+  async createInvoice(p: Parameters<PaymentsGateway["createInvoice"]>[0]) {
+    const { idempotencyKey, ...request } = p;
+    return this.once(idempotencyKey, request, () => {
+      if (!this.customers.has(p.customerId)) {
+        throw new GatewayError("no such customer", false, "resource_missing");
+      }
+      const inv = {
+        id: this.id("in"),
+        customerId: p.customerId,
+        currency: p.currency,
+        period: p.period,
+        lines: p.lines,
+        total: p.lines.reduce((n, l) => n + l.amount, 0),
+      };
+      this.invoices.push(inv);
+      this.log.push(`invoice ${p.customerId} ${inv.total}`);
+      return {
+        id: inv.id,
+        status: "open",
+        hostedUrl: `https://invoice.stripe.test/${inv.id}`,
+        total: inv.total,
+      };
+    });
+  }
+
+  async payout(p: Parameters<PaymentsGateway["payout"]>[0]) {
+    const { idempotencyKey, ...request } = p;
+    return this.once(idempotencyKey, request, () => {
+      const account = this.mustAccount(p.destination);
+      if (!account.transfers_active) {
+        throw new GatewayError(
+          "the destination account can't receive transfers yet",
+          false,
+          "capability_not_active",
+        );
+      }
+      const t = {
+        id: this.id("tr"),
+        amount: p.amount,
+        currency: p.currency,
+        destination: p.destination,
+      };
+      this.payouts.push(t);
+      this.log.push(`payout ${p.destination} ${p.amount}`);
+      return { id: t.id, amount: t.amount, currency: t.currency };
+    });
+  }
+
   /** Builds a signed webhook delivery the way Stripe would send it. */
   webhook(type: string, objectId: string, paymentIntentId: string | null = null) {
     const event = {

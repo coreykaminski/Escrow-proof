@@ -17,7 +17,7 @@ export const CreateEndpointBody = z.object({
 });
 
 /** Where a platform receives events about its agreements. */
-export function webhookEndpointRoutes({ db, now }: AppDeps) {
+export function webhookEndpointRoutes({ db, now, allowPrivateNetwork }: AppDeps) {
   const r = new Hono<AppEnv>();
 
   r.post("/", async (c) => {
@@ -27,6 +27,7 @@ export function webhookEndpointRoutes({ db, now }: AppDeps) {
       url: body.url,
       eventTypes: body.event_types,
       now: now(),
+      allowPrivate: allowPrivateNetwork === true,
     });
     // The signing secret is shown once, at creation.
     return c.json({ ...webhookEndpointJson(row), secret: row.secret }, 201);

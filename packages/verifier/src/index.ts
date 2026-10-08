@@ -1,6 +1,7 @@
 export * from "./code/prepare.ts";
 export * from "./code/results.ts";
 export * from "./code/review.ts";
+export * from "./code/runner.ts";
 export * from "./code/sandbox.ts";
 export * from "./code/verify.ts";
 export * from "./data/checks.ts";

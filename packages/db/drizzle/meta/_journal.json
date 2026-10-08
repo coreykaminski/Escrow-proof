@@ -57,6 +57,13 @@
       "when": 1791475695515,
       "tag": "0007_onchain_rail",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791477969542,
+      "tag": "0008_billing",
+      "breakpoints": true
     }
   ]
 }

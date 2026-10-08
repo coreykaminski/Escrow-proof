@@ -1,7 +1,11 @@
 import { TransitionError, type TransitionErrorCode } from "@proofdesk/core";
 import { GatewayError } from "@proofdesk/payments";
 import { MandateError, SpecDraftError, type SpecDraftErrorCode } from "@proofdesk/spec-engine";
-import { ModelCallError, VerificationInputError } from "@proofdesk/verifier";
+import {
+  ModelCallError,
+  SandboxUnavailableError,
+  VerificationInputError,
+} from "@proofdesk/verifier";
 import type { Context } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { ZodError } from "zod";
@@ -49,6 +53,9 @@ export function toApiError(err: unknown): ApiError {
   }
   if (err instanceof VerificationInputError) {
     return new ApiError(422, "verification_input_invalid", err.message);
+  }
+  if (err instanceof SandboxUnavailableError) {
+    return new ApiError(503, "verifier_unavailable", "the code sandbox is unavailable; retry");
   }
   if (err instanceof ModelCallError) {
     const [status, code]: [ContentfulStatusCode, string] =

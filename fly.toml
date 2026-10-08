@@ -1,0 +1,44 @@
+# Staging on Fly.io. Create once: fly launch --no-deploy --copy-config, then set secrets (docs/deploy.md).
+app = "proofdesk-staging"
+primary_region = "yyz"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[deploy]
+  # Migrations run once per deploy, before new machines start.
+  release_command = "npx tsx apps/api/src/cli.ts migrate"
+  strategy = "rolling"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "8080"
+  MIGRATE_ON_BOOT = "0"
+  TRUST_PROXY = "1"
+  CODE_SANDBOX = "docker"
+  ALLOW_PRIVATE_NETWORK = "0"
+
+[processes]
+  web = "npx tsx apps/api/src/server.ts"
+  # Exactly one worker machine: fly scale count worker=1
+  worker = "npx tsx apps/api/src/worker.ts"
+
+[http_service]
+  processes = ["web"]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "off"
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    interval = "15s"
+    timeout = "5s"
+    grace_period = "20s"
+    method = "GET"
+    path = "/health"
+
+[[vm]]
+  processes = ["web", "worker"]
+  memory = "1gb"
+  cpu_kind = "shared"
+  cpus = 1

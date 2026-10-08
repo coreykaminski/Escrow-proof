@@ -4,6 +4,7 @@ import type { PaymentsGateway } from "@proofdesk/payments";
 import { FakeSpecDrafter, type SpecDrafter } from "@proofdesk/spec-engine";
 import { createAccountWithKey } from "../src/accounts.ts";
 import { createApp } from "../src/app.ts";
+import type { AppDeps } from "../src/env.ts";
 import type {
   CodeVerifier,
   DataVerifier,
@@ -44,6 +45,10 @@ export async function createHarness(
     chain?: (now: () => Date) => ChainGateway;
     fetch?: typeof fetch;
     stripePublishableKey?: string;
+    /** Defaults to true (like development); pass false to test production URL rules. */
+    allowPrivateNetwork?: boolean;
+    rateLimits?: AppDeps["rateLimits"];
+    trustProxy?: boolean;
   } = {},
 ): Promise<Harness> {
   const handle = createDb("memory://");
@@ -68,6 +73,9 @@ export async function createHarness(
     db: handle.db,
     now: () => clock.now,
     drafter,
+    allowPrivateNetwork: opts.allowPrivateNetwork ?? true,
+    ...(opts.rateLimits ? { rateLimits: opts.rateLimits } : {}),
+    ...(opts.trustProxy ? { trustProxy: true } : {}),
     ...(opts.verifier ? { verifier: opts.verifier } : {}),
     ...(opts.codeVerifier ? { codeVerifier: opts.codeVerifier } : {}),
     ...(opts.dataVerifier ? { dataVerifier: opts.dataVerifier } : {}),

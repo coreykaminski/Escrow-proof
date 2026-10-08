@@ -203,6 +203,86 @@ export class StripeGateway implements PaymentsGateway {
     return { id: transfer.id, amount: transfer.amount, currency: transfer.currency };
   }
 
+  async createCustomer(p: Parameters<PaymentsGateway["createCustomer"]>[0]) {
+    const c = await this.call(() =>
+      this.stripe.customers.create(
+        { name: p.name, email: p.email, metadata: { account_id: p.accountId } },
+        { idempotencyKey: p.idempotencyKey },
+      ),
+    );
+    return { id: c.id };
+  }
+
+  async createInvoice(p: Parameters<PaymentsGateway["createInvoice"]>[0]) {
+    const draft = await this.call(() =>
+      this.stripe.invoices.create(
+        {
+          customer: p.customerId,
+          currency: p.currency,
+          collection_method: "send_invoice",
+          days_until_due: p.daysUntilDue,
+          auto_advance: false,
+          pending_invoice_items_behavior: "exclude",
+          description: `Proof Desk fees for ${p.period}`,
+          metadata: { period: p.period },
+        },
+        { idempotencyKey: `${p.idempotencyKey}:create` },
+      ),
+    );
+    for (const [i, line] of p.lines.entries()) {
+      await this.call(() =>
+        this.stripe.invoiceItems.create(
+          {
+            customer: p.customerId,
+            invoice: draft.id,
+            amount: line.amount,
+            currency: p.currency,
+            description: line.description,
+          },
+          { idempotencyKey: `${p.idempotencyKey}:item:${i}` },
+        ),
+      );
+    }
+    const id = draft.id as string;
+    let inv = await this.call(() => this.stripe.invoices.retrieve(id));
+    if (inv.status === "draft") {
+      inv = await this.call(() =>
+        this.stripe.invoices.finalizeInvoice(
+          id,
+          { auto_advance: false },
+          { idempotencyKey: `${p.idempotencyKey}:finalize` },
+        ),
+      );
+    }
+    if (inv.status === "open") {
+      inv = await this.call(() =>
+        this.stripe.invoices.sendInvoice(id, {}, { idempotencyKey: `${p.idempotencyKey}:send` }),
+      );
+    }
+    return {
+      id,
+      status: inv.status ?? "open",
+      hostedUrl: inv.hosted_invoice_url ?? null,
+      total: inv.total,
+    };
+  }
+
+  async payout(p: Parameters<PaymentsGateway["payout"]>[0]) {
+    const t = await this.call(() =>
+      this.stripe.transfers.create(
+        {
+          amount: p.amount,
+          currency: p.currency,
+          destination: p.destination,
+          description: p.description,
+          metadata: { kind: "reviewer_payout" },
+        },
+        { idempotencyKey: p.idempotencyKey },
+      ),
+    );
+    return { id: t.id, amount: t.amount, currency: t.currency };
+  }
+
   parseWebhook(rawBody: string, signature: string): GatewayEvent {
     if (!this.opts.webhookSecret) throw new WebhookSignatureError("webhook secret not configured");
     let event: Stripe.Event;
