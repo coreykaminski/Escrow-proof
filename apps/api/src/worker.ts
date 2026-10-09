@@ -8,6 +8,7 @@ import {
   paymentsFromEnv,
   reviewerRatesFromEnv,
 } from "./models.ts";
+import { sweepRateLimits } from "./security.ts";
 import { anchorLedger } from "./services/anchoring.ts";
 import { invoicePeriod, payReviewers } from "./services/billing.ts";
 import { tick } from "./services/scheduler.ts";
@@ -98,6 +99,7 @@ while (!stop.signal.aborted) {
         }),
       );
     }
+    if (now.getUTCMinutes() % 10 === 0) await sweepRateLimits(db, now);
     if (Date.now() - lastLedgerCheck > LEDGER_MS) {
       const result = await checkLedger(db, now);
       lastLedgerCheck = Date.now();

@@ -559,3 +559,14 @@ export const systemState = pgTable("system_state", {
   value: jsonb("value").$type<Record<string, unknown>>().notNull(),
   updatedAt: ts("updated_at").notNull(),
 });
+
+/** Fixed-window request counters shared by every API instance (apps/api security.ts). */
+export const rateLimits = pgTable(
+  "rate_limits",
+  {
+    key: text("key").primaryKey(),
+    count: integer("count").notNull(),
+    resetAt: ts("reset_at").notNull(),
+  },
+  (t) => [index("rate_limits_reset_idx").on(t.resetAt)],
+);

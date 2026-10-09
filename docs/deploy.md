@@ -31,7 +31,7 @@ One Docker image runs two processes: **web** (the API, dashboard and public page
 | `CHAIN_RPC_URL`, `CHAIN_ID`, `JOBS_CONTRACT`, `EVALUATOR_PRIVATE_KEY` | stablecoin rail (step 6), optional |
 | `AUTO_BILLING` | `1` to invoice and pay reviewers automatically on the 1st |
 
-`fly.toml` already sets `NODE_ENV=production`, `MIGRATE_ON_BOOT=0`, `TRUST_PROXY=1`, `CODE_SANDBOX=docker` and `ALLOW_PRIVATE_NETWORK=0`.
+`fly.toml` already sets `NODE_ENV=production`, `MIGRATE_ON_BOOT=0`, `TRUST_PROXY=1`, `CODE_SANDBOX=docker` and `ALLOW_PRIVATE_NETWORK=0`. Rate-limit counters live in Postgres by default, so limits hold across every web machine and across deploys. `RATE_LIMIT_STORE=memory` keeps them in-process, for local development only.
 
 4. **Sandbox host** (for code verification): a small VM (any cloud) with Docker and gVisor (`runsc`). Create a `sandbox` user in the `docker` group whose SSH key is the Fly app's (`fly ssh` → generate a key → add it to `authorized_keys`, restricted to the Fly egress IPs). Pre-pull `node:24-alpine` and `python:3.13-alpine`. Nothing else should run on it. Until it exists, code verification returns 503 and code jobs wait in `verifying`; nothing is decided on an infrastructure failure.
 5. **Stripe webhook:** Dashboard → Developers → Webhooks → add `https://<PUBLIC_URL>/webhooks/stripe` for `payment_intent.*`, `charge.dispute.created` and `account.updated`. Put the signing secret in `STRIPE_WEBHOOK_SECRET`.

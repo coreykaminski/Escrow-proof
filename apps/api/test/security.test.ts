@@ -1,6 +1,8 @@
 /** Part 9 hardening: headers, rate and size limits, SSRF rules for webhooks, cookies. */
 import { schema } from "@proofdesk/db";
 import { afterEach, describe, expect, it } from "vitest";
+import { createApp } from "../src/app.ts";
+import { PostgresRateLimitStore, type RateLimitStore, sweepRateLimits } from "../src/security.ts";
 import { deliverWebhooks } from "../src/services/webhooks.ts";
 import { createHarness, type Harness, specFixture } from "./harness.ts";
 
@@ -68,6 +70,55 @@ describe("rate limits", () => {
     expect((await attempt("203.0.113.9")).status).toBe(401);
     // Viewing the form isn't limited.
     expect((await h.fetch("http://x/dashboard/login")).status).toBe(200);
+  });
+
+  it("shares one limit across API instances when counters live in Postgres", async () => {
+    h = await createHarness();
+    const instance = (store: RateLimitStore) =>
+      createApp({
+        db: h.handle.db,
+        now: () => h.clock.now,
+        rateLimits: { apiPerMinute: 4 },
+        rateLimitStore: store,
+      });
+    const a = instance(new PostgresRateLimitStore(h.handle.db));
+    const b = instance(new PostgresRateLimitStore(h.handle.db));
+    const get = (app: ReturnType<typeof createApp>) =>
+      app.request("/v1/agreements", { headers: { Authorization: `Bearer ${h.keys.platformA}` } });
+    const statuses = [];
+    for (const app of [a, b, a, b, a, b]) statuses.push((await get(app)).status);
+    expect(statuses).toEqual([200, 200, 200, 200, 429, 429]);
+    expect((await get(a)).headers.get("ratelimit-remaining")).toBe("0");
+  });
+
+  it("starts a new window when the old one ends, and sweeps finished windows", async () => {
+    h = await createHarness();
+    const store = new PostgresRateLimitStore(h.handle.db);
+    const t0 = Date.parse("2026-10-09T12:00:00Z");
+    expect((await store.hit("k", 60_000, t0)).count).toBe(1);
+    expect((await store.hit("k", 60_000, t0 + 1_000)).count).toBe(2);
+    const next = await store.hit("k", 60_000, t0 + 61_000);
+    expect(next).toEqual({ count: 1, resetAt: t0 + 121_000 });
+    await store.hit("other", 1_000, t0);
+    expect(await sweepRateLimits(h.handle.db, new Date(t0 + 5_000))).toBe(1);
+    expect((await store.hit("k", 60_000, t0 + 62_000)).count).toBe(2);
+  });
+
+  it("fails open if the limiter's store is down", async () => {
+    h = await createHarness();
+    const app = createApp({
+      db: h.handle.db,
+      now: () => h.clock.now,
+      rateLimitStore: {
+        hit: async () => {
+          throw new Error("db down");
+        },
+      },
+    });
+    const res = await app.request("/v1/agreements", {
+      headers: { Authorization: `Bearer ${h.keys.platformA}` },
+    });
+    expect(res.status).toBe(200);
   });
 
   it("limits share and payment links per IP", async () => {

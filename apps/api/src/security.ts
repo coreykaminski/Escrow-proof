@@ -1,3 +1,5 @@
+import { type Db, schema } from "@proofdesk/db";
+import { lte, sql } from "drizzle-orm";
 import type { Context, MiddlewareHandler } from "hono";
 import { ApiError } from "./errors.ts";
 
@@ -64,7 +66,11 @@ export function securityHeaders(publicUrl?: string): MiddlewareHandler {
 
 /** Counts requests per key in fixed windows. Swap for a shared store when running >1 instance. */
 export interface RateLimitStore {
-  hit(key: string, windowMs: number, now: number): { count: number; resetAt: number };
+  hit(
+    key: string,
+    windowMs: number,
+    now: number,
+  ): { count: number; resetAt: number } | Promise<{ count: number; resetAt: number }>;
 }
 
 export class MemoryRateLimitStore implements RateLimitStore {
@@ -87,6 +93,42 @@ export class MemoryRateLimitStore implements RateLimitStore {
 }
 
 /**
+ * Counters in Postgres, so limits hold across every API instance and survive deploys. One
+ * atomic upsert per request: a new window starts when the stored one has ended.
+ */
+export class PostgresRateLimitStore implements RateLimitStore {
+  constructor(private readonly db: Db) {}
+
+  async hit(key: string, windowMs: number, now: number) {
+    const at = new Date(now);
+    const reset = new Date(now + windowMs);
+    const t = schema.rateLimits;
+    const [row] = await this.db
+      .insert(t)
+      .values({ key, count: 1, resetAt: reset })
+      .onConflictDoUpdate({
+        target: t.key,
+        set: {
+          count: sql`case when ${t.resetAt} <= ${at.toISOString()}::timestamptz then 1 else ${t.count} + 1 end`,
+          resetAt: sql`case when ${t.resetAt} <= ${at.toISOString()}::timestamptz then ${reset.toISOString()}::timestamptz else ${t.resetAt} end`,
+        },
+      })
+      .returning({ count: t.count, resetAt: t.resetAt });
+    if (!row) throw new Error("rate limit upsert returned nothing");
+    return { count: row.count, resetAt: row.resetAt.getTime() };
+  }
+}
+
+/** Deletes counters whose window has ended (run from the worker). */
+export async function sweepRateLimits(db: Db, now: Date): Promise<number> {
+  const gone = await db
+    .delete(schema.rateLimits)
+    .where(lte(schema.rateLimits.resetAt, now))
+    .returning({ key: schema.rateLimits.key });
+  return gone.length;
+}
+
+/**
  * Fixed-window rate limit. `key` returns the bucket (API key id, client IP…) or null to skip.
  * Answers 429 with Retry-After; sets RateLimit-* headers on every limited response.
  */
@@ -102,7 +144,14 @@ export function rateLimit(opts: {
     const k = opts.key(c);
     if (k === null) return next();
     const now = opts.now?.() ?? Date.now();
-    const w = opts.store.hit(`${opts.name}:${k}`, opts.windowMs, now);
+    let w: { count: number; resetAt: number };
+    try {
+      w = await opts.store.hit(`${opts.name}:${k}`, opts.windowMs, now);
+    } catch (err) {
+      // A limiter outage mustn't take the API down with it: fail open, loudly.
+      console.error("rate limit store failed; allowing the request", err);
+      return next();
+    }
     const remaining = Math.max(0, opts.limit - w.count);
     const reset = Math.ceil((w.resetAt - now) / 1000);
     c.header("RateLimit-Limit", String(opts.limit));

@@ -13,6 +13,7 @@ import {
   reviewerRatesFromEnv,
   verifierFromEnv,
 } from "./models.ts";
+import { PostgresRateLimitStore } from "./security.ts";
 
 loadEnv();
 
@@ -43,6 +44,10 @@ const app = createApp({
   allowPrivateNetwork: allowPrivateNetworkFromEnv(),
   reviewerRates: reviewerRatesFromEnv(),
   trustProxy: process.env.TRUST_PROXY === "1" || Boolean(process.env.FLY_APP_NAME),
+  // Shared across instances unless RATE_LIMIT_STORE=memory (single-process development).
+  ...(process.env.RATE_LIMIT_STORE === "memory"
+    ? {}
+    : { rateLimitStore: new PostgresRateLimitStore(handle.db) }),
   dataVerifier: dataVerifierFromEnv(),
   ...(payments ? { payments } : {}),
   ...(chain ? { chain } : {}),
