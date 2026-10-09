@@ -8,6 +8,7 @@ import {
 import { and, asc, desc, eq, gt, lte, sql } from "drizzle-orm";
 import type { DbOrTx, Tx } from "./client.ts";
 import { ledgerEntries } from "./schema.ts";
+import { appendTreeLeaf } from "./tree.ts";
 
 /** Arbitrary constant key for the advisory lock that serializes ledger appends. */
 const LEDGER_LOCK_KEY = 7_340_001;
@@ -29,6 +30,8 @@ export async function appendLedgerEntry(
     .limit(1);
   const entry = buildEntry(head ?? null, input);
   await tx.insert(ledgerEntries).values(entry);
+  // Keep the Merkle tree's complete subtrees current, under the same lock and transaction.
+  await appendTreeLeaf(tx, entry.seq - 1, entry.entryHash);
   return entry;
 }
 

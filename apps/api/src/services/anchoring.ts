@@ -1,6 +1,13 @@
 import type { AnchorGateway } from "@proofdesk/chain";
-import { MERKLE_SCHEME, rootOf, toHex } from "@proofdesk/core";
-import { appendLedgerEntry, type Db, ledgerLeaves, schema, verifyLedger } from "@proofdesk/db";
+import { MERKLE_SCHEME, rootFrom, rootOf, toHex } from "@proofdesk/core";
+import {
+  appendLedgerEntry,
+  type Db,
+  ledgerLeaves,
+  schema,
+  verifyLedger,
+  withLedgerTree,
+} from "@proofdesk/db";
 import { desc, gt } from "drizzle-orm";
 import { getState, setState } from "./status.ts";
 import { sealVerdicts } from "./verdicts.ts";
@@ -41,7 +48,13 @@ export async function anchorLedger(db: Db, gw: AnchorGateway, now: Date): Promis
   if (!verified.ok) {
     throw new Error(`ledger verification failed at seq ${verified.seq}; not anchoring`);
   }
+  // Recompute the root from the entries themselves, independent of the stored subtrees, and
+  // refuse to anchor if the two disagree (the cache must never decide what gets vouched for).
   const root = toHex(rootOf(await ledgerLeaves(db, verified.headSeq)));
+  const cached = toHex(await withLedgerTree(db, (get) => rootFrom(get, verified.headSeq)));
+  if (cached !== root) {
+    throw new Error("stored ledger tree nodes disagree with the ledger; not anchoring");
+  }
   const { txHash } = await gw.anchor(verified.headSeq, root);
   const record = {
     scheme: MERKLE_SCHEME,

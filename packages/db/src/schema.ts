@@ -570,3 +570,18 @@ export const rateLimits = pgTable(
   },
   (t) => [index("rate_limits_reset_idx").on(t.resetAt)],
 );
+
+/**
+ * Complete Merkle subtrees of the ledger (core/merkle.ts): node (level, idx) is the RFC 6962
+ * hash of entries [idx·2^level, (idx+1)·2^level). Written with each ledger append, never
+ * changed, and only a cache: the daily anchor recomputes the root from the entries themselves.
+ */
+export const ledgerTreeNodes = pgTable(
+  "ledger_tree_nodes",
+  {
+    level: integer("level").notNull(),
+    idx: bigint("idx", { mode: "number" }).notNull(),
+    hash: text("hash").notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.level, t.idx] })],
+);

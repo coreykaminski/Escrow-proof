@@ -1,8 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
   consistencyPath,
+  consistencyPathFrom,
   inclusionPath,
+  inclusionPathFrom,
   leafHash,
+  type NodeGetter,
+  nodesCompletedBy,
+  nodesNeeded,
+  rootFrom,
   rootOf,
   toHex,
   verifyConsistency,
@@ -88,5 +94,58 @@ describe("merkle (RFC 6962)", () => {
     expect(() => consistencyPath(LEAVES, 0)).toThrow();
     expect(verifyInclusion(LEAVES[0] as Uint8Array, 0, 0, [], rootOf([]))).toBe(false);
     expect(verifyConsistency(0, 3, rootOf([]), rootOf(LEAVES.slice(0, 3)), [])).toBe(false);
+  });
+});
+
+describe("merkle from stored complete subtrees", () => {
+  const many = Array.from({ length: 70 }, (_, i) => leafHash(new Uint8Array([i, i * 3])));
+  /** A getter over complete subtrees of `many`, as the database would store them. */
+  const stored: NodeGetter = (level, index) => {
+    const start = index * 2 ** level;
+    const end = start + 2 ** level;
+    if (end > many.length) throw new Error(`node ${level}:${index} isn't complete`);
+    return rootOf(many.slice(start, end));
+  };
+
+  it("gives the same roots and proofs as the leaf-by-leaf computation", () => {
+    for (let n = 1; n <= many.length; n++) {
+      const tree = many.slice(0, n);
+      expect(toHex(rootFrom(stored, n))).toBe(toHex(rootOf(tree)));
+      for (const i of [0, Math.floor(n / 2), n - 1]) {
+        expect(inclusionPathFrom(stored, i, n).map(toHex)).toEqual(
+          inclusionPath(tree, i).map(toHex),
+        );
+      }
+      for (const m of [1, Math.ceil(n / 3), n]) {
+        expect(consistencyPathFrom(stored, m, n).map(toHex)).toEqual(
+          consistencyPath(tree, m).map(toHex),
+        );
+      }
+    }
+    expect(toHex(rootFrom(stored, 0))).toBe(toHex(rootOf([])));
+  });
+
+  it("reads only O(log n) nodes, all of them complete", () => {
+    const needed = nodesNeeded((get) => {
+      rootFrom(get, 69);
+      inclusionPathFrom(get, 40, 69);
+    });
+    expect(needed.length).toBeLessThanOrEqual(2 * Math.ceil(Math.log2(69)) + 2);
+    for (const [level, index] of needed) expect((index + 1) * 2 ** level).toBeLessThanOrEqual(69);
+  });
+
+  it("knows which nodes each append completes", () => {
+    expect(nodesCompletedBy(0)).toEqual([[0, 0]]);
+    expect(nodesCompletedBy(1)).toEqual([
+      [0, 1],
+      [1, 0],
+    ]);
+    expect(nodesCompletedBy(7)).toEqual([
+      [0, 7],
+      [1, 3],
+      [2, 1],
+      [3, 0],
+    ]);
+    expect(nodesCompletedBy(10)).toEqual([[0, 10]]);
   });
 });

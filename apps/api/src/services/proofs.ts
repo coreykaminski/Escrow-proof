@@ -5,16 +5,16 @@
  * agreement's entries and without trusting Proof Desk's database.
  */
 import {
-  consistencyPath,
-  inclusionPath,
+  consistencyPathFrom,
+  inclusionPathFrom,
   type LedgerProof,
   MERKLE_SCHEME,
-  rootOf,
+  rootFrom,
   toHex,
   VERDICT_SCHEME,
   type VerdictRecord,
 } from "@proofdesk/core";
-import { type Db, ledgerLeaves, listLedgerForAgreement, schema } from "@proofdesk/db";
+import { type Db, listLedgerForAgreement, schema, withLedgerTree } from "@proofdesk/db";
 import { desc, eq } from "drizzle-orm";
 import { ApiError } from "../errors.ts";
 import { lastAnchor } from "./anchoring.ts";
@@ -30,8 +30,9 @@ export async function headSize(db: Db): Promise<number> {
 }
 
 export async function treeHead(db: Db, size?: number) {
-  const leaves = await ledgerLeaves(db, size);
-  return { scheme: MERKLE_SCHEME, size: leaves.length, root: toHex(rootOf(leaves)) };
+  const n = size ?? (await headSize(db));
+  const root = await withLedgerTree(db, (get) => rootFrom(get, n));
+  return { scheme: MERKLE_SCHEME, size: n, root: toHex(root) };
 }
 
 type Entry = Awaited<ReturnType<typeof listLedgerForAgreement>>[number];
@@ -45,8 +46,11 @@ async function prove(db: Db, entries: Entry[]) {
   const anchor = await lastAnchor(db);
   const anchored = anchor?.root && anchor.seq >= maxSeq ? anchor : null;
   const size = anchored ? anchored.seq : await headSize(db);
-  const leaves = await ledgerLeaves(db, size);
-  const root = toHex(rootOf(leaves));
+  const { root: rootBytes, paths } = await withLedgerTree(db, (get) => ({
+    root: rootFrom(get, size),
+    paths: entries.map((e) => inclusionPathFrom(get, e.seq - 1, size)),
+  }));
+  const root = toHex(rootBytes);
   if (anchored?.root && anchored.root !== root) {
     throw new ApiError(500, "ledger_mismatch", "the ledger no longer matches its anchored root");
   }
@@ -63,7 +67,7 @@ async function prove(db: Db, entries: Entry[]) {
           }
         : null,
     },
-    entries: entries.map((e) => ({
+    entries: entries.map((e, i) => ({
       seq: e.seq,
       prev_hash: e.prevHash,
       type: e.type,
@@ -71,7 +75,7 @@ async function prove(db: Db, entries: Entry[]) {
       created_at: e.createdAt,
       entry_hash: e.entryHash,
       leaf_index: e.seq - 1,
-      inclusion: inclusionPath(leaves, e.seq - 1).map(toHex),
+      inclusion: (paths[i] ?? []).map(toHex),
     })),
   };
 }
@@ -124,12 +128,16 @@ export async function consistencyProof(db: Db, from: number, to: number) {
   if (!(from >= 1 && from <= to && to <= size)) {
     throw new ApiError(400, "validation_error", `need 1 ≤ from ≤ to ≤ ${size}`);
   }
-  const leaves = await ledgerLeaves(db, to);
+  const out = await withLedgerTree(db, (get) => ({
+    from: rootFrom(get, from),
+    to: rootFrom(get, to),
+    proof: consistencyPathFrom(get, from, to),
+  }));
   return {
     object: "consistency_proof",
     scheme: MERKLE_SCHEME,
-    from: { size: from, root: toHex(rootOf(leaves.slice(0, from))) },
-    to: { size: to, root: toHex(rootOf(leaves)) },
-    proof: consistencyPath(leaves, from).map(toHex),
+    from: { size: from, root: toHex(out.from) },
+    to: { size: to, root: toHex(out.to) },
+    proof: out.proof.map(toHex),
   };
 }

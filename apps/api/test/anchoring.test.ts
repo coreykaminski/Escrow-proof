@@ -4,7 +4,17 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { FakeAnchorGateway } from "@proofdesk/chain";
-import { fromHex, type LedgerProof, verifyConsistency, verifyLedgerProof } from "@proofdesk/core";
+import {
+  fromHex,
+  type LedgerProof,
+  rootFrom,
+  rootOf,
+  toHex,
+  verifyConsistency,
+  verifyLedgerProof,
+} from "@proofdesk/core";
+import { ledgerLeaves, schema, withLedgerTree } from "@proofdesk/db";
+import { and, eq } from "drizzle-orm";
 import { afterEach, describe, expect, it } from "vitest";
 import { createHarness, type Harness, HOUR, specFixture } from "./harness.ts";
 
@@ -174,5 +184,40 @@ describe("ledger proofs (RFC 6962)", () => {
       ),
     ).toBe(true);
     expect((await h.call(null, "GET", "/ledger/consistency.json?from=0&to=2")).status).toBe(400);
+  });
+
+  it("keeps about two stored nodes per entry and backfills a ledger that had none", async () => {
+    await setup();
+    for (let i = 0; i < 5; i++) await agreement();
+    const nodes = await h.handle.db.select().from(schema.ledgerTreeNodes);
+    const size = (await h.call(null, "GET", "/ledger/checkpoint.json")).body.size;
+    expect(nodes.length).toBeLessThan(2 * size);
+    const before = (await h.call(null, "GET", "/ledger/checkpoint.json")).body.root;
+    // The append fast path agrees with a full recomputation at every tree size.
+    const leaves = await ledgerLeaves(h.handle.db);
+    for (let n = 1; n <= leaves.length; n++) {
+      const cached = await withLedgerTree(h.handle.db, (get) => rootFrom(get, n));
+      expect(toHex(cached)).toBe(toHex(rootOf(leaves.slice(0, n))));
+    }
+
+    // A ledger from before the cache existed: proofs rebuild the nodes on first use.
+    await h.handle.db.delete(schema.ledgerTreeNodes);
+    expect((await h.call(null, "GET", "/ledger/checkpoint.json")).body.root).toBe(before);
+    const agr = await agreement();
+    const proof = (await h.call(h.keys.platformA, "GET", `/v1/agreements/${agr.id}/proof`))
+      .body as LedgerProof;
+    expect(verifyLedgerProof(proof).ok).toBe(true);
+  });
+
+  it("refuses to anchor if the stored nodes ever disagree with the entries", async () => {
+    await setup();
+    await agreement();
+    await h.handle.db
+      .update(schema.ledgerTreeNodes)
+      .set({ hash: "ab".repeat(32) })
+      .where(and(eq(schema.ledgerTreeNodes.level, 0), eq(schema.ledgerTreeNodes.idx, 0)));
+    const res = await h.call(O(), "POST", "/v1/ops/ledger/anchor");
+    expect(res.status).toBe(500);
+    expect(anchor.anchors).toEqual([]);
   });
 });

@@ -155,3 +155,77 @@ export function verifyConsistency(
 
 /** The ledger's leaf for an entry: the leaf hash of its 32-byte entry hash. */
 export const ledgerLeaf = (entryHashHex: string) => leafHash(fromHex(entryHashHex));
+
+// ---------------------------------------------------------------------------------------------
+// The same tree computed from stored complete subtrees instead of every leaf.
+//
+// In an append-only log, a complete (perfect, aligned) subtree never changes, so its hash can
+// be stored once. Node (level, index) covers leaves [index·2^level, (index+1)·2^level); level 0
+// is the leaf hash. Every subtree the RFC 6962 recursion splits off on the left is complete, so
+// roots and proofs need only O(log n) stored nodes. `nodesNeeded` runs a computation against a
+// dummy getter to learn which nodes it reads, so they can be fetched in one query.
+// ---------------------------------------------------------------------------------------------
+
+export type NodeGetter = (level: number, index: number) => Uint8Array;
+
+const isPow2 = (n: number) => n > 0 && (n & (n - 1)) === 0;
+const log2 = (n: number) => 31 - Math.clz32(n);
+
+/** MTH of leaves [start, start+n), n ≥ 1, `start` aligned as the recursion guarantees. */
+function mthFrom(get: NodeGetter, start: number, n: number): Uint8Array {
+  if (isPow2(n)) return get(log2(n), start / n);
+  const k = split(n);
+  return nodeHash(mthFrom(get, start, k), mthFrom(get, start + k, n - k));
+}
+
+export function rootFrom(get: NodeGetter, size: number): Uint8Array {
+  return size === 0 ? sha256() : mthFrom(get, 0, size);
+}
+
+export function inclusionPathFrom(get: NodeGetter, index: number, size: number): Uint8Array[] {
+  if (index < 0 || index >= size) throw new RangeError("leaf index out of range");
+  const path = (start: number, n: number, i: number): Uint8Array[] => {
+    if (n === 1) return [];
+    const k = split(n);
+    return i < k
+      ? [...path(start, k, i), mthFrom(get, start + k, n - k)]
+      : [...path(start + k, n - k, i - k), mthFrom(get, start, k)];
+  };
+  return path(0, size, index);
+}
+
+export function consistencyPathFrom(get: NodeGetter, m: number, size: number): Uint8Array[] {
+  if (m < 1 || m > size) throw new RangeError("old tree size out of range");
+  const sub = (start: number, n: number, m: number, whole: boolean): Uint8Array[] => {
+    if (m === n) return whole ? [] : [mthFrom(get, start, n)];
+    const k = split(n);
+    return m <= k
+      ? [...sub(start, k, m, whole), mthFrom(get, start + k, n - k)]
+      : [...sub(start + k, n - k, m - k, false), mthFrom(get, start, k)];
+  };
+  return sub(0, size, m, true);
+}
+
+/** The (level, index) nodes a computation reads, found by running it on placeholder hashes. */
+export function nodesNeeded(compute: (get: NodeGetter) => unknown): [number, number][] {
+  const seen = new Map<string, [number, number]>();
+  const zero = new Uint8Array(32);
+  compute((level, index) => {
+    seen.set(`${level}:${index}`, [level, index]);
+    return zero;
+  });
+  return [...seen.values()];
+}
+
+/** The complete nodes that appending leaf `index` finishes (including the leaf itself). */
+export function nodesCompletedBy(index: number): [number, number][] {
+  const out: [number, number][] = [[0, index]];
+  let level = 0;
+  let i = index;
+  while (i % 2 === 1) {
+    level++;
+    i = (i - 1) / 2;
+    out.push([level, i]);
+  }
+  return out;
+}
