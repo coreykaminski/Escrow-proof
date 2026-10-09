@@ -10,7 +10,8 @@
       "!contracts/lib",
       "!contracts/out",
       "!contracts/cache",
-      "!contracts/broadcast"
+      "!contracts/broadcast",
+      "!evals/*/runs"
     ]
   },
   "formatter": {
