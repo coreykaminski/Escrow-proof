@@ -38,6 +38,7 @@ export async function evaluatorListing(deps: AppDeps) {
     ],
     links: {
       api: `${base}/docs`,
+      agent_card: `${base}/.well-known/agent-card.json`,
       openapi: `${base}/openapi.json`,
       accuracy: `${base}/accuracy.json`,
       status: `${base}/status.json`,

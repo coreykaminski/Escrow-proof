@@ -5,6 +5,7 @@ import type { AppDeps, AppEnv } from "./env.ts";
 import { ApiError, errorResponse } from "./errors.ts";
 import { authenticate, idempotency, requireScope } from "./middleware.ts";
 import { DOCS_CSP, DOCS_HTML, openApiDocument } from "./openapi.ts";
+import { a2aRoutes, agentCard } from "./routes/a2a.ts";
 import { agreementRoutes } from "./routes/agreements.ts";
 import { billingRoutes, opsBillingRoutes } from "./routes/billing.ts";
 import { opsRoutes } from "./routes/ops.ts";
@@ -115,6 +116,11 @@ export function createApp(deps: AppDeps) {
     }
     return c.json(await consistencyProof(deps.db, from, to));
   });
+  // A2A agent card (protocol 1.0): the verification skill, served over /a2a below.
+  app.get("/.well-known/agent-card.json", (c) => {
+    c.header("Access-Control-Allow-Origin", "*");
+    return c.json(agentCard(deps.publicUrl ?? new URL(c.req.url).origin));
+  });
   app.get("/.well-known/erc8183-evaluator.json", async (c) => {
     const listing = await evaluatorListing(deps);
     if (!listing)
@@ -142,6 +148,19 @@ export function createApp(deps: AppDeps) {
     }),
     idempotency(deps),
   );
+  app.use(
+    "/a2a/*",
+    authenticate(deps),
+    rateLimit({
+      name: "api",
+      limit: limits.apiPerMinute,
+      windowMs: 60_000,
+      key: (c) => (c.get("auth") as { apiKeyId: string }).apiKeyId,
+      store,
+    }),
+    requireScope("platform"),
+  );
+  app.route("/a2a", a2aRoutes(deps));
   app.use("/v1/agreements/*", requireScope("platform"));
   app.use("/v1/agreements", requireScope("platform"));
   app.use("/v1/sellers/*", requireScope("platform"));

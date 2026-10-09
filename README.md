@@ -7,7 +7,7 @@ tamper-evident ledger. See [MASTER_PLAN.md](MASTER_PLAN.md) for the strategy and
 **New here? Start with the [quickstart](docs/quickstart.md)** (sandbox, ~15 minutes). The API
 reference is served at `/docs` (OpenAPI at `/openapi.json`).
 
-**Status:** Parts 1–9 and the engineering parts of 10 are built and tested (658 Vitest tests,
+**Status:** Parts 1–9 and the engineering parts of 10 are built and tested (694 Vitest tests,
 25 Foundry tests, golden-set gates in CI):
 
 - **Spec Engine (2):** its eval passed (AI-rated).
@@ -26,6 +26,13 @@ reference is served at `/docs` (OpenAPI at `/openapi.json`).
   - Pilot shadow mode: a human confirms every automatic decision before money moves.
   - Evaluator-for-hire on any ERC-8183 contract
     ([docs/integrations/erc8183-evaluator.md](docs/integrations/erc8183-evaluator.md)).
+- **From the 2026-10 outside review:**
+  - Verify API (no payment held).
+  - Published test-set accuracy (v0) on `/accuracy`.
+  - Merkle tree heads (RFC 6962) with offline-verifiable verdict proofs.
+  - Content-free public verdict records (`/verdicts.json`).
+  - KMS evaluator keys with one key per role.
+  - A standard A2A agent card ([docs/integrations/a2a.md](docs/integrations/a2a.md)).
 
 Still open: the model evals and the go-live gates (lawyer, pen test, contract audit). See
 [docs/launch/runbook.md](docs/launch/runbook.md).

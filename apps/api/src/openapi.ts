@@ -565,6 +565,28 @@ export const OPERATIONS: Op[] = [
   },
   {
     method: "get",
+    path: "/.well-known/agent-card.json",
+    tag: "Agents",
+    summary: "A2A agent card (protocol 1.0): the verify-deliverable skill over HTTP+JSON at /a2a",
+    scope: "none",
+  },
+  {
+    method: "post",
+    path: "/a2a/message:send",
+    tag: "Agents",
+    summary:
+      "A2A SendMessage: one JSON data part shaped like POST /v1/verifications; returns a Task",
+    description:
+      "The task completes with a `verdict` artifact (outcome, reason, per-criterion verdicts), or stays TASK_STATE_WORKING while a human reviewer decides. A message without a usable data part gets an agent message explaining the format.",
+  },
+  {
+    method: "get",
+    path: "/a2a/tasks/{id}",
+    tag: "Agents",
+    summary: "A2A GetTask: a verification task's current state and verdict",
+  },
+  {
+    method: "get",
     path: "/.well-known/erc8183-evaluator.json",
     tag: "Meta",
     summary:
