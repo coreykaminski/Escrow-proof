@@ -15,6 +15,7 @@ import {
   DecideBody,
   DeliveryBody,
   DisputeBody,
+  ExternalJobBody,
   FromMandateBody,
   FromRequestBody,
   FundBody,
@@ -201,6 +202,22 @@ export const OPERATIONS: Op[] = [
     tag: "Funding",
     summary: "Gasless funding: relay the buyer's signed EIP-3009 authorization",
     body: OnchainAuthorizationBody,
+    created: true,
+  },
+  {
+    method: "get",
+    path: "/v1/agreements/{id}/external-job/terms",
+    tag: "Funding",
+    summary: "Terms a job on any ERC-8183 contract must meet for Proof Desk to evaluate it",
+  },
+  {
+    method: "post",
+    path: "/v1/agreements/{id}/external-job",
+    tag: "Funding",
+    summary: "Attach a funded job from another ERC-8183 contract (Proof Desk as evaluator)",
+    description:
+      "The job is read from the chain and must name Proof Desk's evaluator, hold the agreed USDC budget, contain the agreement's description tag, and expire no earlier than the terms allow. Settles with complete (release) or reject (refund); partial outcomes go to a human.",
+    body: ExternalJobBody,
     created: true,
   },
   {
@@ -482,6 +499,14 @@ export const OPERATIONS: Op[] = [
     scope: "ops",
   },
   { method: "get", path: "/health", tag: "Meta", summary: "Health check", scope: "none" },
+  {
+    method: "get",
+    path: "/.well-known/erc8183-evaluator.json",
+    tag: "Meta",
+    summary:
+      "Evaluator-for-hire listing for ERC-8183 ecosystems (address, chain, verticals, pricing)",
+    scope: "none",
+  },
   {
     method: "get",
     path: "/accuracy.json",

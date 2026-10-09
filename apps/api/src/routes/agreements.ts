@@ -21,6 +21,7 @@ import {
   replaceSpec,
   submitDelivery,
 } from "../services/agreements.ts";
+import { attachExternalJob, externalJobTerms } from "../services/external-jobs.ts";
 import { listInputs, replaceInputs } from "../services/inputs.ts";
 import {
   chainUnavailable,
@@ -41,6 +42,7 @@ import {
   CreateAgreementBody,
   DeliveryBody,
   DisputeBody,
+  ExternalJobBody,
   FromMandateBody,
   FromRequestBody,
   FundBody,
@@ -341,6 +343,31 @@ export function agreementRoutes(deps: AppDeps) {
       validAfter: body.valid_after ?? 0n,
       validBefore: body.valid_before,
       signature: body.signature,
+      now: now(),
+    });
+    return c.json({ job: onchainJobJson(row), agreement: agreementJson(agreement) }, 201);
+  });
+
+  /** What a buyer's job on any ERC-8183 contract must look like for Proof Desk to evaluate it. */
+  r.get("/:id/external-job/terms", async (c) => {
+    if (!chain) chainUnavailable();
+    return c.json(
+      await externalJobTerms(db, chain, {
+        agreementId: c.req.param("id"),
+        scope: { accountId: c.get("auth").accountId },
+      }),
+    );
+  });
+
+  /** Attach a funded job from another ERC-8183 contract (Proof Desk as evaluator-for-hire). */
+  r.post("/:id/external-job", async (c) => {
+    if (!chain) chainUnavailable();
+    const body = ExternalJobBody.parse(await c.req.json());
+    const { row, agreement } = await attachExternalJob(db, chain, {
+      agreementId: c.req.param("id"),
+      scope: { accountId: c.get("auth").accountId },
+      contract: body.contract,
+      jobId: body.job_id,
       now: now(),
     });
     return c.json({ job: onchainJobJson(row), agreement: agreementJson(agreement) }, 201);

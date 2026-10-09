@@ -3,6 +3,7 @@ import {
   ChainError,
   type ChainGateway,
   fundingCalls,
+  type JobStatus,
   type JobTerms,
   releaseBasisPoints,
   splitBudget,
@@ -188,6 +189,13 @@ export async function prepareOnchainJob(
     row = (await getOnchainJob(db, agreement.id)) as OnchainJobRow;
   }
 
+  if (row.kind === "external") {
+    throw new ApiError(
+      409,
+      "already_funding",
+      "this agreement is funded by a job on another ERC-8183 contract",
+    );
+  }
   const placeholder = "0x0000000000000000000000000000000000000000" as Address;
   const { client: _c, ...terms } = termsOf(row, placeholder);
   let typedData: ReturnType<typeof authorizationTypedData> | null = null;
@@ -422,7 +430,7 @@ async function refundLateFunding(
   });
 }
 
-function isUniqueViolation(err: unknown): boolean {
+export function isUniqueViolation(err: unknown): boolean {
   for (let e: unknown = err; e instanceof Error; e = e.cause) {
     if ((e as { code?: string }).code === "23505") return true;
   }
@@ -438,7 +446,12 @@ async function decisionHash(db: Db, agreementId: string): Promise<Hex> {
   const entries = await listLedgerForAgreement(db, agreementId);
   const decision = entries
     .filter((e) =>
-      ["agreement.decide", "agreement.resolve_dispute", "agreement.miss_deadline"].includes(e.type),
+      [
+        "agreement.decide",
+        "agreement.resolve_dispute",
+        "agreement.miss_deadline",
+        "agreement.review",
+      ].includes(e.type),
     )
     .at(-1);
   if (!decision) throw new ApiError(409, "invalid_transition", "nothing to settle");
@@ -466,56 +479,11 @@ export async function settleOnchain(
   const row = await getOnchainJob(db, agreement.id);
   if (!outcome || !row?.jobId) throw new ApiError(409, "invalid_transition", "nothing to settle");
 
-  const jobId = BigInt(row.jobId);
-  const releaseBP = releaseBasisPoints(outcome);
-  const job = await chain.getJob(jobId);
-  let settleTx: string | null = null;
-  let endedAs = job.status;
-
-  if (job.status === "funded" || job.status === "submitted") {
-    try {
-      settleTx = (
-        await chain.settle({ jobId, releaseBP, reason: await decisionHash(db, agreement.id) })
-      ).txHash;
-    } catch (err) {
-      if (err instanceof ChainError && !err.retryable) {
-        throw new ApiError(409, "hold_unsettleable", err.message);
-      }
-      throw err;
-    }
-    endedAs = releaseBP === 0 ? "rejected" : "completed";
-  } else if (job.status === "expired" || job.status === "rejected") {
-    // Already refunded on-chain (expiry claim, or an earlier attempt of this settlement).
-    if (releaseBP > 0) {
-      throw new ApiError(
-        409,
-        "hold_unsettleable",
-        `the job already ended on-chain as ${job.status} (buyer refunded) but the decision pays the seller`,
-      );
-    }
-  } else if (job.status === "completed") {
-    if (releaseBP === 0) {
-      throw new ApiError(
-        409,
-        "hold_unsettleable",
-        "the job was completed on-chain but the decision is a refund",
-      );
-    }
-  } else {
-    throw new ApiError(409, "hold_unsettleable", `the job is ${job.status} on-chain`);
-  }
-
-  const feeBP = await chain.jobFeeBP(jobId);
-  const split = splitBudget(BigInt(row.budget), releaseBP, feeBP);
-  const settlement = {
-    release_bp: releaseBP,
-    release: Number(split.released),
-    fee: Number(split.fee),
-    seller_payout: Number(split.toProvider),
-    buyer_refund: Number(split.toClient),
-    job_status: endedAs,
-    ...(settleTx ? { settle_tx: settleTx } : {}),
-  };
+  const reason = await decisionHash(db, agreement.id);
+  const { settleTx, endedAs, settlement } =
+    row.kind === "external"
+      ? await settleExternalJob(chain, row, outcome, reason)
+      : await settleNativeJob(chain, row, outcome, reason);
   return applyEvent(db, {
     agreementId: agreement.id,
     scope: {},
@@ -544,6 +512,133 @@ export async function settleOnchain(
       });
     },
   });
+}
+
+type Settled = {
+  settleTx: string | null;
+  endedAs: JobStatus;
+  settlement: Record<string, unknown>;
+};
+
+const unsettleable = (message: string) => new ApiError(409, "hold_unsettleable", message);
+
+async function sendOrExplain(fn: () => Promise<{ txHash: Hex }>): Promise<string> {
+  try {
+    return (await fn()).txHash;
+  } catch (err) {
+    if (err instanceof ChainError && !err.retryable) throw unsettleable(err.message);
+    throw err;
+  }
+}
+
+/** Our ProofDeskJobs contract: one `settle` call with the release share (partials allowed). */
+async function settleNativeJob(
+  chain: ChainGateway,
+  row: OnchainJobRow,
+  outcome: Outcome,
+  reason: Hex,
+): Promise<Settled> {
+  const jobId = BigInt(row.jobId as string);
+  const releaseBP = releaseBasisPoints(outcome);
+  const job = await chain.getJob(jobId);
+  let settleTx: string | null = null;
+  let endedAs = job.status;
+
+  if (job.status === "funded" || job.status === "submitted") {
+    settleTx = await sendOrExplain(() => chain.settle({ jobId, releaseBP, reason }));
+    endedAs = releaseBP === 0 ? "rejected" : "completed";
+  } else if (job.status === "expired" || job.status === "rejected") {
+    // Already refunded on-chain (expiry claim, or an earlier attempt of this settlement).
+    if (releaseBP > 0) {
+      throw unsettleable(
+        `the job already ended on-chain as ${job.status} (buyer refunded) but the decision pays the seller`,
+      );
+    }
+  } else if (job.status === "completed") {
+    if (releaseBP === 0) {
+      throw unsettleable("the job was completed on-chain but the decision is a refund");
+    }
+  } else {
+    throw unsettleable(`the job is ${job.status} on-chain`);
+  }
+
+  const feeBP = await chain.jobFeeBP(jobId);
+  const split = splitBudget(BigInt(row.budget), releaseBP, feeBP);
+  return {
+    settleTx,
+    endedAs,
+    settlement: {
+      release_bp: releaseBP,
+      release: Number(split.released),
+      fee: Number(split.fee),
+      seller_payout: Number(split.toProvider),
+      buyer_refund: Number(split.toClient),
+      job_status: endedAs,
+      ...(settleTx ? { settle_tx: settleTx } : {}),
+    },
+  };
+}
+
+/**
+ * Someone else's ERC-8183 contract: `complete` pays the provider in full, `reject` refunds the
+ * client in full. `complete` needs the provider to have called `submit` first.
+ */
+async function settleExternalJob(
+  chain: ChainGateway,
+  row: OnchainJobRow,
+  outcome: Outcome,
+  reason: Hex,
+): Promise<Settled> {
+  if (outcome.kind === "partial") {
+    throw unsettleable("a standard ERC-8183 job can't settle a partial outcome");
+  }
+  const contract = getAddress(row.contract);
+  const jobId = BigInt(row.jobId as string);
+  const release = outcome.kind === "release";
+  const job = await chain.getJobAt(contract, jobId);
+  let settleTx: string | null = null;
+  let endedAs = job.status;
+
+  if (release) {
+    if (job.status === "submitted") {
+      settleTx = await sendOrExplain(() => chain.complete({ contract, jobId, reason }));
+      endedAs = "completed";
+    } else if (job.status === "funded") {
+      throw new ApiError(
+        409,
+        "provider_not_submitted",
+        `the decision pays the provider, but the provider hasn't called submit(${jobId}, …) on ${contract} yet; ERC-8183 only completes submitted jobs`,
+      );
+    } else if (job.status !== "completed") {
+      throw unsettleable(
+        `the job already ended on-chain as ${job.status} (client refunded) but the decision pays the provider`,
+      );
+    }
+  } else if (job.status === "funded" || job.status === "submitted") {
+    settleTx = await sendOrExplain(() => chain.reject({ contract, jobId, reason }));
+    endedAs = "rejected";
+  } else if (job.status === "completed") {
+    throw unsettleable("the job was completed on-chain but the decision is a refund");
+  } else if (job.status !== "expired" && job.status !== "rejected") {
+    throw unsettleable(`the job is ${job.status} on-chain`);
+  }
+
+  const budget = row.budget;
+  return {
+    settleTx,
+    endedAs,
+    settlement: {
+      standard: "erc8183",
+      release_bp: release ? 10_000 : 0,
+      release: release ? budget : 0,
+      // Paid by the job contract, minus any fee that contract itself charges.
+      seller_payout: release ? budget : 0,
+      buyer_refund: release ? 0 : budget,
+      fee: 0,
+      job_status: endedAs,
+      ...(settleTx ? { settle_tx: settleTx } : {}),
+    },
+  };
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -584,7 +679,10 @@ export async function syncOnchainJobs(db: Db, chain: ChainGateway, now: Date) {
   const expired: string[] = [];
   for (const row of funded) {
     if (!row.jobId || row.expiresAt.getTime() > now.getTime()) continue;
-    const job = await chain.getJob(BigInt(row.jobId));
+    const job =
+      row.kind === "external"
+        ? await chain.getJobAt(getAddress(row.contract), BigInt(row.jobId))
+        : await chain.getJob(BigInt(row.jobId));
     if (job.status !== "expired") continue;
     await db.transaction(async (tx) => {
       await tx

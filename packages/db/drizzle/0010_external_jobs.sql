@@ -1,0 +1,1 @@
+ALTER TABLE "onchain_jobs" ADD COLUMN "kind" text DEFAULT 'native' NOT NULL;

@@ -16,11 +16,12 @@ import {
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { base, baseSepolia, foundry } from "viem/chains";
-import { proofDeskJobsAbi } from "./abi.ts";
+import { ierc8183Abi, proofDeskJobsAbi } from "./abi.ts";
 import {
   type ChainConfig,
   ChainError,
   type ChainGateway,
+  type ExternalJob,
   JOB_STATUSES,
   type JobTerms,
   type OnchainJob,
@@ -32,6 +33,16 @@ const KNOWN_CHAINS: Record<number, Chain> = {
   [baseSepolia.id]: baseSepolia,
   [foundry.id]: foundry,
 };
+
+const paymentTokenAbi = [
+  {
+    type: "function",
+    name: "paymentToken",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ type: "address" }],
+  },
+] as const;
 
 const eip712DomainAbi = [
   {
@@ -225,16 +236,78 @@ export class ViemChainGateway implements ChainGateway {
     return { txHash: await this.write("settle", [p.jobId, p.releaseBP, p.reason]) };
   }
 
-  /** Simulate (to surface reverts as non-retryable), send, wait for the receipt. */
+  async getJobAt(contract: Address, jobId: bigint): Promise<ExternalJob> {
+    const address = getAddress(contract);
+    const j = await this.read(() =>
+      this.pub.readContract({ address, abi: ierc8183Abi, functionName: "getJob", args: [jobId] }),
+    );
+    const status = JOB_STATUSES[j.status];
+    if (!status) throw new ChainError(`unknown job status ${j.status}`, false);
+    return {
+      contract: address,
+      jobId: j.id,
+      client: getAddress(j.client),
+      provider: getAddress(j.provider),
+      evaluator: getAddress(j.evaluator),
+      expiredAt: j.expiredAt,
+      description: j.description,
+      budget: j.budget,
+      status,
+      hook: getAddress(j.hook),
+    };
+  }
+
+  async paymentTokenAt(contract: Address): Promise<Address | null> {
+    try {
+      const token = await this.read(() =>
+        this.pub.readContract({
+          address: getAddress(contract),
+          abi: paymentTokenAbi,
+          functionName: "paymentToken",
+        }),
+      );
+      return getAddress(token);
+    } catch (err) {
+      if (err instanceof ChainError && !err.retryable) return null;
+      throw err;
+    }
+  }
+
+  async complete(p: { contract: Address; jobId: bigint; reason: Hex }) {
+    return { txHash: await this.writeAt(p.contract, "complete", [p.jobId, p.reason, "0x"]) };
+  }
+
+  async reject(p: { contract: Address; jobId: bigint; reason: Hex }) {
+    return { txHash: await this.writeAt(p.contract, "reject", [p.jobId, p.reason, "0x"]) };
+  }
+
+  private async writeAt(
+    contract: Address,
+    functionName: "complete" | "reject",
+    args: readonly unknown[],
+  ): Promise<Hex> {
+    return this.send(getAddress(contract), ierc8183Abi, functionName, args);
+  }
+
   private async write(
     functionName: "settle" | "createAndFundWithAuthorization",
     args: readonly unknown[],
   ): Promise<Hex> {
+    return this.send(this.contract, proofDeskJobsAbi, functionName, args);
+  }
+
+  /** Simulate (to surface reverts as non-retryable), send, wait for the receipt. */
+  private async send(
+    address: Address,
+    abi: typeof proofDeskJobsAbi | typeof ierc8183Abi,
+    functionName: string,
+    args: readonly unknown[],
+  ): Promise<Hex> {
     try {
       const { request } = await this.pub.simulateContract({
-        address: this.contract,
-        abi: proofDeskJobsAbi,
-        functionName,
+        address,
+        abi: abi as typeof proofDeskJobsAbi,
+        functionName: functionName as "settle",
         args: args as never,
         account: this.account,
       });

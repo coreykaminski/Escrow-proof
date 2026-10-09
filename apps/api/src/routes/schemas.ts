@@ -149,6 +149,13 @@ export const OnchainJobBody = z.object({
   client: evmAddress.optional(),
 });
 
+/** A funded job on any ERC-8183 contract that names Proof Desk as its evaluator. */
+export const ExternalJobBody = z.object({
+  contract: evmAddress,
+  /** uint256, as a decimal string. */
+  job_id: z.string().regex(/^\d{1,78}$/),
+});
+
 export const OnchainConfirmBody = z.object({
   /** The buyer's createAndFund transaction. */
   tx_hash: z.string().regex(/^0x[0-9a-fA-F]{64}$/),

@@ -1636,3 +1636,1061 @@ export const ledgerAnchorAbi = [
 
 export const ledgerAnchorBytecode =
   "0x60803460b457601f6107a338819003918201601f19168301916001600160401b0383118484101760b857808492604094855283398101031260b457604b602060458360cc565b920160cc565b906001600160a01b03168015801560a4575b60955760018060a01b03195f5416175f5560018060a01b031660018060a01b031960015416176001556040516106c390816100e08239f35b635435b28960e11b5f5260045ffd5b506001600160a01b03821615605d565b5f80fd5b634e487b7160e01b5f52604160045260245ffd5b51906001600160a01b038216820360b45756fe6080806040526004361015610012575f80fd5b5f3560e01c90816306661abd146105eb575080630e0ab0a11461053e57806352bfe789146104af578063846099211461047c5780638da5cb5b1461044a5780639507d39a146103da578063a6855208146101735763f2fde38b14610074575f80fd5b3461016f57602060031936011261016f5760043573ffffffffffffffffffffffffffffffffffffffff811680910361016f575f5473ffffffffffffffffffffffffffffffffffffffff8116330361014757811561011f57817fa2ea9883a321a3e97b8266c2b078bfeec6d50c711ed71f874a90d500ae2eaf36927fffffffffffffffffffffffff000000000000000000000000000000000000000060209316175f55604051908152a1005b7fa86b6512000000000000000000000000000000000000000000000000000000005f5260045ffd5b7f82b42900000000000000000000000000000000000000000000000000000000005f5260045ffd5b5f80fd5b3461016f57604060031936011261016f5760043567ffffffffffffffff811680910361016f576024359073ffffffffffffffffffffffffffffffffffffffff60015416330361014757801580156103d2575b61011f57600254908115158061035d575b6103355767ffffffffffffffff4216926101ee610605565b908282526020820185815260408301918083526801000000000000000086101561030857600186016002556102228661063f565b9790976102dc5760209760017f91e05141ac080a2cef06d69499b831b2668545cffe0b3a8f4dbb2ca9fda871129560409567ffffffffffffffff8b9951167fffffffffffffffffffffffffffffffff000000000000000000000000000000006fffffffffffffffff0000000000000000865493837fffffffffffffffffffffffffffffffffffffffffffffffff00000000000000008616178855518a1b1692161717835551910155825191825287820152a3604051908152f35b7f4e487b71000000000000000000000000000000000000000000000000000000005f525f60045260245ffd5b7f4e487b71000000000000000000000000000000000000000000000000000000005f52604160045260245ffd5b7fa2c34076000000000000000000000000000000000000000000000000000000005f5260045ffd5b507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff82018281116103a55761039a67ffffffffffffffff9161063f565b5054168111156101d6565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52601160045260245ffd5b5081156101c5565b3461016f57602060031936011261016f576103f3610625565b5061044661040b61040560043561063f565b50610688565b60405191829182919091604080606083019467ffffffffffffffff815116845267ffffffffffffffff60208201511660208501520151910152565b0390f35b3461016f575f60031936011261016f57602073ffffffffffffffffffffffffffffffffffffffff5f5416604051908152f35b3461016f575f60031936011261016f57602073ffffffffffffffffffffffffffffffffffffffff60015416604051908152f35b3461016f575f60031936011261016f576104c7610625565b60025490816104ff575b60408051825167ffffffffffffffff9081168252602080850151909116908201529181015190820152606090f35b507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff81019081116103a5576105396104056104469261063f565b6104d1565b3461016f57602060031936011261016f5760043573ffffffffffffffffffffffffffffffffffffffff811680910361016f5773ffffffffffffffffffffffffffffffffffffffff5f5416330361014757801561011f576020817f9b9f3ea33be1bbd40b68669e92f2ef683cc29f4e68991cbab9c9bc19a3468756927fffffffffffffffffffffffff00000000000000000000000000000000000000006001541617600155604051908152a1005b3461016f575f60031936011261016f576020906002548152f35b604051906060820182811067ffffffffffffffff82111761030857604052565b61062d610605565b905f82525f60208301525f6040830152565b60025481101561065b5760025f5260205f209060011b01905f90565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52603260045260245ffd5b906001610693610605565b9267ffffffffffffffff8154818116865260401c1660208501520154604083015256fea164736f6c634300081e000a" as const;
+
+/** The standard ERC-8183 job interface: what Proof Desk calls on other parties' job contracts. */
+export const ierc8183Abi = [
+  {
+    type: "function",
+    name: "claimRefund",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "complete",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "reason",
+        type: "bytes32",
+        internalType: "bytes32",
+      },
+      {
+        name: "optParams",
+        type: "bytes",
+        internalType: "bytes",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "createJob",
+    inputs: [
+      {
+        name: "provider",
+        type: "address",
+        internalType: "address",
+      },
+      {
+        name: "evaluator",
+        type: "address",
+        internalType: "address",
+      },
+      {
+        name: "expiredAt",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "description",
+        type: "string",
+        internalType: "string",
+      },
+      {
+        name: "hook",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "fund",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "optParams",
+        type: "bytes",
+        internalType: "bytes",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "getJob",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        internalType: "struct IERC8183.Job",
+        components: [
+          {
+            name: "id",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "client",
+            type: "address",
+            internalType: "address",
+          },
+          {
+            name: "provider",
+            type: "address",
+            internalType: "address",
+          },
+          {
+            name: "evaluator",
+            type: "address",
+            internalType: "address",
+          },
+          {
+            name: "description",
+            type: "string",
+            internalType: "string",
+          },
+          {
+            name: "budget",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "expiredAt",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "status",
+            type: "uint8",
+            internalType: "enum IERC8183.JobStatus",
+          },
+          {
+            name: "hook",
+            type: "address",
+            internalType: "address",
+          },
+        ],
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "reject",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "reason",
+        type: "bytes32",
+        internalType: "bytes32",
+      },
+      {
+        name: "optParams",
+        type: "bytes",
+        internalType: "bytes",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "setBudget",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "amount",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "optParams",
+        type: "bytes",
+        internalType: "bytes",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "setProvider",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "provider_",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "submit",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "deliverable",
+        type: "bytes32",
+        internalType: "bytes32",
+      },
+      {
+        name: "optParams",
+        type: "bytes",
+        internalType: "bytes",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "event",
+    name: "BudgetSet",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "amount",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "JobCompleted",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "evaluator",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "reason",
+        type: "bytes32",
+        indexed: false,
+        internalType: "bytes32",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "JobCreated",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "client",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "provider",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "evaluator",
+        type: "address",
+        indexed: false,
+        internalType: "address",
+      },
+      {
+        name: "expiredAt",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+      {
+        name: "hook",
+        type: "address",
+        indexed: false,
+        internalType: "address",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "JobExpired",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "JobFunded",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "client",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "amount",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "JobRejected",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "rejector",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "reason",
+        type: "bytes32",
+        indexed: false,
+        internalType: "bytes32",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "JobSubmitted",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "provider",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "deliverable",
+        type: "bytes32",
+        indexed: false,
+        internalType: "bytes32",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "PaymentReleased",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "provider",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "amount",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "ProviderSet",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "provider",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "Refunded",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "client",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "amount",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+] as const;
+
+/** Test-only plain ERC-8183 implementation (no Proof Desk extensions). */
+export const referenceErc8183Abi = [
+  {
+    type: "constructor",
+    inputs: [
+      {
+        name: "token",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "claimRefund",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "complete",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "reason",
+        type: "bytes32",
+        internalType: "bytes32",
+      },
+      {
+        name: "",
+        type: "bytes",
+        internalType: "bytes",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "createJob",
+    inputs: [
+      {
+        name: "provider",
+        type: "address",
+        internalType: "address",
+      },
+      {
+        name: "evaluator",
+        type: "address",
+        internalType: "address",
+      },
+      {
+        name: "expiredAt",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "description",
+        type: "string",
+        internalType: "string",
+      },
+      {
+        name: "hook",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "fund",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "",
+        type: "bytes",
+        internalType: "bytes",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "getJob",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        internalType: "struct IERC8183.Job",
+        components: [
+          {
+            name: "id",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "client",
+            type: "address",
+            internalType: "address",
+          },
+          {
+            name: "provider",
+            type: "address",
+            internalType: "address",
+          },
+          {
+            name: "evaluator",
+            type: "address",
+            internalType: "address",
+          },
+          {
+            name: "description",
+            type: "string",
+            internalType: "string",
+          },
+          {
+            name: "budget",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "expiredAt",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "status",
+            type: "uint8",
+            internalType: "enum IERC8183.JobStatus",
+          },
+          {
+            name: "hook",
+            type: "address",
+            internalType: "address",
+          },
+        ],
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "jobCount",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "paymentToken",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "address",
+        internalType: "contract IERC20Minimal",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "reject",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "reason",
+        type: "bytes32",
+        internalType: "bytes32",
+      },
+      {
+        name: "",
+        type: "bytes",
+        internalType: "bytes",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "setBudget",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "amount",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "",
+        type: "bytes",
+        internalType: "bytes",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "setProvider",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "provider_",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "submit",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "deliverable",
+        type: "bytes32",
+        internalType: "bytes32",
+      },
+      {
+        name: "",
+        type: "bytes",
+        internalType: "bytes",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "event",
+    name: "BudgetSet",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "amount",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "JobCompleted",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "evaluator",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "reason",
+        type: "bytes32",
+        indexed: false,
+        internalType: "bytes32",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "JobCreated",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "client",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "provider",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "evaluator",
+        type: "address",
+        indexed: false,
+        internalType: "address",
+      },
+      {
+        name: "expiredAt",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+      {
+        name: "hook",
+        type: "address",
+        indexed: false,
+        internalType: "address",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "JobExpired",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "JobFunded",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "client",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "amount",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "JobRejected",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "rejector",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "reason",
+        type: "bytes32",
+        indexed: false,
+        internalType: "bytes32",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "JobSubmitted",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "provider",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "deliverable",
+        type: "bytes32",
+        indexed: false,
+        internalType: "bytes32",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "PaymentReleased",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "provider",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "amount",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "ProviderSet",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "provider",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "Refunded",
+    inputs: [
+      {
+        name: "jobId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "client",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "amount",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "error",
+    name: "Expired",
+    inputs: [],
+  },
+  {
+    type: "error",
+    name: "InvalidParams",
+    inputs: [],
+  },
+  {
+    type: "error",
+    name: "InvalidState",
+    inputs: [],
+  },
+  {
+    type: "error",
+    name: "NotExpired",
+    inputs: [],
+  },
+  {
+    type: "error",
+    name: "TransferFailed",
+    inputs: [],
+  },
+  {
+    type: "error",
+    name: "Unauthorized",
+    inputs: [],
+  },
+] as const;
+
+export const referenceErc8183Bytecode =
+  "0x60a034607657601f61143a38819003918201601f19168301916001600160401b03831184841017607a57808492602094604052833981010312607657516001600160a01b038116908190036076576080526040516113ab908161008f823960805181818161018f01528181610ffb01526113470152f35b5f80fd5b634e487b7160e01b5f52604160045260245ffdfe6080806040526004361015610012575f80fd5b5f3560e01c9081633013ce2914610fd1575080634152881214610a7157806341dd26f514610a565780634c5d8a0f14610a3a5780635b7baf641461093a5780639e63798d146108a1578063bf22c45714610612578063d0fae591146104fa578063d75bbdf314610404578063dd4ae9d41461032e5763e25ba70714610095575f80fd5b3461032a57604060031936011261032a5760043560243567ffffffffffffffff811161032a576100c9903690600401611042565b50506100d4816112cc565b73ffffffffffffffffffffffffffffffffffffffff600182015416330361030257600781019060ff82541660068110156102d557158015906102b3575b80156102a7575b61027f57600681015442101561025757600591600160ff19825416179055018054604051907f23b872dd00000000000000000000000000000000000000000000000000000000825233600483015230602483015260448201526020816064815f73ffffffffffffffffffffffffffffffffffffffff7f0000000000000000000000000000000000000000000000000000000000000000165af190811561024c575f9161021d575b50156101f55754906040519182527fe3fbcc1ea1bdc559ec7f0347efde7655e58b5f45a30b0e4470a583c3ef5496b360203393a3005b7f90b8ec18000000000000000000000000000000000000000000000000000000005f5260045ffd5b61023f915060203d602011610245575b61023781836110c4565b8101906112b4565b5f6101bf565b503d61022d565b6040513d5f823e3d90fd5b7f203d82d8000000000000000000000000000000000000000000000000000000005f5260045ffd5b7fbaf3f0f7000000000000000000000000000000000000000000000000000000005f5260045ffd5b50600581015415610118565b5073ffffffffffffffffffffffffffffffffffffffff60028201541615610111565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52602160045260245ffd5b7f82b42900000000000000000000000000000000000000000000000000000000005f5260045ffd5b5f80fd5b3461032a57606060031936011261032a5760043560243560443567ffffffffffffffff811161032a57610365903690600401611042565b5050610370826112cc565b73ffffffffffffffffffffffffffffffffffffffff600182015416331415806103e0575b6103025760ff60078201541660068110156102d55761027f57817f869e2577b006bf47ee981cf6fec2e25583548081c14b98deab587f77b50680389260056020930155604051908152a2005b5073ffffffffffffffffffffffffffffffffffffffff600282015416331415610394565b3461032a5761041236611070565b50509061041e816112cc565b9173ffffffffffffffffffffffffffffffffffffffff6003840154163303610302576007830160ff81541660068110156102d55760020361027f57600684015442101561025757600360ff19825416179055604051908152817f0fd54bd364fa9e67f17b091aefe930932c09fe7651cf5ad02c71a418f334144460203393a37f21d71db5be59bb9fa133895586b7404307dd33fb93b16db09dc6f1d9d7d231b0602073ffffffffffffffffffffffffffffffffffffffff600285016104ed6005838354169701968754906112e1565b54169354604051908152a3005b3461032a57604060031936011261032a5760043561051661101f565b61051f826112cc565b9073ffffffffffffffffffffffffffffffffffffffff60018301541633036103025760ff60078301541660068110156102d557158015906105ef575b80156105d1575b61027f57600273ffffffffffffffffffffffffffffffffffffffff92018282167fffffffffffffffffffffffff000000000000000000000000000000000000000082541617905516907f9a87df076ea1725aba8ba29d32517ce37c9597d88cbf16ec6707892cc330ab695f80a3005b5073ffffffffffffffffffffffffffffffffffffffff811615610562565b5073ffffffffffffffffffffffffffffffffffffffff600283015416151561055b565b3461032a57602060031936011261032a575f610100604051610633816110a7565b828152826020820152826040820152826060820152606060808201528260a08201528260c08201528260e0820152015261066e6004356112cc565b6040519061067b826110a7565b8054825273ffffffffffffffffffffffffffffffffffffffff600182015416906020830191825273ffffffffffffffffffffffffffffffffffffffff600282015416926040810193845273ffffffffffffffffffffffffffffffffffffffff60038301541691606082019283526004810160405190815f8254926106fe84611105565b808452936001811690811561087f575060011461083b575b50610723925003826110c4565b6080830190815260058201549060a08401918252600760068401549360c0860194855201549560ff87169560e086019560068810156102d55760209973ffffffffffffffffffffffffffffffffffffffff809481938d9b8b528261010082019d60081c168d526040519d8e9181835251910152511660408c0152511660608a0152511660808801525161012060a08801528051948591826101408a01520161016088015e5f61016085880101525160c08601525160e08501525160068110156102d557610100840152905173ffffffffffffffffffffffffffffffffffffffff16610120830152601f017fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe01681018190036101600190f35b90505f9291925260205f20905f915b8183106108635750509060206107239282010189610716565b602091935080600191548385880101520191019091839261084a565b6020935061072395925060ff1991501682840152151560051b82010189610716565b3461032a576108af36611070565b5050906108bb816112cc565b73ffffffffffffffffffffffffffffffffffffffff600282015416330361030257600781019060ff82541660068110156102d55760010361027f576006015442101561025757600260ff198254161790556040519182527f80c17db79857f338a6a6df68a6883ecc0ce78e2202fe61ed979733573f40538e60203393a3005b3461032a57602060031936011261032a57600435610957816112cc565b906007820160ff81541660068110156102d55760018114159081610a2e575b5061027f5760068301544210610a0657600560ff19825416179055807f97237956f8810192811e2c3f273fd02c5d6295206fdd9c62e6fe2bfc19ba92325f80a27f7ca5472b7ea78c2c0141c5a12ee6d170cf4ce8ed06be3d22c8252ddfc7a6a2c4602073ffffffffffffffffffffffffffffffffffffffff600185016104ed6005838354169701968754906112e1565b7fd0404f85000000000000000000000000000000000000000000000000000000005f5260045ffd5b60029150141584610976565b3461032a575f60031936011261032a5760205f54604051908152f35b3461032a57610a6f610a6736611070565b505090611156565b005b3461032a5760a060031936011261032a5760043573ffffffffffffffffffffffffffffffffffffffff811680910361032a57610aab61101f565b906044359060643567ffffffffffffffff811161032a57610ad0903690600401611042565b9390926084359173ffffffffffffffffffffffffffffffffffffffff831680930361032a5773ffffffffffffffffffffffffffffffffffffffff16918215908115610fc6575b8115610fbc575b50610f94575f547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8114610f675760010193845f55604051610b5e816110a7565b85815260208101963388526040820192868452606083019186835267ffffffffffffffff8111610f3a5760405191610bbe60207fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0601f85011601846110c4565b818352368282011161032a578190602084013781016020015f90526080830190815260a08301905f825260c084019286845260e08501955f875261010086019b5f8d528b5f52600160205260405f20965187555173ffffffffffffffffffffffffffffffffffffffff16600187019073ffffffffffffffffffffffffffffffffffffffff1681547fffffffffffffffffffffffff0000000000000000000000000000000000000000161790555173ffffffffffffffffffffffffffffffffffffffff16600286019073ffffffffffffffffffffffffffffffffffffffff1681547fffffffffffffffffffffffff0000000000000000000000000000000000000000161790555173ffffffffffffffffffffffffffffffffffffffff16600385019073ffffffffffffffffffffffffffffffffffffffff1681547fffffffffffffffffffffffff00000000000000000000000000000000000000001617905560048401905180519067ffffffffffffffff8211610f3a57610d3e8354611105565b601f8111610ef5575b50602090601f8311600114610e4f5760079695949392915f9183610e44575b50507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8260011b9260031b1c19161790555b5160058301555160068201550190519560068710156102d55760209660ff60ff198454169116178255517fffffffffffffffffffffff0000000000000000000000000000000000000000ff74ffffffffffffffffffffffffffffffffffffffff0083549260081b169116179055604051918252848201525f6040820152827fb0f0239bfdd96453e24733e18bfc24b70d8fadf123dd977473518dd577ee79b960603393a4604051908152f35b015190508d80610d66565b907fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0831691845f52815f20925f5b818110610edd575091600193918560079a999897969410610ea6575b505050811b019055610d98565b01517fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff60f88460031b161c191690558d8080610e99565b92936020600181928786015181550195019301610e7d565b835f5260205f20601f840160051c81019160208510610f30575b601f0160051c01905b818110610f255750610d47565b5f8155600101610f18565b9091508190610f0f565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52604160045260245ffd5b7f4e487b71000000000000000000000000000000000000000000000000000000005f52601160045260245ffd5b7fa86b6512000000000000000000000000000000000000000000000000000000005f5260045ffd5b9050151586610b1d565b428311159150610b16565b3461032a575f60031936011261032a5760209073ffffffffffffffffffffffffffffffffffffffff7f0000000000000000000000000000000000000000000000000000000000000000168152f35b6024359073ffffffffffffffffffffffffffffffffffffffff8216820361032a57565b9181601f8401121561032a5782359167ffffffffffffffff831161032a576020838186019501011161032a57565b606060031982011261032a5760043591602435916044359067ffffffffffffffff821161032a576110a391600401611042565b9091565b610120810190811067ffffffffffffffff821117610f3a57604052565b90601f7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0910116810190811067ffffffffffffffff821117610f3a57604052565b90600182811c9216801561114c575b602083101461111f57565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52602260045260245ffd5b91607f1691611114565b61115f816112cc565b916007830160ff81541660068110156102d557156112585773ffffffffffffffffffffffffffffffffffffffff60038501541633036103025760ff81541660068110156102d5576001811415908161124c575b5061027f57600460ff19825416179055604051908152817fae7362b1af91f4492868987b9c73990d780060811551b58728fbe96fd1bab27560203393a37f7ca5472b7ea78c2c0141c5a12ee6d170cf4ce8ed06be3d22c8252ddfc7a6a2c4602073ffffffffffffffffffffffffffffffffffffffff6001850161123f6005838354169701968754906112e1565b54169354604051908152a3565b6002915014155f6111b2565b9092600173ffffffffffffffffffffffffffffffffffffffff91015416330361030257600460ff198254161790556040519182527fae7362b1af91f4492868987b9c73990d780060811551b58728fbe96fd1bab27560203393a3565b9081602091031261032a5751801515810361032a5790565b5f52600160205260405f2090815415610f9457565b9073ffffffffffffffffffffffffffffffffffffffff604051927fa9059cbb00000000000000000000000000000000000000000000000000000000845216600483015260248201526020816044815f73ffffffffffffffffffffffffffffffffffffffff7f0000000000000000000000000000000000000000000000000000000000000000165af190811561024c575f9161137f575b50156101f557565b611398915060203d6020116102455761023781836110c4565b5f61137756fea164736f6c634300081e000a" as const;

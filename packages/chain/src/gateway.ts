@@ -42,6 +42,12 @@ export interface OnchainJob extends JobTerms {
   status: JobStatus;
 }
 
+/** A job on someone else's ERC-8183 contract (evaluator-for-hire); may carry a hook contract. */
+export interface ExternalJob extends OnchainJob {
+  contract: Address;
+  hook: Address;
+}
+
 export interface ChainConfig {
   mode: "test" | "live";
   chainId: number;
@@ -78,6 +84,15 @@ export interface ChainGateway {
   }): Promise<{ txHash: Hex; jobId: bigint }>;
   /** The evaluator's decision: releaseBP of the budget to the provider, the rest refunded. */
   settle(p: { jobId: bigint; releaseBP: number; reason: Hex }): Promise<{ txHash: Hex }>;
+
+  // Any standard ERC-8183 contract on the same chain, where Proof Desk is the job's evaluator.
+  getJobAt(contract: Address, jobId: bigint): Promise<ExternalJob>;
+  /** The contract's `paymentToken()`, or null when it doesn't expose one. */
+  paymentTokenAt(contract: Address): Promise<Address | null>;
+  /** ERC-8183 `complete`: pays the provider. The job must be Submitted. */
+  complete(p: { contract: Address; jobId: bigint; reason: Hex }): Promise<{ txHash: Hex }>;
+  /** ERC-8183 `reject`: refunds the client. */
+  reject(p: { contract: Address; jobId: bigint; reason: Hex }): Promise<{ txHash: Hex }>;
 }
 
 /** A chain call failed. `retryable` = safe to try again later (RPC trouble, not a revert). */

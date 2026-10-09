@@ -71,6 +71,13 @@
       "when": 1791560197428,
       "tag": "0009_shadow_reviews",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1791560866228,
+      "tag": "0010_external_jobs",
+      "breakpoints": true
     }
   ]
 }

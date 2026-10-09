@@ -11,6 +11,7 @@ import {
   type ChainConfig,
   ChainError,
   type ChainGateway,
+  type ExternalJob,
   type JobTerms,
   type OnchainJob,
   splitBudget,
@@ -35,6 +36,16 @@ export class FakeChainGateway implements ChainGateway {
   private txCount = 0;
   /** Set to make the next settle fail like an RPC outage. */
   failNextSettle: ChainError | null = null;
+  /** Jobs on other ERC-8183 contracts, keyed `${contract}:${jobId}`. */
+  readonly externalJobs = new Map<string, ExternalJob>();
+  /** `paymentToken()` per external contract; absent = the contract doesn't expose one. */
+  readonly externalTokens = new Map<Address, Address>();
+  readonly externalCalls: {
+    fn: "complete" | "reject";
+    contract: Address;
+    jobId: bigint;
+    reason: Hex;
+  }[] = [];
 
   private readonly cfg: ChainConfig;
 
@@ -136,6 +147,80 @@ export class FakeChainGateway implements ChainGateway {
     return { txHash };
   }
 
+  async getJobAt(contract: Address, jobId: bigint): Promise<ExternalJob> {
+    const j = this.externalJobs.get(extKey(contract, jobId));
+    if (!j) throw new ChainError("getJob reverted: InvalidParams", false, "InvalidParams");
+    return { ...j };
+  }
+
+  async paymentTokenAt(contract: Address) {
+    return this.externalTokens.get(getAddress(contract)) ?? null;
+  }
+
+  async complete(p: { contract: Address; jobId: bigint; reason: Hex }) {
+    const j = this.externalJobs.get(extKey(p.contract, p.jobId));
+    if (!j) throw new ChainError("complete reverted: InvalidParams", false, "InvalidParams");
+    if (j.evaluator !== this.cfg.evaluator)
+      throw new ChainError("complete reverted: Unauthorized", false, "Unauthorized");
+    if (j.status !== "submitted")
+      throw new ChainError("complete reverted: InvalidState", false, "InvalidState");
+    if (this.nowSeconds() >= j.expiredAt)
+      throw new ChainError("complete reverted: Expired", false, "Expired");
+    j.status = "completed";
+    this.credit(j.provider, j.budget);
+    this.externalCalls.push({ fn: "complete", ...p });
+    return { txHash: this.tx() };
+  }
+
+  async reject(p: { contract: Address; jobId: bigint; reason: Hex }) {
+    const j = this.externalJobs.get(extKey(p.contract, p.jobId));
+    if (!j) throw new ChainError("reject reverted: InvalidParams", false, "InvalidParams");
+    if (j.evaluator !== this.cfg.evaluator)
+      throw new ChainError("reject reverted: Unauthorized", false, "Unauthorized");
+    if (j.status !== "funded" && j.status !== "submitted") {
+      throw new ChainError("reject reverted: InvalidState", false, "InvalidState");
+    }
+    j.status = "rejected";
+    this.credit(j.client, j.budget);
+    this.externalCalls.push({ fn: "reject", ...p });
+    return { txHash: this.tx() };
+  }
+
+  /** Someone else's ERC-8183 contract has a funded job naming us as evaluator (test helper). */
+  addExternalJob(
+    contract: Address,
+    job: Omit<ExternalJob, "contract" | "jobId" | "status" | "hook"> &
+      Partial<Pick<ExternalJob, "jobId" | "status" | "hook">>,
+  ): ExternalJob {
+    const address = getAddress(contract);
+    const jobId = job.jobId ?? BigInt(this.externalJobs.size + 1);
+    const full: ExternalJob = {
+      status: "funded",
+      hook: getAddress("0x0000000000000000000000000000000000000000"),
+      ...job,
+      contract: address,
+      jobId,
+    };
+    this.externalJobs.set(extKey(address, jobId), full);
+    return full;
+  }
+
+  /** The provider calls ERC-8183 `submit` (test helper). */
+  submitExternal(contract: Address, jobId: bigint) {
+    const j = this.externalJobs.get(extKey(contract, jobId));
+    if (j?.status !== "funded") throw new Error("InvalidState");
+    j.status = "submitted";
+  }
+
+  /** Anyone reclaims an expired external job for the client (test helper). */
+  claimExternalRefund(contract: Address, jobId: bigint) {
+    const j = this.externalJobs.get(extKey(contract, jobId));
+    if (!j || (j.status !== "funded" && j.status !== "submitted")) throw new Error("InvalidState");
+    if (this.nowSeconds() < j.expiredAt) throw new Error("NotExpired");
+    j.status = "expired";
+    this.credit(j.client, j.budget);
+  }
+
   /** Anyone may reclaim an expired job's funds for the client (test helper). */
   claimRefund(jobId: bigint) {
     const j = this.jobs.get(jobId);
@@ -171,3 +256,5 @@ export class FakeChainGateway implements ChainGateway {
     return BigInt(Math.floor(this.now().getTime() / 1000));
   }
 }
+
+const extKey = (contract: Address, jobId: bigint) => `${getAddress(contract)}:${jobId}`;

@@ -24,6 +24,8 @@ import {
   mockUsdcBytecode,
   proofDeskJobsAbi,
   proofDeskJobsBytecode,
+  referenceErc8183Abi,
+  referenceErc8183Bytecode,
   splitBudget,
   ViemAnchorGateway,
   ViemChainGateway,
@@ -217,5 +219,82 @@ describe.skipIf(!anvilBin)("ProofDeskJobs on anvil", () => {
     await expect(anchors.anchor(12, "c".repeat(64))).rejects.toThrow();
     expect(await anchors.latest()).toMatchObject({ seq: 12, headHash: "b".repeat(64) });
     expect((await anchors.list()).map((a) => a.seq)).toEqual([7, 12]);
+  });
+
+  it("evaluates jobs on someone else's plain ERC-8183 contract (complete and reject)", async () => {
+    const deployer = wallet(KEYS.deployer);
+    const hash = await deployer.deployContract({
+      abi: referenceErc8183Abi,
+      bytecode: referenceErc8183Bytecode,
+      args: [usdc],
+    } as never);
+    const other = getAddress(
+      (await pub.waitForTransactionReceipt({ hash })).contractAddress as Address,
+    );
+    expect(await gw.paymentTokenAt(other)).toBe(usdc);
+    // A contract without paymentToken() (the anchor contract here) reads as "unknown", not an error.
+    expect(await gw.paymentTokenAt(usdc)).toBeNull();
+
+    const client = wallet(KEYS.client);
+    const provider = wallet(KEYS.provider);
+    const send = async (
+      w: ReturnType<typeof wallet>,
+      address: Address,
+      fn: string,
+      args: unknown[],
+    ) =>
+      pub.waitForTransactionReceipt({
+        hash: await w.writeContract({
+          address,
+          abi: (address === usdc ? mockUsdcAbi : referenceErc8183Abi) as never,
+          functionName: fn as never,
+          args: args as never,
+        } as never),
+      });
+    const budget = parseUnits("25", 6);
+    const newJob = async (description: string) => {
+      const expiredAt = (await now()) + 7n * 86_400n;
+      await send(client, other, "createJob", [
+        addr(KEYS.provider),
+        addr(KEYS.evaluator),
+        expiredAt,
+        description,
+        "0x0000000000000000000000000000000000000000",
+      ]);
+      const jobId = (await pub.readContract({
+        address: other,
+        abi: referenceErc8183Abi,
+        functionName: "jobCount",
+      })) as bigint;
+      await send(client, other, "setBudget", [jobId, budget, "0x"]);
+      await send(client, usdc, "approve", [other, budget]);
+      await send(client, other, "fund", [jobId, "0x"]);
+      return jobId;
+    };
+
+    const paid = await newJob("proofdesk:v1:agr_x:spec");
+    expect(await gw.getJobAt(other, paid)).toMatchObject({
+      contract: other,
+      status: "funded",
+      budget,
+      evaluator: addr(KEYS.evaluator),
+      hook: "0x0000000000000000000000000000000000000000",
+    });
+    // complete needs the provider's submit first. The revert comes back non-retryable; its name
+    // isn't known, since another party's custom errors aren't in the standard interface ABI.
+    await expect(
+      gw.complete({ contract: other, jobId: paid, reason: `0x${"11".repeat(32)}` }),
+    ).rejects.toMatchObject({ retryable: false });
+    await send(provider, other, "submit", [paid, `0x${"22".repeat(32)}`, "0x"]);
+    const providerBefore = await balance(addr(KEYS.provider));
+    await gw.complete({ contract: other, jobId: paid, reason: `0x${"11".repeat(32)}` });
+    expect((await balance(addr(KEYS.provider))) - providerBefore).toBe(budget);
+    expect((await gw.getJobAt(other, paid)).status).toBe("completed");
+
+    const refunded = await newJob("proofdesk:v1:agr_y:spec");
+    const clientBefore = await balance(addr(KEYS.client));
+    await gw.reject({ contract: other, jobId: refunded, reason: `0x${"33".repeat(32)}` });
+    expect((await balance(addr(KEYS.client))) - clientBefore).toBe(budget);
+    expect((await gw.getJobAt(other, refunded)).status).toBe("rejected");
   });
 });

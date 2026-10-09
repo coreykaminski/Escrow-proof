@@ -7,8 +7,8 @@ tamper-evident ledger. See [MASTER_PLAN.md](MASTER_PLAN.md) for the strategy and
 **New here? Start with the [quickstart](docs/quickstart.md)** (sandbox, ~15 minutes). The API
 reference is served at `/docs` (OpenAPI at `/openapi.json`).
 
-**Status:** Parts 1–9 of the build plan are built and tested (616 Vitest tests, 21 Foundry tests,
-golden-set gates in CI):
+**Status:** Parts 1–9 and the engineering parts of 10 are built and tested (658 Vitest tests,
+25 Foundry tests, golden-set gates in CI):
 
 - **Spec Engine (2):** its eval passed (AI-rated).
 - **Verifiers (3, 8):**
@@ -21,6 +21,11 @@ golden-set gates in CI):
   Passes on a local chain; Base Sepolia needs keys.
 - **Billing and hardening (9):** Stripe Billing invoices and reviewer payouts (live test mode
   passes), rate limits, CSP, SSRF guards, status and pricing pages, worker, Fly config.
+- **Scale (10):**
+  - On-chain ledger anchoring and a public accuracy report.
+  - Pilot shadow mode: a human confirms every automatic decision before money moves.
+  - Evaluator-for-hire on any ERC-8183 contract
+    ([docs/integrations/erc8183-evaluator.md](docs/integrations/erc8183-evaluator.md)).
 
 Still open: the model evals and the go-live gates (lawyer, pen test, contract audit). See
 [docs/launch/runbook.md](docs/launch/runbook.md).
@@ -50,7 +55,7 @@ Set `DATABASE_URL=postgres://…` to use a real server. The server and CLI read 
 | `packages/db` | Drizzle schema, migrations (`drizzle/`), DB client (PGlite or Postgres), ledger append/verify. |
 | `packages/spec-engine` | Request → drafted criteria (Claude, structured output), spec assembly, AP2 mandate import. |
 | `packages/verifier` | Verifiers and the shared decision policy. Translation: deterministic checks, MQM annotator + judge. Code: sandboxes (Docker, Node permission model), trusted signed test runner, judge. Data/research: JSON Schema, counts, duplicates, SSRF-safe citation and quote checks, judge. |
-| `packages/chain` | Stablecoin rail: viem gateway for the ProofDeskJobs contract, in-memory fake, generated ABI. |
+| `packages/chain` | Stablecoin rail: viem gateway for the ProofDeskJobs contract and any ERC-8183 contract, in-memory fake, generated ABI. |
 | `contracts` | Foundry project: `ProofDeskJobs.sol` (ERC-8183 job escrow, Proof Desk as evaluator only), unit/fuzz/invariant tests, deploy script. |
 | `packages/payments` | Card rail: Stripe gateway (Connect Express, manual-capture holds, transfers, webhooks), settlement planning and fees, an in-memory Stripe simulator for tests. |
 | `packages/sdk` | `@proofdesk/sdk`: typed TypeScript client (auto idempotency keys, retries) and webhook signature verification. No dependencies. |

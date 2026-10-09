@@ -12,7 +12,13 @@ import {
 } from "@proofdesk/verifier";
 import { desc, eq } from "drizzle-orm";
 import { ApiError } from "../errors.ts";
-import { type AgreementRow, applyEvent, getAgreement, listDeliveries } from "./agreements.ts";
+import {
+  type AgreementRow,
+  applyEvent,
+  getAgreement,
+  listDeliveries,
+  supportsPartial,
+} from "./agreements.ts";
 import { recordVerificationFee } from "./billing.ts";
 import { listInputs } from "./inputs.ts";
 
@@ -97,6 +103,11 @@ export async function verifyAgreement(
   const verificationId = newId("verification", at.getTime());
   const actor = { role: "system" as const, ref: `verifier:${report.engine_version}` };
   const { decision } = stored;
+  // A standard ERC-8183 job can't settle a partial outcome: a human picks release or refund.
+  const partialBlocked =
+    decision.action === "decide" &&
+    decision.outcome.kind === "partial" &&
+    !supportsPartial(agreement);
 
   const recordVerification = async (tx: Tx) => {
     await tx.insert(schema.verifications).values({
@@ -106,8 +117,8 @@ export async function verifyAgreement(
       engineVersion: stored.engine_version,
       report: stored,
       reportHash,
-      action: decision.action,
-      outcome: decision.action === "decide" ? decision.outcome : null,
+      action: partialBlocked ? "escalate" : decision.action,
+      outcome: decision.action === "decide" && !partialBlocked ? decision.outcome : null,
       confidence: decision.confidence,
       costUsd: stored.usage.cost_usd,
       createdAt: at,
@@ -121,7 +132,7 @@ export async function verifyAgreement(
         delivery_id: delivery.id,
         engine_version: stored.engine_version,
         report_hash: reportHash,
-        action: decision.action,
+        action: partialBlocked ? "escalate" : decision.action,
       },
       createdAt: at,
     });
@@ -137,7 +148,7 @@ export async function verifyAgreement(
     actor,
     now: at,
     event:
-      decision.action === "decide"
+      decision.action === "decide" && !partialBlocked
         ? {
             type: "DECIDE",
             outcome: decision.outcome,
@@ -146,7 +157,12 @@ export async function verifyAgreement(
             reason: decision.reason,
             review: account?.shadowMode === true,
           }
-        : { type: "ESCALATE", reason: decision.reason },
+        : {
+            type: "ESCALATE",
+            reason: partialBlocked
+              ? `The verifier proposed a partial release (${decision.outcome.kind === "partial" ? decision.outcome.releasePercent : 0}% to the seller), which this ERC-8183 job can't settle; a reviewer must choose release or refund. ${decision.reason}`
+              : decision.reason,
+          },
     afterTransition: (tx) => recordVerification(tx),
   });
   return { agreement: updated, verificationId, report: stored };

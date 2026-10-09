@@ -14,6 +14,7 @@ import { testHelperRoutes } from "./routes/test-helpers.ts";
 import { webhookEndpointRoutes } from "./routes/webhook-endpoints.ts";
 import { webhookRoutes } from "./routes/webhooks.ts";
 import { clientIp, MemoryRateLimitStore, rateLimit, securityHeaders } from "./security.ts";
+import { evaluatorListing } from "./services/evaluator-listing.ts";
 
 /** Per-key and per-IP request limits (override with AppDeps.rateLimits). */
 export const DEFAULT_LIMITS = {
@@ -72,6 +73,13 @@ export function createApp(deps: AppDeps) {
 
   app.get("/health", (c) => c.json({ ok: true }));
   app.get("/openapi.json", (c) => c.json(openApiDocument(deps.publicUrl)));
+  app.get("/.well-known/erc8183-evaluator.json", async (c) => {
+    const listing = await evaluatorListing(deps);
+    if (!listing)
+      throw new ApiError(404, "chain_unavailable", "the stablecoin rail isn't configured");
+    c.header("Access-Control-Allow-Origin", "*");
+    return c.json(listing);
+  });
   app.get("/docs", (c) => {
     c.header("Content-Security-Policy", DOCS_CSP);
     return c.html(DOCS_HTML);

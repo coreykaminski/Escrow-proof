@@ -166,6 +166,8 @@ export function onchainJobJson(row: typeof schema.onchainJobs.$inferSelect) {
   return {
     id: row.id,
     object: "onchain_job",
+    /** native: our ProofDeskJobs contract; external: another ERC-8183 contract (evaluator-for-hire). */
+    kind: row.kind,
     agreement_id: row.agreementId,
     chain_id: row.chainId,
     contract: row.contract,

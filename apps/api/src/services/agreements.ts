@@ -26,6 +26,20 @@ import { recordDisputeFee } from "./billing.ts";
 
 export type AgreementRow = typeof schema.agreements.$inferSelect;
 
+/** Hold refs of jobs on other parties' ERC-8183 contracts (services/external-jobs.ts). */
+export const EXTERNAL_HOLD_PREFIX = "erc8183:";
+
+/** Standard ERC-8183 can only complete (pay all) or reject (refund all): no partial outcomes. */
+export function supportsPartial(row: Pick<AgreementRow, "holdRef">): boolean {
+  return !row.holdRef?.startsWith(EXTERNAL_HOLD_PREFIX);
+}
+
+function eventOutcome(event: AgreementEvent): Outcome | null {
+  return event.type === "DECIDE" || event.type === "RESOLVE_DISPUTE" || event.type === "REVIEW"
+    ? event.outcome
+    : null;
+}
+
 /** Platform keys only see their own agreements; ops (accountId undefined) sees all. */
 export interface Scope {
   accountId?: string;
@@ -421,6 +435,13 @@ export async function applyEvent(
   return db.transaction(async (tx) => {
     const current = await lockAgreement(tx, agreementId, scope);
     const actor = resolveActor(current, params.actor);
+    if (eventOutcome(event)?.kind === "partial" && !supportsPartial(current)) {
+      throw new ApiError(
+        422,
+        "partial_unsupported",
+        "this agreement is funded by a standard ERC-8183 job, which can only pay the provider in full or refund the client in full",
+      );
+    }
     params.beforeTransition?.(current);
     const result = transition(snapshotOf(current), event, actor, now);
 

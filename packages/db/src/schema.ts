@@ -219,6 +219,11 @@ export const onchainJobs = pgTable(
       .references(() => agreements.id),
     chainId: integer("chain_id").notNull(),
     contract: text("contract").notNull(),
+    /**
+     * native: a job on our ProofDeskJobs contract, created from the agreement's terms.
+     * external: a job someone created on any ERC-8183 contract, naming Proof Desk as evaluator.
+     */
+    kind: text("kind").$type<"native" | "external">().notNull().default("native"),
     /** The contract's job id (uint256, as a decimal string); null until funded. */
     jobId: text("job_id"),
     client: text("client"),
