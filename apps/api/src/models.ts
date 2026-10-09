@@ -1,6 +1,9 @@
 import {
   type AnchorGateway,
+  AwsKmsSigner,
+  accountFrom,
   type ChainGateway,
+  type KeySource,
   ViemAnchorGateway,
   ViemChainGateway,
 } from "@proofdesk/chain";
@@ -41,17 +44,70 @@ export function paymentsFromEnv(env = process.env): PaymentsGateway | undefined 
 }
 
 /**
- * The stablecoin rail when a chain and evaluator key are configured:
- *   CHAIN_RPC_URL, CHAIN_ID (84532 Base Sepolia, 8453 Base), JOBS_CONTRACT, EVALUATOR_PRIVATE_KEY
+ * Where each chain role's key lives. Every role takes either <ROLE>_KMS_KEY_ID (an AWS KMS
+ * ECC_SECG_P256K1 key, region from AWS_REGION, credentials from the AWS default chain) or
+ * <ROLE>_PRIVATE_KEY (development and testnets only).
+ *   EVALUATOR  decides on-chain jobs (the trust root)
+ *   RELAYER    pays gas to relay gasless funding (optional: defaults to the evaluator)
+ *   ANCHOR     posts ledger tree heads (optional off mainnet: defaults to the evaluator)
+ */
+export type ChainRole = "EVALUATOR" | "RELAYER" | "ANCHOR";
+
+export function keySourceFromEnv(role: ChainRole, env = process.env): KeySource | undefined {
+  const kms = env[`${role}_KMS_KEY_ID`];
+  if (kms) {
+    return {
+      kind: "kms",
+      signer: new AwsKmsSigner(kms, env.AWS_REGION ? { region: env.AWS_REGION } : {}),
+    };
+  }
+  const key = env[`${role}_PRIVATE_KEY`];
+  return key ? { kind: "private_key", key: key as `0x${string}` } : undefined;
+}
+
+/** Base mainnet: real money on-chain. */
+export const LIVE_CHAIN_IDS = new Set([8453]);
+
+/**
+ * The key policy for a live chain (docs/security/evaluator-keys.md): every role on a KMS key,
+ * and each role its own key. A raw key is refused unless ALLOW_HOT_KEYS=1 (break-glass only).
+ */
+export function assertKeyPolicy(env = process.env): void {
+  if (!LIVE_CHAIN_IDS.has(Number(env.CHAIN_ID))) return;
+  if (env.ALLOW_HOT_KEYS === "1") return;
+  const roles = ["EVALUATOR", "RELAYER", "ANCHOR"] as const;
+  const ids = roles.map((r) => env[`${r}_KMS_KEY_ID`]);
+  const problems = [
+    ...roles
+      .filter((r, i) => (env.ANCHOR_CONTRACT || r !== "ANCHOR" ? !ids[i] : false))
+      .map((r) => `${r}_KMS_KEY_ID is required on a live chain`),
+    ...roles
+      .filter((r) => env[`${r}_PRIVATE_KEY`])
+      .map((r) => `${r}_PRIVATE_KEY must not be set on a live chain`),
+    new Set(ids.filter(Boolean)).size !== ids.filter(Boolean).length &&
+      "each role needs its own KMS key",
+  ].filter((x): x is string => typeof x === "string");
+  if (problems.length) {
+    throw new Error(`refusing to start on chain ${env.CHAIN_ID}: ${problems.join("; ")}`);
+  }
+}
+
+/**
+ * The stablecoin rail when a chain and an evaluator key are configured:
+ *   CHAIN_RPC_URL, CHAIN_ID (84532 Base Sepolia, 8453 Base), JOBS_CONTRACT, and the role keys.
  */
 export function chainFromEnv(env = process.env): ChainGateway | undefined {
-  const { CHAIN_RPC_URL, CHAIN_ID, JOBS_CONTRACT, EVALUATOR_PRIVATE_KEY } = env;
-  if (!CHAIN_RPC_URL || !CHAIN_ID || !JOBS_CONTRACT || !EVALUATOR_PRIVATE_KEY) return undefined;
+  const { CHAIN_RPC_URL, CHAIN_ID, JOBS_CONTRACT } = env;
+  const evaluator = keySourceFromEnv("EVALUATOR", env);
+  if (!CHAIN_RPC_URL || !CHAIN_ID || !JOBS_CONTRACT || !evaluator) return undefined;
+  assertKeyPolicy(env);
+  const relayer = keySourceFromEnv("RELAYER", env);
   return new ViemChainGateway({
     rpcUrl: CHAIN_RPC_URL,
     chainId: Number(CHAIN_ID),
     contract: JOBS_CONTRACT as `0x${string}`,
-    evaluatorKey: EVALUATOR_PRIVATE_KEY as `0x${string}`,
+    evaluator: accountFrom(evaluator),
+    ...(relayer ? { relayer: accountFrom(relayer) } : {}),
   });
 }
 
@@ -100,15 +156,18 @@ export function reviewerRatesFromEnv(env = process.env): ReviewerRates {
 
 /**
  * Ledger anchoring when ANCHOR_CONTRACT is set (same chain as CHAIN_RPC_URL/CHAIN_ID). Signs with
- * ANCHOR_PRIVATE_KEY, or the evaluator key.
+ * the ANCHOR key; off mainnet it may fall back to the evaluator key.
  */
 export function anchorFromEnv(env = process.env): AnchorGateway | undefined {
-  const key = env.ANCHOR_PRIVATE_KEY ?? env.EVALUATOR_PRIVATE_KEY;
-  if (!env.ANCHOR_CONTRACT || !env.CHAIN_RPC_URL || !env.CHAIN_ID || !key) return undefined;
+  const source =
+    keySourceFromEnv("ANCHOR", env) ??
+    (LIVE_CHAIN_IDS.has(Number(env.CHAIN_ID)) ? undefined : keySourceFromEnv("EVALUATOR", env));
+  if (!env.ANCHOR_CONTRACT || !env.CHAIN_RPC_URL || !env.CHAIN_ID || !source) return undefined;
+  assertKeyPolicy(env);
   return new ViemAnchorGateway({
     rpcUrl: env.CHAIN_RPC_URL,
     chainId: Number(env.CHAIN_ID),
     contract: env.ANCHOR_CONTRACT as `0x${string}`,
-    anchorerKey: key as `0x${string}`,
+    anchorer: accountFrom(source),
   });
 }

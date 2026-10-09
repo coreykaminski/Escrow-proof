@@ -26,10 +26,12 @@ import {
   proofDeskJobsBytecode,
   referenceErc8183Abi,
   referenceErc8183Bytecode,
+  remoteAccount,
   splitBudget,
   ViemAnchorGateway,
   ViemChainGateway,
 } from "../src/index.ts";
+import { DevDerSigner } from "./dev-signer.ts";
 
 /**
  * Runs the real contract on a local anvil chain through ViemChainGateway. Skipped when Foundry
@@ -296,5 +298,48 @@ describe.skipIf(!anvilBin)("ProofDeskJobs on anvil", () => {
     await gw.reject({ contract: other, jobId: refunded, reason: `0x${"33".repeat(32)}` });
     expect((await balance(addr(KEYS.client))) - clientBefore).toBe(budget);
     expect((await gw.getJobAt(other, refunded)).status).toBe("rejected");
+  });
+
+  it("a KMS-style evaluator settles, and a separate relayer pays for gasless funding", async () => {
+    const kms = new DevDerSigner(KEYS.evaluator, true);
+    const hardened = new ViemChainGateway({
+      rpcUrl,
+      chainId: foundry.id,
+      contract: jobs,
+      evaluator: remoteAccount(kms),
+      relayer: privateKeyToAccount(KEYS.deployer),
+      pollingIntervalMs: 50,
+    });
+    expect((await hardened.config()).evaluator).toBe(addr(KEYS.evaluator));
+    const t = await terms(parseUnits("10", 6), "proofdesk:agr_kms:spec");
+    const typed = authorizationTypedData(
+      await hardened.config(),
+      await hardened.tokenDomain(),
+      t,
+      0n,
+      t.expiredAt,
+    );
+    const signature = await wallet(KEYS.client).signTypedData(typed);
+    const funded = await hardened.relayFunding({
+      terms: t,
+      validAfter: 0n,
+      validBefore: t.expiredAt,
+      signature,
+    });
+    expect(getAddress((await pub.getTransaction({ hash: funded.txHash })).from)).toBe(
+      addr(KEYS.deployer),
+    );
+
+    const callsBefore = kms.calls;
+    const { txHash } = await hardened.settle({
+      jobId: funded.jobId,
+      releaseBP: 10_000,
+      reason: `0x${"77".repeat(32)}`,
+    });
+    expect(getAddress((await pub.getTransaction({ hash: txHash })).from)).toBe(
+      addr(KEYS.evaluator),
+    );
+    expect(kms.calls).toBeGreaterThan(callsBefore);
+    expect((await hardened.getJob(funded.jobId)).status).toBe("completed");
   });
 });

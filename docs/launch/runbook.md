@@ -11,7 +11,7 @@
 - [ ] **Fintech lawyer sign-off** on the card flow, the stablecoin flow, wording ("conditional payment", never "escrow"), CA platform with US buyers (docs/validation/lawyer-brief.md).
 - [ ] Stripe live mode activated; live webhook endpoint and secret set; `STRIPE_EXTENDED_AUTH` only if Stripe enabled it.
 - [ ] Third-party pen test, findings fixed.
-- [ ] Contract audit booked before any mainnet deployment; evaluator key in a KMS; owner is a multisig.
+- [ ] Contract audit booked before any mainnet deployment; evaluator, relayer and anchorer each on their own KMS key; owner is a multisig (docs/security/evaluator-keys.md, enforced at startup and in the deploy scripts).
 - [ ] Terms of service and privacy policy published; the pricing page matches the contract with each partner.
 - [ ] Lawyer confirms the $5,000 direct-hold limit (`PRICING.directHoldMaxCents`); larger jobs wait for a licensed escrow partner.
 - [ ] Billing email set for each partner (`PUT /v1/billing/settings`); `AUTO_BILLING=1`.

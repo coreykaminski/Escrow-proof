@@ -1,4 +1,5 @@
 import {
+  type Account,
   type Address,
   createPublicClient,
   createWalletClient,
@@ -37,14 +38,16 @@ const toBytes32 = (hex: string): Hex => {
 export class ViemAnchorGateway implements AnchorGateway {
   readonly contract: Address;
   private readonly pub: PublicClient;
-  private readonly wallet;
+  private readonly wallet: Promise<ReturnType<typeof createWalletClient>>;
 
   constructor(
     private readonly opts: {
       rpcUrl: string;
       chainId: number;
       contract: Address;
-      anchorerKey: Hex;
+      /** A raw key (development, testnets), or `anchorer`: an account, e.g. KMS-backed. */
+      anchorerKey?: Hex;
+      anchorer?: Account | Promise<Account>;
       pollingIntervalMs?: number;
     },
   ) {
@@ -52,11 +55,11 @@ export class ViemAnchorGateway implements AnchorGateway {
     const transport = http(opts.rpcUrl);
     const polling = opts.pollingIntervalMs ? { pollingInterval: opts.pollingIntervalMs } : {};
     this.pub = createPublicClient({ transport, ...polling }) as PublicClient;
-    this.wallet = createWalletClient({
-      transport,
-      account: privateKeyToAccount(opts.anchorerKey),
-      ...polling,
-    });
+    if (!opts.anchorer && !opts.anchorerKey) throw new Error("an anchorer key is required");
+    this.wallet = Promise.resolve(
+      opts.anchorer ?? privateKeyToAccount(opts.anchorerKey as Hex),
+    ).then((account) => createWalletClient({ transport, account, ...polling }));
+    this.wallet.catch(() => {});
   }
 
   get chainId() {
@@ -101,9 +104,9 @@ export class ViemAnchorGateway implements AnchorGateway {
         abi: ledgerAnchorAbi,
         functionName: "anchor",
         args: [BigInt(seq), toBytes32(headHash)],
-        account: this.wallet.account,
+        account: (await this.wallet).account,
       });
-      const hash = await this.wallet.writeContract(request as never);
+      const hash = await (await this.wallet).writeContract(request as never);
       const receipt = await this.pub.waitForTransactionReceipt({ hash });
       if (receipt.status !== "success") throw new ChainError("anchor transaction reverted", false);
       return { txHash: hash };

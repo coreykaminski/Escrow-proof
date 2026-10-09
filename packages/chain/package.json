@@ -7,6 +7,10 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-kms": "^3.1148.0",
     "viem": "^2.57.4"
+  },
+  "devDependencies": {
+    "@noble/curves": "^1.9.1"
   }
 }

@@ -11,6 +11,10 @@ import {LedgerAnchor} from "../src/LedgerAnchor.sol";
 contract DeployAnchor is Script {
     function run() external returns (LedgerAnchor a) {
         vm.startBroadcast();
+        if (block.chainid == 8453) {
+            address owner = vm.envAddress("OWNER");
+            require(owner != msg.sender && owner.code.length > 0, "mainnet OWNER must be a multisig contract");
+        }
         a = new LedgerAnchor(vm.envOr("OWNER", msg.sender), vm.envAddress("ANCHORER"));
         vm.stopBroadcast();
         console.log("LedgerAnchor", address(a));

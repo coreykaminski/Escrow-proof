@@ -481,6 +481,16 @@ export async function settleOnchain(
   const row = await getOnchainJob(db, agreement.id);
   if (!outcome || !row?.jobId) throw new ApiError(409, "invalid_transition", "nothing to settle");
 
+  // A job keeps the evaluator it was funded with: after a key rotation, the old key must stay
+  // available until its jobs close (docs/security/evaluator-keys.md).
+  const signer = (await chain.config()).evaluator;
+  if (getAddress(row.evaluator) !== getAddress(signer)) {
+    throw new ApiError(
+      409,
+      "evaluator_key_mismatch",
+      `this job's evaluator is ${row.evaluator}, but this server signs as ${signer}; settle it with the key that was active when it was funded`,
+    );
+  }
   const reason = await decisionHash(db, agreement.id);
   const { settleTx, endedAs, settlement } =
     row.kind === "external"

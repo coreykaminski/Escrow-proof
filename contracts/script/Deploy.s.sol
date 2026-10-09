@@ -10,12 +10,19 @@ import {MockUSDC} from "../src/test/MockUSDC.sol";
 ///                  Unset → deploys MockUSDC (local anvil only).
 ///   TREASURY       fee recipient (default: the deployer)
 ///   FEE_BP         platform fee in basis points (default 200 = 2%, max 500)
-///   OWNER          admin (default: the deployer)
+///   OWNER          admin (default: the deployer). On Base mainnet it's required and must be a
+///                  multisig, not the deployer (docs/security/evaluator-keys.md).
 /// forge script script/Deploy.s.sol --rpc-url $CHAIN_RPC_URL --private-key $DEPLOYER_KEY --broadcast
 contract Deploy is Script {
     function run() external returns (ProofDeskJobs jobs) {
         vm.startBroadcast();
         address deployer = msg.sender;
+        if (block.chainid == 8453) {
+            address owner = vm.envAddress("OWNER");
+            require(owner != deployer && owner.code.length > 0, "mainnet OWNER must be a multisig contract");
+            require(vm.envAddress("TREASURY") != address(0), "mainnet TREASURY is required");
+            require(vm.envAddress("PAYMENT_TOKEN") != address(0), "mainnet PAYMENT_TOKEN is required");
+        }
         address token = vm.envOr("PAYMENT_TOKEN", address(0));
         if (token == address(0)) {
             token = address(new MockUSDC());

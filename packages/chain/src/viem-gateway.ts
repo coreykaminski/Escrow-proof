@@ -1,4 +1,5 @@
 import {
+  type Account,
   type Address,
   BaseError,
   type Chain,
@@ -80,8 +81,15 @@ export interface ViemChainGatewayOptions {
   rpcUrl: string;
   chainId: number;
   contract: Address;
-  /** The evaluator's key: signs settlements and pays gas for relayed funding. */
-  evaluatorKey: Hex;
+  /** The evaluator as a raw key (development and testnets). */
+  evaluatorKey?: Hex;
+  /** The evaluator as an account, e.g. `remoteAccount(new AwsKmsSigner(…))` (live). */
+  evaluator?: Account | Promise<Account>;
+  /**
+   * Pays gas to relay gasless funding. Relaying is permissionless (the buyer's signature binds
+   * the terms), so it needn't hold the evaluator's power. Defaults to the evaluator.
+   */
+  relayer?: Account | Promise<Account>;
   /** Base mainnet is live; testnets and local chains are test. */
   mode?: "test" | "live";
   /** Blocks to wait after a transaction before trusting it (default 1). */
@@ -92,8 +100,10 @@ export interface ViemChainGatewayOptions {
 
 export class ViemChainGateway implements ChainGateway {
   private readonly pub: PublicClient;
-  private readonly wallet;
-  private readonly account;
+  private readonly evaluator: Promise<Account>;
+  private readonly relayer: Promise<Account>;
+  private readonly transport;
+  private readonly polling;
   private readonly chain: Chain;
   private readonly contract: Address;
   private cached?: ChainConfig;
@@ -108,16 +118,21 @@ export class ViemChainGateway implements ChainGateway {
         nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
         rpcUrls: { default: { http: [opts.rpcUrl] } },
       });
-    const transport = http(opts.rpcUrl);
-    const polling = opts.pollingIntervalMs ? { pollingInterval: opts.pollingIntervalMs } : {};
-    this.pub = createPublicClient({ chain: this.chain, transport, ...polling }) as PublicClient;
-    this.account = privateKeyToAccount(opts.evaluatorKey);
-    this.wallet = createWalletClient({
+    this.transport = http(opts.rpcUrl);
+    this.polling = opts.pollingIntervalMs ? { pollingInterval: opts.pollingIntervalMs } : {};
+    this.pub = createPublicClient({
       chain: this.chain,
-      transport,
-      account: this.account,
-      ...polling,
-    });
+      transport: this.transport,
+      ...this.polling,
+    }) as PublicClient;
+    if (!opts.evaluator && !opts.evaluatorKey) throw new Error("an evaluator key is required");
+    this.evaluator = Promise.resolve(
+      opts.evaluator ?? privateKeyToAccount(opts.evaluatorKey as Hex),
+    );
+    this.relayer = opts.relayer ? Promise.resolve(opts.relayer) : this.evaluator;
+    // Don't leave a rejected KMS lookup unhandled before the first call awaits it.
+    this.evaluator.catch(() => {});
+    this.relayer.catch(() => {});
     this.contract = getAddress(opts.contract);
   }
 
@@ -135,7 +150,7 @@ export class ViemChainGateway implements ChainGateway {
       chainId: this.opts.chainId,
       contract: this.contract,
       token: getAddress(token),
-      evaluator: this.account.address,
+      evaluator: (await this.evaluator).address,
     };
     return this.cached;
   }
@@ -286,14 +301,16 @@ export class ViemChainGateway implements ChainGateway {
     functionName: "complete" | "reject",
     args: readonly unknown[],
   ): Promise<Hex> {
-    return this.send(getAddress(contract), ierc8183Abi, functionName, args);
+    return this.send(getAddress(contract), ierc8183Abi, functionName, args, await this.evaluator);
   }
 
   private async write(
     functionName: "settle" | "createAndFundWithAuthorization",
     args: readonly unknown[],
   ): Promise<Hex> {
-    return this.send(this.contract, proofDeskJobsAbi, functionName, args);
+    const account =
+      functionName === "createAndFundWithAuthorization" ? await this.relayer : await this.evaluator;
+    return this.send(this.contract, proofDeskJobsAbi, functionName, args, account);
   }
 
   /** Simulate (to surface reverts as non-retryable), send, wait for the receipt. */
@@ -302,6 +319,7 @@ export class ViemChainGateway implements ChainGateway {
     abi: typeof proofDeskJobsAbi | typeof ierc8183Abi,
     functionName: string,
     args: readonly unknown[],
+    account: Account,
   ): Promise<Hex> {
     try {
       const { request } = await this.pub.simulateContract({
@@ -309,9 +327,15 @@ export class ViemChainGateway implements ChainGateway {
         abi: abi as typeof proofDeskJobsAbi,
         functionName: functionName as "settle",
         args: args as never,
-        account: this.account,
+        account,
       });
-      const hash = await this.wallet.writeContract(request as never);
+      const wallet = createWalletClient({
+        chain: this.chain,
+        transport: this.transport,
+        account,
+        ...this.polling,
+      });
+      const hash = await wallet.writeContract(request as never);
       const receipt = await this.pub.waitForTransactionReceipt({
         hash,
         confirmations: this.opts.confirmations ?? 1,
