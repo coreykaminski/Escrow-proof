@@ -13,6 +13,7 @@
 - [ ] Third-party pen test, findings fixed.
 - [ ] Contract audit booked before any mainnet deployment; evaluator key in a KMS; owner is a multisig.
 - [ ] Terms of service and privacy policy published; the pricing page matches the contract with each partner.
+- [ ] Lawyer confirms the $5,000 direct-hold limit (`PRICING.directHoldMaxCents`); larger jobs wait for a licensed escrow partner.
 - [ ] Billing email set for each partner (`PUT /v1/billing/settings`); `AUTO_BILLING=1`.
 
 ## Pilot mode (first 2 weeks per partner)

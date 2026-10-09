@@ -6,7 +6,8 @@
  *   STRIPE_SECRET_KEY=sk_test_... npm run stripe:e2e
  *   STRIPE_E2E_DESTINATION=acct_...   # optional: an onboarded test connected account for transfers
  */
-import { StripeGateway } from "@proofdesk/payments";
+import { SPT_API_VERSION, StripeGateway } from "@proofdesk/payments";
+import Stripe from "stripe";
 import { loadEnv } from "../apps/api/src/load-env.ts";
 
 loadEnv();
@@ -85,6 +86,37 @@ await check("cancel releases the hold without charging", async () => {
   const h = await hold("cancel");
   const c = await gw.cancel(h.id, `${run}:cancel`);
   expect(c.status === "canceled" && c.amount_received === 0, `status ${c.status}`);
+});
+
+await check("an agent's shared payment token (MPP/ACP) funds a hold", async () => {
+  const stripe = new Stripe(key);
+  const granted = (await stripe.rawRequest(
+    "POST",
+    "/v1/test_helpers/shared_payment/granted_tokens",
+    {
+      payment_method: "pm_card_visa",
+      "usage_limits[currency]": "usd",
+      "usage_limits[max_amount]": 18_000,
+      "usage_limits[expires_at]": Math.floor(Date.now() / 1000) + 3_600,
+    } as never,
+    { apiVersion: SPT_API_VERSION },
+  )) as unknown as { id: string };
+  const token = await gw.getSharedPaymentToken(granted.id);
+  expect(token.active && token.max_amount === 18_000 && token.currency === "usd", "token limits");
+  const h = await gw.createHold({
+    amount: 18_000,
+    currency: "usd",
+    agreementId: `${run}_spt`,
+    description: "Proof Desk e2e spt",
+    sharedPaymentToken: granted.id,
+    extendedAuthorization: false,
+    idempotencyKey: `${run}:hold:spt`,
+  });
+  expect(h.status === "requires_capture", `status ${h.status}`);
+  await gw.cancel(h.id, `${run}:cancel:spt`);
+  console.log(
+    `    ${granted.id} → ${h.id}, card ${token.card?.brand ?? "?"} ${token.card?.last4 ?? ""}`,
+  );
 });
 
 await check("refund after capture", async () => {

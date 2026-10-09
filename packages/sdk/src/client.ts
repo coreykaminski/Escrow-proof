@@ -170,8 +170,14 @@ export class ProofDesk {
     /** Test rail funding (sandbox). Use createCardHold for real cards. */
     fund: (id: string, p: { rail: "test"; hold_ref: string }) =>
       this.request<Agreement>("POST", `/v1/agreements/${enc(id)}/fund`, p),
-    /** Authorize the buyer's card. Confirm on the client with client_secret, or pass payment_method. */
-    createCardHold: (id: string, p: { payment_method?: string } = {}) =>
+    /**
+     * Authorize the buyer's card. Confirm on the client with client_secret, or pass
+     * payment_method, or an MPP/ACP agent's shared_payment_token (spt_…).
+     */
+    createCardHold: (
+      id: string,
+      p: { payment_method?: string; shared_payment_token?: string } = {},
+    ) =>
       this.request<{
         hold: Hold;
         payment_intent_status: string;

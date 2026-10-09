@@ -791,6 +791,7 @@ export function PricingPage(p: {
     verification: { translation: number; code: number; data: number; research: number };
     dispute: { minCents: number; rate: number };
     verifyOnlyMonthlyMinimumCents: number;
+    directHoldMaxCents: number;
   };
 }) {
   const { conditionalPayment: cp, verification: v, dispute: d } = p.pricing;
@@ -858,6 +859,10 @@ export function PricingPage(p: {
         Card processing and network fees are passed through at cost. Verification and dispute fees
         are invoiced monthly; test mode is free. Enterprise: custom verifiers, SLA, private ledger
         export.
+      </p>
+      <p class="small muted">
+        Payments are held for jobs up to {usd(p.pricing.directHoldMaxCents)}. Larger jobs can use
+        verification only for now.
       </p>
     </Page>
   );

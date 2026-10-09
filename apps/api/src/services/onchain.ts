@@ -16,6 +16,7 @@ import { ApiError } from "../errors.ts";
 import {
   type AgreementRow,
   applyEvent,
+  assertDirectHoldAllowed,
   getAgreement,
   type Scope,
   snapshotOf,
@@ -146,6 +147,7 @@ export async function prepareOnchainJob(
         `can't fund an agreement in status "${agreement.status}"`,
       );
     }
+    assertDirectHoldAllowed(agreement);
     if (agreement.holdRail === "card" || (await hasCardHold(db, agreement.id))) {
       throw new ApiError(409, "already_funding", "this agreement is being funded by card");
     }

@@ -228,6 +228,7 @@ export function agreementRoutes(deps: AppDeps) {
       agreementId: c.req.param("id"),
       scope: { accountId: c.get("auth").accountId },
       ...(body.payment_method ? { paymentMethod: body.payment_method } : {}),
+      ...(body.shared_payment_token ? { sharedPaymentToken: body.shared_payment_token } : {}),
       now: now(),
     });
     return c.json(

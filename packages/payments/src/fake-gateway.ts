@@ -5,6 +5,7 @@ import {
   type HoldState,
   type PaymentsGateway,
   type SellerAccountState,
+  type SharedPaymentToken,
   WebhookSignatureError,
 } from "./gateway.ts";
 import { AUTH_WINDOW_DAYS } from "./settlement.ts";
@@ -25,6 +26,8 @@ export class FakeGateway implements PaymentsGateway {
   readonly transfers: { id: string; amount: number; destination: string; agreementId: string }[] =
     [];
   readonly refunds: { id: string; holdId: string; amount: number }[] = [];
+  /** Shared payment tokens "granted" to us, with the payment method behind each. */
+  readonly sharedTokens = new Map<string, SharedPaymentToken & { paymentMethod: string }>();
   /** Every mutating call that reached the "processor" (idempotent replays aren't counted). */
   readonly log: string[] = [];
   private readonly idempotency = new Map<string, { fingerprint: string; result: unknown }>();
@@ -115,8 +118,52 @@ export class FakeGateway implements PaymentsGateway {
       hold.client_secret = `${hold.id}_secret`;
       this.holds.set(hold.id, hold);
       if (p.paymentMethod) this.authorize(hold, p.paymentMethod, p.extendedAuthorization);
+      if (p.sharedPaymentToken) {
+        const t = this.sharedTokens.get(p.sharedPaymentToken);
+        const nowMs = this.opts.now().getTime();
+        if (!t?.active || (t.expires_at && t.expires_at.getTime() <= nowMs)) {
+          throw new GatewayError("The shared payment token is not usable.", false, "spt_inactive");
+        }
+        if (t.currency !== p.currency || t.max_amount < p.amount) {
+          throw new GatewayError(
+            "The amount exceeds the token's usage limits.",
+            false,
+            "spt_limit",
+          );
+        }
+        this.authorize(hold, t.paymentMethod, p.extendedAuthorization);
+        t.active = false;
+      }
       return this.view(hold);
     });
+  }
+
+  async getSharedPaymentToken(id: string): Promise<SharedPaymentToken> {
+    const t = this.sharedTokens.get(id);
+    if (!t)
+      throw new GatewayError(`No such shared payment token: '${id}'`, false, "resource_missing");
+    const { paymentMethod: _pm, ...token } = t;
+    return { ...token };
+  }
+
+  /** An agent grants us a shared payment token (mirrors Stripe's test helper). */
+  grantSharedPaymentToken(p: {
+    currency: string;
+    maxAmount: number;
+    expiresAt?: Date;
+    paymentMethod?: string;
+  }): string {
+    const id = this.id("spt");
+    this.sharedTokens.set(id, {
+      id,
+      currency: p.currency,
+      max_amount: p.maxAmount,
+      expires_at: p.expiresAt ?? null,
+      active: true,
+      card: { brand: "visa", last4: "4242" },
+      paymentMethod: p.paymentMethod ?? "pm_card_visa",
+    });
+    return id;
   }
 
   /** Simulates the buyer confirming the payment on the client (Stripe.js). */

@@ -115,6 +115,52 @@ describe("funding with a card hold", () => {
     );
   });
 
+  it("funds with an agent's shared payment token (MPP/ACP) that covers the amount", async () => {
+    await setup();
+    const id = await approved();
+    const spt = gw.grantSharedPaymentToken({ currency: "usd", maxAmount: 18_000 });
+    const res = await h.call(A(), "POST", `/v1/agreements/${id}/card-hold`, {
+      shared_payment_token: spt,
+    });
+    expect(res.status).toBe(201);
+    expect(res.body.agreement.status).toBe("funded");
+    expect(res.body.payment_intent_status).toBe("requires_capture");
+    // The token is spent: it can't fund another hold.
+    expect((await gw.getSharedPaymentToken(spt)).active).toBe(false);
+  });
+
+  it("refuses shared payment tokens that don't cover this hold, before charging", async () => {
+    await setup();
+    const id = await approved();
+    const cases = [
+      [gw.grantSharedPaymentToken({ currency: "usd", maxAmount: 17_999 }), "limit"],
+      [gw.grantSharedPaymentToken({ currency: "eur", maxAmount: 50_000 }), "EUR"],
+      [
+        gw.grantSharedPaymentToken({
+          currency: "usd",
+          maxAmount: 50_000,
+          expiresAt: new Date(h.clock.now.getTime() - 1000),
+        }),
+        "expired",
+      ],
+      ["spt_doesnotexist", "No such"],
+    ] as const;
+    for (const [spt, why] of cases) {
+      const res = await h.call(A(), "POST", `/v1/agreements/${id}/card-hold`, {
+        shared_payment_token: spt,
+      });
+      expect(res.status).toBe(422);
+      expect(res.body.error.code).toBe("shared_payment_token_rejected");
+      expect(res.body.error.message).toContain(why);
+    }
+    expect(gw.holds.size).toBe(0);
+    const both = await h.call(A(), "POST", `/v1/agreements/${id}/card-hold`, {
+      payment_method: "pm_card_visa",
+      shared_payment_token: "spt_x",
+    });
+    expect(both.status).toBe(400);
+  });
+
   it("funds via webhook when the buyer confirms on the client, and handles replays", async () => {
     await setup();
     const id = await approved();

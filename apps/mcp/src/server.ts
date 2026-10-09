@@ -33,7 +33,7 @@ function nextStep(a: Agreement, sandbox: boolean): string {
     case "spec_approved":
       return sandbox
         ? "Call fund_purchase to hold the payment (sandbox: no card needed)."
-        : "Call fund_purchase with the user's payment_method to place a card hold.";
+        : "Call fund_purchase with a shared_payment_token (spt_…) for this amount, or the user's payment_method, to place a card hold.";
     case "funded":
       return "Waiting for the seller to deliver (submit_delivery). Nothing is charged yet.";
     case "delivered":
@@ -174,11 +174,17 @@ export function createServer(pd: ProofDesk): McpServer {
       inputSchema: {
         agreement_id: z.string(),
         payment_method: z.string().optional().describe("Stripe PaymentMethod id (live funding)"),
+        shared_payment_token: z
+          .string()
+          .optional()
+          .describe(
+            "A Stripe shared payment token (spt_…) your agent was granted for at least the purchase amount (MPP/ACP agents)",
+          ),
       },
     },
     (args) =>
       run(async () => {
-        if (sandbox && !args.payment_method) {
+        if (sandbox && !args.payment_method && !args.shared_payment_token) {
           return summarize(
             await pd.agreements.fund(args.agreement_id, {
               rail: "test",
@@ -189,6 +195,7 @@ export function createServer(pd: ProofDesk): McpServer {
         }
         const res = await pd.agreements.createCardHold(args.agreement_id, {
           ...(args.payment_method ? { payment_method: args.payment_method } : {}),
+          ...(args.shared_payment_token ? { shared_payment_token: args.shared_payment_token } : {}),
         });
         return {
           ...summarize(res.agreement, sandbox),

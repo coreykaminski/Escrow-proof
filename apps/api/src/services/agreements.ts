@@ -5,12 +5,14 @@ import {
   hashValue,
   newId,
   type Outcome,
+  PRICING,
   type Spec,
   sameOutcome,
   sha256Hex,
   specHash,
   type TransitionResult,
   transition,
+  usdCents,
 } from "@proofdesk/core";
 import {
   type Artifact,
@@ -32,6 +34,22 @@ export const EXTERNAL_HOLD_PREFIX = "erc8183:";
 /** Standard ERC-8183 can only complete (pay all) or reject (refund all): no partial outcomes. */
 export function supportsPartial(row: Pick<AgreementRow, "holdRef">): boolean {
   return !row.holdRef?.startsWith(EXTERNAL_HOLD_PREFIX);
+}
+
+/**
+ * Live jobs above PRICING.directHoldMaxCents need a licensed escrow partner, so they can't be
+ * funded with a card hold or an on-chain job. Test mode is unrestricted.
+ */
+export function assertDirectHoldAllowed(row: AgreementRow): void {
+  if (!row.livemode) return;
+  const { cents } = usdCents(row.amountValue, row.currency);
+  if (cents > PRICING.directHoldMaxCents) {
+    throw new ApiError(
+      422,
+      "amount_requires_partner",
+      `live jobs over $${(PRICING.directHoldMaxCents / 100).toLocaleString("en-US")} must be held by a licensed escrow partner, which isn't available yet; split the job or use Proof Desk for verification only`,
+    );
+  }
 }
 
 function eventOutcome(event: AgreementEvent): Outcome | null {

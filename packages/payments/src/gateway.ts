@@ -52,6 +52,21 @@ export interface GatewayEvent {
   livemode: boolean;
 }
 
+/**
+ * A shared payment token (Stripe agentic commerce, used by MPP/ACP agents): an agent's scoped
+ * grant to charge its user's payment method, up to a limit, until it expires.
+ */
+export interface SharedPaymentToken {
+  id: string;
+  currency: string;
+  /** Minor units; the most this token can charge. */
+  max_amount: number;
+  expires_at: Date | null;
+  /** False once consumed, expired or revoked by the agent. */
+  active: boolean;
+  card: { brand: string; last4: string } | null;
+}
+
 export interface PaymentsGateway {
   readonly mode: "test" | "live";
 
@@ -78,11 +93,14 @@ export interface PaymentsGateway {
     description: string;
     /** Confirm immediately with this payment method (server-side / agent flows). */
     paymentMethod?: string;
+    /** Confirm immediately with an agent's shared payment token (spt_…) instead. */
+    sharedPaymentToken?: string;
     /** Ask the issuer for an extended authorization window (jobs that run past ~7 days). */
     extendedAuthorization: boolean;
     idempotencyKey: string;
   }): Promise<HoldState>;
   getHold(id: string): Promise<HoldState>;
+  getSharedPaymentToken(id: string): Promise<SharedPaymentToken>;
   /** Capture all or part of an authorized hold; the rest of the authorization is released. */
   capture(id: string, amount: number, idempotencyKey: string): Promise<HoldState>;
   /** Release the authorization entirely (refund before capture: no fee, no chargeback). */

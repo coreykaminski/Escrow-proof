@@ -5,6 +5,7 @@ import {
   type HoldState,
   type PaymentsGateway,
   type SellerAccountState,
+  type SharedPaymentToken,
   WebhookSignatureError,
 } from "./gateway.ts";
 
@@ -12,6 +13,9 @@ import {
  * Stripe implementation: Connect Express sellers, PaymentIntents with manual capture as holds,
  * separate charges and transfers for payouts. Every mutating call carries an idempotency key.
  */
+/** Shared payment tokens are a preview API: these calls pin the preview version. */
+export const SPT_API_VERSION = "2026-09-30.preview";
+
 export class StripeGateway implements PaymentsGateway {
   readonly mode: "test" | "live";
   private readonly stripe: Stripe;
@@ -115,9 +119,15 @@ export class StripeGateway implements PaymentsGateway {
               }
             : {}),
           ...(p.paymentMethod ? { payment_method: p.paymentMethod, confirm: true } : {}),
+          ...(p.sharedPaymentToken
+            ? {
+                payment_method_data: { shared_payment_granted_token: p.sharedPaymentToken },
+                confirm: true,
+              }
+            : {}),
           expand: ["latest_charge"],
-        },
-        { idempotencyKey },
+        } as Stripe.PaymentIntentCreateParams,
+        p.sharedPaymentToken ? { idempotencyKey, apiVersion: SPT_API_VERSION } : { idempotencyKey },
       );
 
     const wantExtended =
@@ -140,6 +150,32 @@ export class StripeGateway implements PaymentsGateway {
     return toHold(
       await this.call(() => this.stripe.paymentIntents.retrieve(id, { expand: ["latest_charge"] })),
     );
+  }
+
+  async getSharedPaymentToken(id: string): Promise<SharedPaymentToken> {
+    const t = (await this.call(() =>
+      this.stripe.rawRequest(
+        "GET",
+        `/v1/shared_payment/granted_tokens/${encodeURIComponent(id)}`,
+        {},
+        { apiVersion: SPT_API_VERSION },
+      ),
+    )) as unknown as {
+      id: string;
+      deactivated_at: number | null;
+      usage_limits: { currency: string; max_amount: number; expires_at: number | null };
+      payment_method_details?: { card?: { brand: string; last4: string } };
+    };
+    const expires = t.usage_limits.expires_at ? new Date(t.usage_limits.expires_at * 1000) : null;
+    const card = t.payment_method_details?.card;
+    return {
+      id: t.id,
+      currency: t.usage_limits.currency,
+      max_amount: t.usage_limits.max_amount,
+      expires_at: expires,
+      active: t.deactivated_at === null,
+      card: card ? { brand: card.brand, last4: card.last4 } : null,
+    };
   }
 
   async capture(id: string, amount: number, idempotencyKey: string) {

@@ -15,6 +15,7 @@ import { ApiError } from "../errors.ts";
 import {
   type AgreementRow,
   applyEvent,
+  assertDirectHoldAllowed,
   getAgreement,
   type Scope,
   snapshotOf,
@@ -142,10 +143,53 @@ export async function getHold(db: Db, agreementId: string) {
  * confirmed immediately (agent and server-side flows); otherwise the client confirms it with the
  * returned client_secret and the webhook completes funding.
  */
+/**
+ * An agent's shared payment token must cover this exact hold: same currency, a limit at least
+ * the agreement amount, still active and unexpired. Checked before Stripe is asked to charge it.
+ */
+async function checkSharedPaymentToken(
+  gw: PaymentsGateway,
+  id: string,
+  agreement: AgreementRow,
+  now: Date,
+) {
+  let token: Awaited<ReturnType<PaymentsGateway["getSharedPaymentToken"]>>;
+  try {
+    token = await gw.getSharedPaymentToken(id);
+  } catch (err) {
+    if (err instanceof GatewayError && !err.retryable) {
+      throw new ApiError(422, "shared_payment_token_rejected", err.message);
+    }
+    throw err;
+  }
+  const problems = [
+    !token.active && "it is no longer active (used, expired or revoked)",
+    token.expires_at !== null && token.expires_at.getTime() <= now.getTime() && "it has expired",
+    token.currency.toLowerCase() !== agreement.currency.toLowerCase() &&
+      `it is for ${token.currency.toUpperCase()}, the agreement is in ${agreement.currency.toUpperCase()}`,
+    token.max_amount < agreement.amountValue &&
+      `its limit (${token.max_amount}) is below the agreement amount (${agreement.amountValue})`,
+  ].filter((x): x is string => typeof x === "string");
+  if (problems.length > 0) {
+    throw new ApiError(
+      422,
+      "shared_payment_token_rejected",
+      `can't fund with this shared payment token: ${problems.join("; ")}`,
+    );
+  }
+}
+
 export async function createCardHold(
   db: Db,
   gw: PaymentsGateway,
-  p: { agreementId: string; scope: Scope; paymentMethod?: string; now: Date },
+  p: {
+    agreementId: string;
+    scope: Scope;
+    paymentMethod?: string;
+    /** An MPP/ACP agent's shared payment token (spt_…), checked against the agreement first. */
+    sharedPaymentToken?: string;
+    now: Date;
+  },
 ): Promise<{ hold: HoldRow; state: HoldState; agreement: AgreementRow }> {
   const agreement = await getAgreement(db, p.agreementId, p.scope);
   if (agreement.livemode !== (gw.mode === "live")) {
@@ -170,6 +214,7 @@ export async function createCardHold(
       `can't fund an agreement in status "${agreement.status}"`,
     );
   }
+  assertDirectHoldAllowed(agreement);
   const seller = await getSeller(db, agreement.accountId, agreement.sellerRef);
   if (!seller) {
     throw new ApiError(
@@ -178,6 +223,9 @@ export async function createCardHold(
       `seller "${agreement.sellerRef}" has no payout account; start onboarding with POST /v1/sellers/${encodeURIComponent(agreement.sellerRef)}/onboarding`,
     );
   }
+
+  if (p.sharedPaymentToken)
+    await checkSharedPaymentToken(gw, p.sharedPaymentToken, agreement, p.now);
 
   let state: HoldState;
   try {
@@ -193,10 +241,14 @@ export async function createCardHold(
       ),
       idempotencyKey: `hold:${agreement.id}`,
       ...(p.paymentMethod ? { paymentMethod: p.paymentMethod } : {}),
+      ...(p.sharedPaymentToken ? { sharedPaymentToken: p.sharedPaymentToken } : {}),
     });
   } catch (err) {
     if (err instanceof GatewayError && err.code === "card_declined") {
       throw new ApiError(402, "card_declined", err.message);
+    }
+    if (err instanceof GatewayError && !err.retryable && p.sharedPaymentToken) {
+      throw new ApiError(422, "shared_payment_token_rejected", err.message);
     }
     throw err;
   }

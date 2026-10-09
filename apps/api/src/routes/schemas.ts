@@ -104,10 +104,19 @@ export const SettleBody = z.object({
   force: z.boolean().default(false),
 });
 
-export const CardHoldBody = z.object({
-  /** Confirm server-side with a saved/agent payment method (e.g. pm_card_visa in test mode). */
-  payment_method: z.string().min(1).max(255).optional(),
-});
+export const CardHoldBody = z
+  .object({
+    /** Confirm server-side with a saved/agent payment method (e.g. pm_card_visa in test mode). */
+    payment_method: z.string().min(1).max(255).optional(),
+    /** Confirm with a shared payment token an MPP/ACP agent granted (spt_…). */
+    shared_payment_token: z
+      .string()
+      .regex(/^spt_[A-Za-z0-9_]{1,250}$/)
+      .optional(),
+  })
+  .refine((b) => !(b.payment_method && b.shared_payment_token), {
+    message: "give payment_method or shared_payment_token, not both",
+  });
 
 export const OnboardingBody = z.object({
   /** Where Stripe reaches the seller about onboarding and payouts. */

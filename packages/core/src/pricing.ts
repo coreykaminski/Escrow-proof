@@ -19,6 +19,12 @@ export const PRICING = {
   verifyOnlyMonthlyMinimumCents: 9_900,
   /** What Proof Desk pays its human reviewers. */
   reviewer: { decisionCents: 800, disputeResolutionCents: 2_000 },
+  /**
+   * Largest live amount held directly (card hold or on-chain job). Bigger B2B jobs go through a
+   * licensed escrow partner (MASTER_PLAN §1); until one is integrated they can't be funded live.
+   * Change only with legal sign-off.
+   */
+  directHoldMaxCents: 500_000,
 } as const;
 
 /**

@@ -18,6 +18,7 @@ import { ApiError } from "../errors.ts";
 import {
   type AgreementRow,
   applyEvent,
+  assertDirectHoldAllowed,
   EXTERNAL_HOLD_PREFIX,
   getAgreement,
   type Scope,
@@ -122,6 +123,7 @@ export async function attachExternalJob(
     }
     throw new ApiError(409, "already_funding", "this agreement already has an on-chain job");
   }
+  assertDirectHoldAllowed(agreement);
   if (agreement.status !== "spec_approved") {
     throw new ApiError(
       409,
