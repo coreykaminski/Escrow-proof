@@ -8,6 +8,7 @@ import {
   paymentsFromEnv,
   reviewerRatesFromEnv,
 } from "./models.ts";
+import { alerterFromEnv, loggerFromEnv } from "./observability.ts";
 import { sweepRateLimits } from "./security.ts";
 import { anchorLedger } from "./services/anchoring.ts";
 import { invoicePeriod, payReviewers } from "./services/billing.ts";
@@ -22,6 +23,8 @@ import { sealVerdicts } from "./services/verdicts.ts";
  * Every step is idempotent, so a crash or an overlapping run is safe. Run one instance.
  */
 loadEnv();
+const logger = loggerFromEnv();
+const alerter = alerterFromEnv(logger);
 const handle = createDb(process.env.DATABASE_URL ?? "pglite:./.data/dev");
 const db = handle.db;
 const payments = paymentsFromEnv();
@@ -65,14 +68,18 @@ async function monthlyBilling(now: Date) {
     { done: true, invoices: invoices.invoiced.length, payouts: payouts.paid.length },
     now,
   );
-  console.log(
-    `billing ${prev}: ${invoices.invoiced.length} invoices, ${payouts.paid.length} payouts`,
-  );
+  logger.info("monthly billing", {
+    period: prev,
+    invoices: invoices.invoiced.length,
+    payouts: payouts.paid.length,
+  });
 }
 
-console.log(
-  `worker: tick every ${TICK_MS / 1000}s; card ${payments ? payments.mode : "off"}; chain ${chain ? "on" : "off"}`,
-);
+logger.info("worker started", {
+  tick_s: TICK_MS / 1000,
+  card: payments ? payments.mode : "off",
+  chain: chain ? "on" : "off",
+});
 let lastLedgerCheck = 0;
 let lastAnchor = 0;
 while (!stop.signal.aborted) {
@@ -87,40 +94,49 @@ while (!stop.signal.aborted) {
       r.onchain_expired.length +
       r.webhooks.delivered;
     if (busy > 0) {
-      console.log(
-        JSON.stringify({
-          at: now.toISOString(),
-          settled: r.settled.length,
-          deadlines_missed: r.deadlines_missed.length,
-          captured_early: r.captured_early.length,
-          onchain_expired: r.onchain_expired.length,
-          webhooks: r.webhooks.delivered,
-          errors: r.errors,
-        }),
-      );
+      logger[r.errors.length ? "warn" : "info"]("tick", {
+        settled: r.settled.length,
+        deadlines_missed: r.deadlines_missed.length,
+        captured_early: r.captured_early.length,
+        onchain_expired: r.onchain_expired.length,
+        webhooks: r.webhooks.delivered,
+        errors: r.errors,
+      });
     }
     if (now.getUTCMinutes() % 10 === 0) await sweepRateLimits(db, now);
     if (Date.now() - lastLedgerCheck > LEDGER_MS) {
       const result = await checkLedger(db, now);
       lastLedgerCheck = Date.now();
-      if (!result.ok) console.error(`LEDGER CHECK FAILED at seq ${result.seq}: ${result.reason}`);
+      if (!result.ok) {
+        logger.error("LEDGER CHECK FAILED", { seq: result.seq, reason: result.reason });
+        await alerter?.notify(
+          "ledger_check_failed",
+          `ledger check FAILED at seq ${result.seq}: ${result.reason}. Stop the worker; see the runbook.`,
+        );
+      }
     }
     if (Date.now() - lastAnchor > ANCHOR_MS) {
       // Daily: seal final verdicts as content-free records, then anchor the tree head.
       if (anchor) {
         const a = await anchorLedger(db, anchor, now);
-        if (a.status === "anchored") console.log(`ledger anchored at seq ${a.seq}: ${a.tx_hash}`);
+        if (a.status === "anchored") logger.info("ledger anchored", { seq: a.seq, tx: a.tx_hash });
       } else {
         const { sealed } = await sealVerdicts(db, now);
-        if (sealed) console.log(`sealed ${sealed} verdict records`);
+        if (sealed) logger.info("verdicts sealed", { count: sealed });
       }
       lastAnchor = Date.now();
     }
     await monthlyBilling(now);
   } catch (err) {
-    console.error("tick failed", err);
+    logger.error("tick failed", {
+      error: err instanceof Error ? (err.stack ?? err.message) : String(err),
+    });
+    await alerter?.notify(
+      "worker_tick_failed",
+      `worker tick failed: ${err instanceof Error ? err.message : err}`,
+    );
   }
   if (!stop.signal.aborted) await sleep(TICK_MS);
 }
 await handle.close();
-console.log("worker stopped");
+logger.info("worker stopped");

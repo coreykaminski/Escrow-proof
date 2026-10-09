@@ -13,6 +13,7 @@ import {
   reviewerRatesFromEnv,
   verifierFromEnv,
 } from "./models.ts";
+import { alerterFromEnv, loggerFromEnv } from "./observability.ts";
 import { PostgresRateLimitStore } from "./security.ts";
 
 loadEnv();
@@ -20,23 +21,24 @@ loadEnv();
 const databaseUrl = process.env.DATABASE_URL ?? "pglite:./.data/dev";
 const port = Number(process.env.PORT ?? 8787);
 
+const logger = loggerFromEnv();
+const alerter = alerterFromEnv(logger);
 const handle = createDb(databaseUrl);
 // In production, migrations run once per deploy (fly.toml release_command), not on every boot.
 if (process.env.MIGRATE_ON_BOOT !== "0") await handle.migrate();
 
 const drafter = drafterFromEnv();
 const verifier = verifierFromEnv();
-if (!drafter) console.warn("ANTHROPIC_API_KEY not set: drafting and verification will return 503.");
+if (!drafter) logger.warn("ANTHROPIC_API_KEY not set: drafting and verification will return 503");
 const payments = paymentsFromEnv();
 if (!payments)
-  console.warn("STRIPE_SECRET_KEY not set: card funding and card settlement will return 503.");
+  logger.warn("STRIPE_SECRET_KEY not set: card funding and settlement will return 503");
 const chain = chainFromEnv();
-if (!chain)
-  console.warn(
-    "CHAIN_RPC_URL/JOBS_CONTRACT/EVALUATOR_PRIVATE_KEY not set: on-chain funding will return 503.",
-  );
+if (!chain) logger.warn("stablecoin rail not configured: on-chain funding will return 503");
 const app = createApp({
   db: handle.db,
+  logger,
+  ...(alerter ? { alerter } : {}),
   now: () => new Date(),
   drafter,
   verifier,
@@ -58,7 +60,7 @@ const app = createApp({
     : {}),
 });
 const server = serve({ fetch: app.fetch, port }, (info) => {
-  console.log(`Proof Desk API listening on http://localhost:${info.port} (${handle.driver})`);
+  logger.info("listening", { port: info.port, db: handle.driver });
 });
 
 async function shutdown() {

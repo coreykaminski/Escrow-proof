@@ -3,7 +3,7 @@
 ## Before the first partner touches it
 - [ ] Staging deployed per docs/deploy.md; smoke test green.
 - [ ] Code sandbox host running with gVisor; one code job verified through it.
-- [ ] `/status.json` watched by an uptime monitor that pages Corey.
+- [ ] `/status.json` watched by an uptime monitor that pages Corey, and `ALERT_WEBHOOK_URL` set (server errors, worker failures, a failed ledger check).
 - [ ] Ops keys: one per human reviewer; each reviewer has finished payout onboarding (`POST /v1/ops/reviewers/me/onboarding`).
 - [ ] Model evals run (needs Anthropic credits): `npm run eval:translation`, `eval:code -- --judge`, `eval:data -- --judge`. Every §6 target met, or those decision types set to escalate. Then `npm run evals:publish` and commit, so `/accuracy` shows the new numbers.
 
@@ -24,7 +24,7 @@
   - **On-chain jobs:** an unreviewed decision can't settle, so a job left unreviewed past its on-chain expiry becomes refundable to the buyer. Review those first.
 - Weekly: `GET /v1/ops/reviews/stats` (agreement, false release, false refund per vertical), and export disagreements with `GET /v1/ops/reviews/golden-candidates`. Each line has the spec, inputs, judged delivery and the reviewer's label. Curate them into `evals/<vertical>/` (plan §8, rule 2). They contain customer content, so the pilot agreement must allow this use.
 - Turn shadow mode off once the partner's shadow agreement rate meets the §6 targets.
-- Daily: check `/status`, the review queue (escalations and disputes older than 24 h), webhook failures, and the worker log for `errors`.
+- Daily: check `/status` and `GET /v1/ops/metrics` (errors, verification latency and cost), the review queue (escalations and disputes older than 24 h), webhook failures, and the worker log for `errors`.
 - Weekly: accuracy (auto decisions vs human review), escalation rate, cost per job, GMV, fees.
 
 ## Incidents

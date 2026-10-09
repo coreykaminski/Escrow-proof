@@ -51,6 +51,8 @@ export async function createHarness(
     rateLimits?: AppDeps["rateLimits"];
     trustProxy?: boolean;
     reviewerRates?: AppDeps["reviewerRates"];
+    logger?: AppDeps["logger"];
+    alerter?: AppDeps["alerter"];
   } = {},
 ): Promise<Harness> {
   const handle = await createTestDb();
@@ -78,6 +80,8 @@ export async function createHarness(
     ...(opts.rateLimits ? { rateLimits: opts.rateLimits } : {}),
     ...(opts.trustProxy ? { trustProxy: true } : {}),
     ...(opts.reviewerRates ? { reviewerRates: opts.reviewerRates } : {}),
+    ...(opts.logger ? { logger: opts.logger } : {}),
+    ...(opts.alerter ? { alerter: opts.alerter } : {}),
     ...(opts.verifier ? { verifier: opts.verifier } : {}),
     ...(opts.codeVerifier ? { codeVerifier: opts.codeVerifier } : {}),
     ...(opts.dataVerifier ? { dataVerifier: opts.dataVerifier } : {}),

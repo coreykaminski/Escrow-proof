@@ -2,6 +2,7 @@ import type { AnchorGateway, ChainGateway } from "@proofdesk/chain";
 import type { ApiScope, Db } from "@proofdesk/db";
 import type { PaymentsGateway } from "@proofdesk/payments";
 import type { SpecDrafter } from "@proofdesk/spec-engine";
+import type { Alerter, Logger, RequestMetrics } from "./observability.ts";
 import type { RateLimitStore } from "./security.ts";
 import type { ReviewerRates } from "./services/billing.ts";
 import type {
@@ -50,6 +51,12 @@ export interface AppDeps {
   rateLimitStore?: RateLimitStore;
   /** HTTP client for outbound webhooks (injectable for tests). */
   fetch?: typeof fetch;
+  /** Structured logs (default: silent, e.g. in tests). */
+  logger?: Logger;
+  /** Request statistics for /v1/ops/metrics (default: a fresh in-process counter). */
+  metrics?: RequestMetrics;
+  /** Pages a human on server errors (ALERT_WEBHOOK_URL). */
+  alerter?: Alerter;
 }
 
 export interface AuthContext {
@@ -62,6 +69,7 @@ export interface AuthContext {
 export interface AppEnv {
   Variables: {
     auth: AuthContext;
+    requestId: string;
   };
 }
 

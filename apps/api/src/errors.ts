@@ -14,6 +14,7 @@ import {
 import type { Context } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { ZodError } from "zod";
+import { type Alerter, type Logger, routeOf } from "./observability.ts";
 
 export class ApiError extends Error {
   constructor(
@@ -112,15 +113,36 @@ export function toApiError(err: unknown): ApiError {
   return new ApiError(500, "internal_error", "an unexpected error occurred");
 }
 
-export function errorResponse(c: Context, err: unknown) {
+export function errorResponse(
+  c: Context,
+  err: unknown,
+  obs: { logger?: Logger; alerter?: Alerter } = {},
+) {
   const apiError = toApiError(err);
-  if (apiError.status >= 500) console.error(err);
+  const requestId = (c.get("requestId" as never) as string | undefined) ?? undefined;
+  if (apiError.status >= 500) {
+    const fields = {
+      request_id: requestId,
+      route: routeOf(c),
+      code: apiError.code,
+      error: err instanceof Error ? (err.stack ?? err.message) : String(err),
+    };
+    if (obs.logger) obs.logger.error("server error", fields);
+    else console.error(err);
+    if (apiError.status === 500) {
+      void obs.alerter?.notify("server_error", `500 on ${fields.route}`, {
+        request_id: requestId,
+        code: apiError.code,
+      });
+    }
+  }
   return c.json(
     {
       error: {
         code: apiError.code,
         message: apiError.message,
         ...(apiError.details === undefined ? {} : { details: apiError.details }),
+        ...(requestId ? { request_id: requestId } : {}),
       },
     },
     apiError.status,

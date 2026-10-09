@@ -5,8 +5,10 @@ import { ApiError } from "../errors.ts";
 import { agreementJson, verificationJson } from "../serialize.ts";
 import { applyEvent, getAgreement } from "../services/agreements.ts";
 import { anchorLedger, verifyAnchors } from "../services/anchoring.ts";
+import { verificationStats } from "../services/metrics.ts";
 import { settleAgreement } from "../services/payments.ts";
 import { tick } from "../services/scheduler.ts";
+import { getState } from "../services/status.ts";
 import { listVerifications, verifyAgreement } from "../services/verification.ts";
 import { DecideBody, ResolveDisputeBody, SettleBody } from "./schemas.ts";
 
@@ -113,6 +115,27 @@ export function opsRoutes(deps: AppDeps) {
    */
   r.post("/run-due", async (c) => {
     return c.json(await tick(db, { payments, chain, ...(fetch ? { fetch } : {}) }, now()));
+  });
+
+  /**
+   * Operational metrics: this instance's request stats since start, verification volume,
+   * escalations, latency and model cost over the last 24 h, and the scheduler heartbeat.
+   */
+  r.get("/metrics", async (c) => {
+    const at = now();
+    const [verifications, scheduler] = await Promise.all([
+      verificationStats(db, new Date(at.getTime() - 86_400_000)),
+      getState(db, "scheduler.tick"),
+    ]);
+    return c.json({
+      object: "metrics",
+      at: at.toISOString(),
+      requests: deps.metrics?.snapshot() ?? null,
+      verifications,
+      scheduler: scheduler
+        ? { last_tick_at: scheduler.updatedAt.toISOString(), last: scheduler.value }
+        : null,
+    });
   });
 
   r.get("/ledger/verify", async (c) => {

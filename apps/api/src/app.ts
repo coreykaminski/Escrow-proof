@@ -5,6 +5,7 @@ import { dashboardRoutes, publicLinkRoutes } from "./dashboard/routes.tsx";
 import type { AppDeps, AppEnv } from "./env.ts";
 import { ApiError, errorResponse } from "./errors.ts";
 import { authenticate, idempotency, requireScope } from "./middleware.ts";
+import { RequestMetrics, requestObservability, silentLogger } from "./observability.ts";
 import { DOCS_CSP, DOCS_HTML, openApiDocument } from "./openapi.ts";
 import { a2aRoutes, agentCard } from "./routes/a2a.ts";
 import { agreementRoutes } from "./routes/agreements.ts";
@@ -36,8 +37,13 @@ const MB = 1024 * 1024;
 export function createApp(deps: AppDeps) {
   const app = new Hono<AppEnv>();
 
-  app.onError((err, c) => errorResponse(c, err));
-  app.notFound((c) => errorResponse(c, new ApiError(404, "route_not_found", "no such route")));
+  const logger = deps.logger ?? silentLogger;
+  const metrics = deps.metrics ?? new RequestMetrics();
+  deps = { ...deps, logger, metrics };
+  const obs = { logger, ...(deps.alerter ? { alerter: deps.alerter } : {}) };
+  app.onError((err, c) => errorResponse(c, err, obs));
+  app.notFound((c) => errorResponse(c, new ApiError(404, "route_not_found", "no such route"), obs));
+  app.use("*", requestObservability({ logger, metrics }));
 
   const limits = { ...DEFAULT_LIMITS, ...deps.rateLimits };
   const store = deps.rateLimitStore ?? new MemoryRateLimitStore();

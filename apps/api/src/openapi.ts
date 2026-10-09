@@ -539,6 +539,13 @@ export const OPERATIONS: Op[] = [
   },
   {
     method: "get",
+    path: "/v1/ops/metrics",
+    tag: "Ops",
+    summary: "This instance's request stats, and verification volume, latency and cost (24 h)",
+    scope: "ops",
+  },
+  {
+    method: "get",
     path: "/v1/ops/ledger/anchors",
     tag: "Ops",
     summary: "Check every on-chain anchor against the ledger",
