@@ -29,7 +29,7 @@ const migrationsFolder = fileURLToPath(new URL("../drizzle", import.meta.url));
  *   - "pglite:./.data/dev"   embedded Postgres persisted to a directory (local dev)
  *   - "postgres://..."       a real Postgres server (staging/production)
  */
-export function createDb(url: string): DbHandle {
+export function createDb(url: string, opts: { maxConnections?: number } = {}): DbHandle {
   if (url === "memory://" || url.startsWith("pglite:")) {
     const client = url === "memory://" ? new PGlite() : new PGlite(url.slice("pglite:".length));
     const db = drizzlePglite(client, { schema }) as unknown as Db;
@@ -42,7 +42,7 @@ export function createDb(url: string): DbHandle {
   }
 
   if (url.startsWith("postgres://") || url.startsWith("postgresql://")) {
-    const client = postgres(url, { max: 10 });
+    const client = postgres(url, { max: opts.maxConnections ?? 10, onnotice: () => {} });
     const db = drizzlePostgres(client, { schema }) as unknown as Db;
     return {
       db,

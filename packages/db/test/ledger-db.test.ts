@@ -1,13 +1,20 @@
+import { rootFrom, rootOf, toHex } from "@proofdesk/core";
 import { sql } from "drizzle-orm";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { createDb, type DbHandle } from "../src/client.ts";
-import { appendLedgerEntry, listLedgerForAgreement, verifyLedger } from "../src/ledger.ts";
+import type { DbHandle } from "../src/client.ts";
+import {
+  appendLedgerEntry,
+  ledgerLeaves,
+  listLedgerForAgreement,
+  verifyLedger,
+} from "../src/ledger.ts";
+import { createTestDb } from "../src/testing.ts";
+import { withLedgerTree } from "../src/tree.ts";
 
 let handle: DbHandle;
 
 beforeEach(async () => {
-  handle = createDb("memory://");
-  await handle.migrate();
+  handle = await createTestDb();
 });
 
 afterEach(async () => {
@@ -55,6 +62,12 @@ describe("ledger in Postgres", () => {
       ),
     );
     expect(await verifyLedger(handle.db)).toMatchObject({ ok: true, count: 20 });
+    // The Merkle subtrees written under the same lock match a full recomputation.
+    const leaves = await ledgerLeaves(handle.db);
+    for (const n of [1, 7, 16, 20]) {
+      const cached = await withLedgerTree(handle.db, (get) => rootFrom(get, n));
+      expect(toHex(cached)).toBe(toHex(rootOf(leaves.slice(0, n))));
+    }
   });
 
   it("rolls back the ledger entry when its transaction fails", async () => {

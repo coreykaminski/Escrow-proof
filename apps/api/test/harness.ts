@@ -1,5 +1,5 @@
 import type { AnchorGateway, ChainGateway } from "@proofdesk/chain";
-import { createDb, type DbHandle } from "@proofdesk/db";
+import { createTestDb, type DbHandle } from "@proofdesk/db";
 import type { PaymentsGateway } from "@proofdesk/payments";
 import { FakeSpecDrafter, type SpecDrafter } from "@proofdesk/spec-engine";
 import { createAccountWithKey } from "../src/accounts.ts";
@@ -53,8 +53,7 @@ export async function createHarness(
     reviewerRates?: AppDeps["reviewerRates"];
   } = {},
 ): Promise<Harness> {
-  const handle = createDb("memory://");
-  await handle.migrate();
+  const handle = await createTestDb();
 
   const clock = {
     now: T0,

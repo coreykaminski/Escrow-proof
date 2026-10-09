@@ -24,6 +24,7 @@
     "apps/*/src",
     "apps/*/test",
     "evals",
-    "vitest.config.ts"
+    "vitest.config.ts",
+    "vitest.postgres.ts"
   ]
 }
