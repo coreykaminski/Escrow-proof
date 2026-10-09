@@ -3,7 +3,7 @@
  * Final (settled) live agreements are sealed in a daily batch: every record in a batch shares
  * one timestamp and is shuffled, so neither time nor order links a record to a transaction.
  */
-import { randomBytes } from "node:crypto";
+import { randomBytes, randomInt } from "node:crypto";
 import { buildVerdictRecord, type Outcome } from "@proofdesk/core";
 import { appendLedgerEntry, type Db, schema } from "@proofdesk/db";
 import { and, asc, desc, eq, gt, isNull } from "drizzle-orm";
@@ -21,7 +21,12 @@ export async function sealVerdicts(db: Db, now: Date): Promise<{ sealed: number 
       ),
     );
   if (due.length === 0) return { sealed: 0 };
-  const batch = due.map((d) => d.a).sort(() => (randomBytes(1)[0] as number) - 128);
+  // Fisher-Yates with crypto randomness: ledger order says nothing about settlement order.
+  const batch = due.map((d) => d.a);
+  for (let i = batch.length - 1; i > 0; i--) {
+    const j = randomInt(i + 1);
+    [batch[i], batch[j]] = [batch[j] as (typeof batch)[number], batch[i] as (typeof batch)[number]];
+  }
 
   await db.transaction(async (tx) => {
     for (const a of batch) {
