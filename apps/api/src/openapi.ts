@@ -6,6 +6,7 @@ import {
   PlanBody,
   ReviewerOnboardingBody,
 } from "./routes/billing.ts";
+import { ReviewBody, ShadowModeBody } from "./routes/reviews.ts";
 import {
   ApproveSpecBody,
   CancelBody,
@@ -273,6 +274,64 @@ export const OPERATIONS: Op[] = [
     body: ReviewerOnboardingBody,
     scope: "ops",
     created: true,
+  },
+  // Shadow mode (pilots)
+  {
+    method: "put",
+    path: "/v1/ops/accounts/{id}/shadow-mode",
+    tag: "Ops",
+    summary: "Turn shadow mode on or off for an account",
+    description:
+      "In shadow mode every automatic decision for the account waits for a human review before it can settle (even a forced settlement).",
+    body: ShadowModeBody,
+    scope: "ops",
+  },
+  {
+    method: "post",
+    path: "/v1/ops/agreements/{id}/review",
+    tag: "Ops",
+    summary: "Confirm or override an automatic decision held for shadow review",
+    description:
+      "Omit `outcome` (or send the same one) to confirm. A different outcome overrides the decision and restarts the appeal window.",
+    body: ReviewBody,
+    scope: "ops",
+  },
+  {
+    method: "get",
+    path: "/v1/ops/reviews/pending",
+    tag: "Ops",
+    summary: "Automatic decisions awaiting shadow review, earliest appeal deadline first",
+    scope: "ops",
+  },
+  {
+    method: "get",
+    path: "/v1/ops/reviews/stats",
+    tag: "Ops",
+    summary: "Shadow-review agreement, false-release and false-refund counts per vertical",
+    query: { days: "Window in days (default 90)" },
+    scope: "ops",
+  },
+  {
+    method: "get",
+    path: "/v1/ops/reviews/golden-candidates",
+    tag: "Ops",
+    summary: "Reviewer disagreements as golden-set candidates (NDJSON)",
+    description:
+      "Each line has the spec, inputs, judged delivery, the verifier's outcome and the reviewer's label. Contains customer content.",
+    query: { days: "Only reviews from the last N days", limit: "1-500, default 100" },
+    scope: "ops",
+  },
+  {
+    method: "get",
+    path: "/v1/ops/reviews",
+    tag: "Ops",
+    summary: "Shadow reviews, newest first",
+    query: {
+      agreed: "true or false",
+      days: "Only reviews from the last N days",
+      limit: "1-500, default 100",
+    },
+    scope: "ops",
   },
   // Sellers
   {

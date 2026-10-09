@@ -8,6 +8,7 @@ import { DOCS_CSP, DOCS_HTML, openApiDocument } from "./openapi.ts";
 import { agreementRoutes } from "./routes/agreements.ts";
 import { billingRoutes, opsBillingRoutes } from "./routes/billing.ts";
 import { opsRoutes } from "./routes/ops.ts";
+import { reviewRoutes } from "./routes/reviews.ts";
 import { sellerRoutes } from "./routes/sellers.ts";
 import { testHelperRoutes } from "./routes/test-helpers.ts";
 import { webhookEndpointRoutes } from "./routes/webhook-endpoints.ts";
@@ -106,6 +107,7 @@ export function createApp(deps: AppDeps) {
   app.route("/v1/test_helpers", testHelperRoutes(deps));
   app.route("/v1/ops", opsRoutes(deps));
   app.route("/v1/ops", opsBillingRoutes(deps));
+  app.route("/v1/ops", reviewRoutes(deps));
   app.route("/v1/billing", billingRoutes(deps));
 
   return app;

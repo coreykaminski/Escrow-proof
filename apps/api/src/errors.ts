@@ -35,6 +35,8 @@ const TRANSITION_STATUS: Record<TransitionErrorCode, ContentfulStatusCode> = {
   dispute_already_resolved: 409,
   nothing_to_dispute: 409,
   invalid_outcome: 400,
+  no_review_pending: 409,
+  review_pending: 409,
 };
 
 /** Drafting failures: the model's refusal is final for that request; the rest can be retried. */

@@ -50,6 +50,7 @@ export async function createHarness(
     allowPrivateNetwork?: boolean;
     rateLimits?: AppDeps["rateLimits"];
     trustProxy?: boolean;
+    reviewerRates?: AppDeps["reviewerRates"];
   } = {},
 ): Promise<Harness> {
   const handle = createDb("memory://");
@@ -77,6 +78,7 @@ export async function createHarness(
     allowPrivateNetwork: opts.allowPrivateNetwork ?? true,
     ...(opts.rateLimits ? { rateLimits: opts.rateLimits } : {}),
     ...(opts.trustProxy ? { trustProxy: true } : {}),
+    ...(opts.reviewerRates ? { reviewerRates: opts.reviewerRates } : {}),
     ...(opts.verifier ? { verifier: opts.verifier } : {}),
     ...(opts.codeVerifier ? { codeVerifier: opts.codeVerifier } : {}),
     ...(opts.dataVerifier ? { dataVerifier: opts.dataVerifier } : {}),

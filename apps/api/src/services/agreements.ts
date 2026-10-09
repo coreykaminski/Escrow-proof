@@ -6,6 +6,7 @@ import {
   newId,
   type Outcome,
   type Spec,
+  sameOutcome,
   sha256Hex,
   specHash,
   type TransitionResult,
@@ -45,6 +46,7 @@ export function snapshotOf(row: AgreementRow): AgreementSnapshot {
     outcome: row.outcome,
     decidedAt: row.decidedAt,
     disputeResolved: row.disputeResolved,
+    reviewPending: row.reviewPending,
   };
 }
 
@@ -225,11 +227,12 @@ function eventColumns(event: AgreementEvent, now: Date): Partial<AgreementRow> {
 /** Records written alongside a transition; their ids go into the ledger entry. */
 async function writeEventRecords(
   tx: Tx,
-  agreementId: string,
+  current: AgreementRow,
   event: AgreementEvent,
   actor: Actor,
   now: Date,
 ): Promise<Record<string, unknown>> {
+  const agreementId = current.id;
   switch (event.type) {
     case "DECIDE":
     case "MISS_DEADLINE": {
@@ -282,6 +285,62 @@ async function writeEventRecords(
         .returning({ id: schema.disputes.id });
       return { decision_id: decisionId, dispute_id: dispute?.id ?? null };
     }
+    case "REVIEW": {
+      const [auto] = await tx
+        .select({ id: schema.decisions.id, outcome: schema.decisions.outcome })
+        .from(schema.decisions)
+        .where(
+          and(
+            eq(schema.decisions.agreementId, agreementId),
+            eq(schema.decisions.decidedBy, "auto"),
+          ),
+        )
+        .orderBy(desc(schema.decisions.createdAt), desc(schema.decisions.id))
+        .limit(1);
+      if (!auto) throw new ApiError(409, "no_review_pending", "no automatic decision to review");
+      const [verification] = await tx
+        .select({ id: schema.verifications.id })
+        .from(schema.verifications)
+        .where(eq(schema.verifications.agreementId, agreementId))
+        .orderBy(desc(schema.verifications.createdAt), desc(schema.verifications.id))
+        .limit(1);
+      const reviewed = event.outcome ?? auto.outcome;
+      const agreed = sameOutcome(reviewed, auto.outcome);
+      let overrideId: string | null = null;
+      if (!agreed) {
+        overrideId = newId("decision", now.getTime());
+        await tx.insert(schema.decisions).values({
+          id: overrideId,
+          agreementId,
+          kind: "review_override",
+          outcome: reviewed,
+          decidedBy: "human",
+          actorRef: actor.ref,
+          confidence: null,
+          reason: event.reason,
+          createdAt: now,
+        });
+      }
+      const reviewId = newId("review", now.getTime());
+      await tx.insert(schema.decisionReviews).values({
+        id: reviewId,
+        agreementId,
+        decisionId: auto.id,
+        verificationId: verification?.id ?? null,
+        autoOutcome: auto.outcome,
+        reviewedOutcome: reviewed,
+        agreed,
+        overrideDecisionId: overrideId,
+        reviewerRef: actor.ref,
+        reason: event.reason,
+        createdAt: now,
+      });
+      return {
+        review_id: reviewId,
+        agreed,
+        ...(overrideId ? { decision_id: overrideId } : {}),
+      };
+    }
     default:
       return {};
   }
@@ -310,11 +369,17 @@ export function eventPayload(event: AgreementEvent): Record<string, unknown> {
         decided_by: event.decidedBy,
         confidence: event.confidence,
         reason: event.reason,
+        ...(event.review ? { review_pending: true } : {}),
       };
     case "RESOLVE_DISPUTE":
       return { outcome: outcomeToJson(event.outcome), reason: event.reason };
     case "SETTLE":
       return { settlement_ref: event.settlementRef, force: event.force };
+    case "REVIEW":
+      return {
+        outcome: event.outcome ? outcomeToJson(event.outcome) : null,
+        reason: event.reason,
+      };
     case "START_VERIFICATION":
     case "MISS_DEADLINE":
       return {};
@@ -372,7 +437,7 @@ export async function applyEvent(
     if (!row) throw notFound("agreement");
 
     await params.afterTransition?.(tx, row, result);
-    const records = await writeEventRecords(tx, agreementId, event, actor, now);
+    const records = await writeEventRecords(tx, current, event, actor, now);
     if (event.type === "RESOLVE_DISPUTE") {
       await recordDisputeFee(tx, {
         agreement: row,

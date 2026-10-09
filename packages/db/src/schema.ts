@@ -24,6 +24,8 @@ export const accounts = pgTable("accounts", {
   stripeCustomerId: text("stripe_customer_id"),
   /** "verify_only" accounts pay a monthly minimum on verification fees. */
   plan: text("plan").$type<"standard" | "verify_only">().notNull().default("standard"),
+  /** Pilot shadow mode: every automatic decision waits for a human review before it settles. */
+  shadowMode: boolean("shadow_mode").notNull().default(false),
   createdAt: ts("created_at").notNull().defaultNow(),
 });
 
@@ -92,6 +94,8 @@ export const agreements = pgTable(
     outcome: jsonb("outcome").$type<Outcome>(),
     decidedAt: ts("decided_at"),
     disputeResolved: boolean("dispute_resolved").notNull().default(false),
+    /** An automatic decision awaiting its shadow review (pilot accounts). */
+    reviewPending: boolean("review_pending").notNull().default(false),
     settledAt: ts("settled_at"),
     settlementRef: text("settlement_ref"),
     cancelledAt: ts("cancelled_at"),
@@ -363,7 +367,9 @@ export const decisions = pgTable(
     agreementId: text("agreement_id")
       .notNull()
       .references(() => agreements.id),
-    kind: text("kind").$type<"verification" | "deadline" | "dispute_resolution">().notNull(),
+    kind: text("kind")
+      .$type<"verification" | "deadline" | "dispute_resolution" | "review_override">()
+      .notNull(),
     outcome: jsonb("outcome").$type<Outcome>().notNull(),
     decidedBy: text("decided_by").$type<"auto" | "human">().notNull(),
     actorRef: text("actor_ref").notNull(),
@@ -372,6 +378,38 @@ export const decisions = pgTable(
     createdAt: ts("created_at").notNull(),
   },
   (t) => [index("decisions_agreement_idx").on(t.agreementId)],
+);
+
+/**
+ * Shadow reviews (pilot mode): a human's verdict on an automatic decision. Disagreements are the
+ * raw material for new golden-set items (MASTER_PLAN §8: every false verdict becomes a test).
+ */
+export const decisionReviews = pgTable(
+  "decision_reviews",
+  {
+    id: text("id").primaryKey(),
+    agreementId: text("agreement_id")
+      .notNull()
+      .references(() => agreements.id),
+    /** The automatic decision under review. */
+    decisionId: text("decision_id")
+      .notNull()
+      .references(() => decisions.id),
+    /** The verification that produced it, when there was one. */
+    verificationId: text("verification_id").references(() => verifications.id),
+    autoOutcome: jsonb("auto_outcome").$type<Outcome>().notNull(),
+    reviewedOutcome: jsonb("reviewed_outcome").$type<Outcome>().notNull(),
+    agreed: boolean("agreed").notNull(),
+    /** The override decision, when the reviewer disagreed. */
+    overrideDecisionId: text("override_decision_id").references(() => decisions.id),
+    reviewerRef: text("reviewer_ref").notNull(),
+    reason: text("reason").notNull(),
+    createdAt: ts("created_at").notNull(),
+  },
+  (t) => [
+    uniqueIndex("decision_reviews_decision_idx").on(t.decisionId),
+    index("decision_reviews_created_idx").on(t.createdAt),
+  ],
 );
 
 export const disputes = pgTable(

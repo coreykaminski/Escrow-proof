@@ -28,6 +28,8 @@ export function agreementJson(row: AgreementRow) {
     appeal_window_hours: row.appealWindowHours,
     appeal_window_ends_at: iso(appealWindowEndsAt(snapshotOf(row))),
     dispute_resolved: row.disputeResolved,
+    /** Shadow mode: an automatic decision a human must confirm or override before it settles. */
+    review_pending: row.reviewPending,
     settled_at: iso(row.settledAt),
     settlement_ref: row.settlementRef,
     cancelled_at: iso(row.cancelledAt),

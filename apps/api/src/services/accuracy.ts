@@ -1,13 +1,9 @@
-import type { Outcome } from "@proofdesk/core";
+import { sameOutcome } from "@proofdesk/core";
 import { type Db, schema } from "@proofdesk/db";
 import { and, asc, eq, gte, inArray } from "drizzle-orm";
 
 /** Below this many automatic decisions a vertical's numbers aren't published (noise, privacy). */
 export const MIN_SAMPLE = 20;
-
-const same = (a: Outcome, b: Outcome) =>
-  a.kind === b.kind &&
-  (a.kind !== "partial" || (b.kind === "partial" && a.releasePercent === b.releasePercent));
 
 export interface VerticalAccuracy {
   vertical: string;
@@ -15,7 +11,9 @@ export interface VerticalAccuracy {
   auto_decisions: number;
   escalated: number;
   disputed: number;
-  /** Automatic decisions a human reviewer later changed on dispute. */
+  /** Automatic decisions a human checked in a pilot's shadow review. */
+  reviewed: number;
+  /** Automatic decisions a human later changed, on shadow review or on dispute. */
   overturned: number;
   escalation_rate: number | null;
   overturn_rate: number | null;
@@ -24,7 +22,7 @@ export interface VerticalAccuracy {
 
 /**
  * Production accuracy over a window, live mode only, aggregated per vertical. An automatic
- * decision counts as overturned when a dispute resolution later changed its outcome. Verticals
+ * decision counts as overturned when a shadow review or a dispute resolution changed it. Verticals
  * with fewer than MIN_SAMPLE automatic decisions show counts but no rates.
  */
 export async function accuracyReport(db: Db, p: { since: Date }) {
@@ -41,6 +39,16 @@ export async function accuracyReport(db: Db, p: { since: Date }) {
         .where(inArray(schema.decisions.agreementId, ids))
         .orderBy(asc(schema.decisions.createdAt))
     : [];
+  const reviewed = new Set(
+    ids.length
+      ? (
+          await db
+            .select({ decisionId: schema.decisionReviews.decisionId })
+            .from(schema.decisionReviews)
+            .where(inArray(schema.decisionReviews.agreementId, ids))
+        ).map((r) => r.decisionId)
+      : [],
+  );
 
   const byVertical = new Map<string, VerticalAccuracy>();
   const row = (v: string) => {
@@ -52,6 +60,7 @@ export async function accuracyReport(db: Db, p: { since: Date }) {
         auto_decisions: 0,
         escalated: 0,
         disputed: 0,
+        reviewed: 0,
         overturned: 0,
         escalation_rate: null,
         overturn_rate: null,
@@ -73,13 +82,15 @@ export async function accuracyReport(db: Db, p: { since: Date }) {
     const vertical = runs.find((r) => r.a.id === id)?.a.spec.vertical ?? "general";
     const r = row(vertical);
     r.auto_decisions++;
-    const resolution = mine.find(
-      (d) => d.kind === "dispute_resolution" && d.createdAt > auto.createdAt,
-    );
-    if (resolution) {
-      r.disputed++;
-      if (!same(resolution.outcome, auto.outcome)) r.overturned++;
-    }
+    const later = (kind: string) =>
+      mine.find((d) => d.kind === kind && d.createdAt >= auto.createdAt);
+    const override = later("review_override");
+    const resolution = later("dispute_resolution");
+    if (reviewed.has(auto.id)) r.reviewed++;
+    if (resolution) r.disputed++;
+    // The last human word on the outcome is what the automatic decision is judged against.
+    const final = resolution ?? override;
+    if (final && !sameOutcome(final.outcome, auto.outcome)) r.overturned++;
   }
   const verticals = [...byVertical.values()].map((r) => {
     const published = r.auto_decisions >= MIN_SAMPLE;

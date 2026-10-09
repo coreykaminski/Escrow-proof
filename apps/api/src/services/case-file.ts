@@ -1,7 +1,7 @@
 import { appealWindowEndsAt } from "@proofdesk/core";
 import { type Db, listLedgerForAgreement, schema, verifyLedger } from "@proofdesk/db";
 import type { AnyReport, BaseReport } from "@proofdesk/verifier";
-import { and, asc, count, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, or, sql } from "drizzle-orm";
 import {
   type AgreementRow,
   getAgreement,
@@ -61,12 +61,20 @@ export async function loadCaseFile(db: Db, agreementId: string, scope: Scope): P
   };
 }
 
-/** Cases waiting on a human: escalated by the verifier, or disputed. Oldest first. */
+/**
+ * Cases waiting on a human: escalated by the verifier, disputed, or (shadow mode) an automatic
+ * decision held for review. Oldest first.
+ */
 export async function reviewQueue(db: Db) {
   const rows = await db
     .select()
     .from(schema.agreements)
-    .where(inArray(schema.agreements.status, ["escalated", "disputed"]))
+    .where(
+      or(
+        inArray(schema.agreements.status, ["escalated", "disputed"]),
+        and(eq(schema.agreements.status, "decided"), eq(schema.agreements.reviewPending, true)),
+      ),
+    )
     .orderBy(asc(schema.agreements.updatedAt));
   const ids = rows.map((r) => r.id);
   const [openDisputes, verifications] = ids.length
@@ -87,9 +95,12 @@ export async function reviewQueue(db: Db) {
   return rows.map((a) => {
     const dispute = openDisputes.find((d) => d.agreementId === a.id);
     const verification = verifications.find((v) => v.agreementId === a.id);
+    const verifierReason = (verification?.report as BaseReport | undefined)?.decision.reason;
     const reason = dispute
       ? `Dispute by ${dispute.openedBy}: ${dispute.reason}`
-      : ((verification?.report as BaseReport | undefined)?.decision.reason ?? "Escalated");
+      : a.reviewPending
+        ? `Shadow review of an automatic ${a.outcome?.kind ?? ""}: ${verifierReason ?? ""}`
+        : (verifierReason ?? "Escalated");
     return { agreement: a, reason, waitingSince: a.updatedAt };
   });
 }

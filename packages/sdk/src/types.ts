@@ -69,6 +69,8 @@ export interface Agreement {
   appeal_window_hours: number;
   appeal_window_ends_at: string | null;
   dispute_resolved: boolean;
+  /** Shadow mode (pilots): an automatic decision waiting for a human review before it settles. */
+  review_pending: boolean;
   settled_at: string | null;
   settlement_ref: string | null;
   cancelled_at: string | null;

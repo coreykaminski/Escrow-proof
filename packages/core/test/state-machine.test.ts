@@ -26,6 +26,7 @@ function snap(over: Partial<AgreementSnapshot> = {}): AgreementSnapshot {
     outcome: null,
     decidedAt: null,
     disputeResolved: false,
+    reviewPending: false,
     ...over,
   };
 }
@@ -51,6 +52,7 @@ const SAMPLE: Record<EventType, AgreementEvent> = {
   OPEN_DISPUTE: { type: "OPEN_DISPUTE", reason: "wrong" },
   RESOLVE_DISPUTE: { type: "RESOLVE_DISPUTE", outcome: { kind: "refund" }, reason: "upheld" },
   SETTLE: { type: "SETTLE", settlementRef: "stl_1", force: true },
+  REVIEW: { type: "REVIEW", outcome: null, reason: "agree" },
 };
 
 function errCode(fn: () => unknown): string | null {
@@ -296,6 +298,108 @@ describe("state machine: guards", () => {
       expect(
         transition({ ...decided, appealWindowHours: 0 }, settle(false), actor("system"), T0).to,
       ).toBe("settled");
+    });
+  });
+
+  describe("shadow review (pilot mode)", () => {
+    const verifying = snap({ status: "verifying" });
+    const auto = (review: boolean): AgreementEvent => ({
+      type: "DECIDE",
+      outcome: { kind: "release" },
+      decidedBy: "auto",
+      confidence: 0.95,
+      reason: "all criteria pass",
+      review,
+    });
+    const pending = snap({
+      status: "decided",
+      decidedAt: T0,
+      outcome: { kind: "release" },
+      reviewPending: true,
+    });
+    const review = (
+      outcome: Extract<AgreementEvent, { type: "REVIEW" }>["outcome"],
+    ): AgreementEvent => ({
+      type: "REVIEW",
+      outcome,
+      reason: "checked",
+    });
+
+    it("holds an automatic decision for review only when asked", () => {
+      expect(transition(verifying, auto(true), actor("system"), T0).patch.reviewPending).toBe(true);
+      expect(transition(verifying, auto(false), actor("system"), T0).patch.reviewPending).toBe(
+        false,
+      );
+    });
+
+    it("never holds a human decision for review", () => {
+      const human: AgreementEvent = {
+        type: "DECIDE",
+        outcome: { kind: "release" },
+        decidedBy: "human",
+        confidence: null,
+        reason: "reviewed",
+        review: true,
+      };
+      expect(
+        transition(snap({ status: "escalated" }), human, actor("ops"), T0).patch.reviewPending,
+      ).toBe(false);
+    });
+
+    it("blocks settlement while pending, even when forced", () => {
+      const settle: AgreementEvent = { type: "SETTLE", settlementRef: "s", force: true };
+      expect(errCode(() => transition(pending, settle, actor("system"), at(100 * HOUR)))).toBe(
+        "review_pending",
+      );
+    });
+
+    it("a confirmation keeps the outcome and the appeal window", () => {
+      const r = transition(pending, review(null), actor("ops"), at(HOUR));
+      expect(r.patch).toEqual({ status: "decided", reviewPending: false });
+      const same = transition(pending, review({ kind: "release" }), actor("ops"), at(HOUR));
+      expect(same.patch).toEqual({ status: "decided", reviewPending: false });
+    });
+
+    it("an override replaces the outcome and restarts the appeal window", () => {
+      const r = transition(
+        pending,
+        review({ kind: "partial", releasePercent: 40 }),
+        actor("ops"),
+        at(HOUR),
+      );
+      expect(r.patch).toEqual({
+        status: "decided",
+        outcome: { kind: "partial", releasePercent: 40 },
+        decidedAt: at(HOUR),
+        reviewPending: false,
+      });
+    });
+
+    it("only ops reviews, and only a pending decision", () => {
+      expect(errCode(() => transition(pending, review(null), actor("system"), T0))).toBe(
+        "forbidden_actor",
+      );
+      expect(
+        errCode(() =>
+          transition({ ...pending, reviewPending: false }, review(null), actor("ops"), T0),
+        ),
+      ).toBe("no_review_pending");
+      expect(
+        errCode(() =>
+          transition(pending, review({ kind: "partial", releasePercent: 100 }), actor("ops"), T0),
+        ),
+      ).toBe("invalid_outcome");
+    });
+
+    it("a resolved dispute clears a pending review", () => {
+      const disputed = { ...pending, status: "disputed" as const };
+      const r = transition(
+        disputed,
+        { type: "RESOLVE_DISPUTE", outcome: { kind: "refund" }, reason: "x" },
+        actor("ops"),
+        at(HOUR),
+      );
+      expect(r.patch.reviewPending).toBe(false);
     });
   });
 });

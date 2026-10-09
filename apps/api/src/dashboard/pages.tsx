@@ -108,7 +108,10 @@ export function QueuePage(p: {
   return (
     <Page title="Review queue" session={p.viewer}>
       <h1>Review queue</h1>
-      <p class="sub">Escalated by the verifier or disputed by a party. Oldest first.</p>
+      <p class="sub">
+        Escalated by the verifier, disputed by a party, or held for a shadow review (pilot
+        accounts). Oldest first.
+      </p>
       {p.items.length === 0 ? (
         <div class="panel empty">Nothing waiting for review.</div>
       ) : (
@@ -153,7 +156,9 @@ export function CasePage(p: {
   shareUrl?: string;
 }) {
   const { agreement: a, verification: v } = p.file;
-  const needsDecision = p.viewer.isOps && (a.status === "escalated" || a.status === "disputed");
+  const needsReview = p.viewer.isOps && a.status === "decided" && a.reviewPending;
+  const needsDecision =
+    needsReview || (p.viewer.isOps && (a.status === "escalated" || a.status === "disputed"));
   const openDispute = p.file.disputes.find((d) => d.status === "open");
   return (
     <Page title={a.spec.title} session={p.viewer}>
@@ -238,7 +243,34 @@ export function CasePage(p: {
 
       {needsDecision ? (
         <>
-          <h2>{a.status === "disputed" ? "Resolve the dispute (final)" : "Decide"}</h2>
+          <h2>
+            {needsReview
+              ? "Shadow review"
+              : a.status === "disputed"
+                ? "Resolve the dispute (final)"
+                : "Decide"}
+          </h2>
+          {needsReview ? (
+            <form class="panel" method="post" action={`/dashboard/agreements/${a.id}/decision`}>
+              <input type="hidden" name="csrf" value={p.viewer.csrfToken} />
+              <input type="hidden" name="outcome" value="confirm" />
+              <p class="small">
+                The verifier decided <OutcomePill outcome={a.outcome} /> automatically. Nothing
+                settles until a reviewer confirms it or records a different outcome below.
+              </p>
+              <input
+                name="reason"
+                required
+                placeholder="Why you agree (recorded on the ledger)"
+                style="width:100%"
+              />
+              <div style="margin-top:10px">
+                <button class="primary" type="submit">
+                  Confirm the automatic decision
+                </button>
+              </div>
+            </form>
+          ) : null}
           <form class="panel" method="post" action={`/dashboard/agreements/${a.id}/decision`}>
             <input type="hidden" name="csrf" value={p.viewer.csrfToken} />
             <div class="row" style="margin-bottom:10px">
@@ -267,7 +299,7 @@ export function CasePage(p: {
             />
             <div style="margin-top:10px">
               <button class="primary" type="submit">
-                Record decision
+                {needsReview ? "Override with this outcome" : "Record decision"}
               </button>
             </div>
           </form>
@@ -841,6 +873,7 @@ export function AccuracyPage(p: {
       auto_decisions: number;
       escalated: number;
       disputed: number;
+      reviewed: number;
       overturned: number;
       escalation_rate: number | null;
       overturn_rate: number | null;
@@ -854,8 +887,9 @@ export function AccuracyPage(p: {
       <h1>Verifier accuracy</h1>
       <p class="sub">
         Live jobs since {p.report.since.slice(0, 10)}. An automatic decision counts as overturned
-        when a human reviewer changed it on dispute. Rates are shown once a verifier has made at
-        least {p.report.min_sample} automatic decisions.
+        when a human reviewer changed it, either in a pilot's shadow review (where a person checks
+        every automatic decision before money moves) or on dispute. Rates are shown once a verifier
+        has made at least {p.report.min_sample} automatic decisions.
       </p>
       {p.report.verticals.length === 0 ? (
         <div class="panel empty">No live verifications in this period yet.</div>
@@ -867,6 +901,7 @@ export function AccuracyPage(p: {
               <th>Checks</th>
               <th>Automatic decisions</th>
               <th>Sent to a human</th>
+              <th>Human-reviewed</th>
               <th>Disputed</th>
               <th>Overturned</th>
             </tr>
@@ -878,6 +913,7 @@ export function AccuracyPage(p: {
                 <td>{v.verifications}</td>
                 <td>{v.auto_decisions}</td>
                 <td>{v.published ? pct(v.escalation_rate) : "—"}</td>
+                <td>{v.reviewed}</td>
                 <td>{v.disputed}</td>
                 <td>{v.published ? pct(v.overturn_rate) : "not enough data"}</td>
               </tr>

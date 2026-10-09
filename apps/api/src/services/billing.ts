@@ -13,7 +13,6 @@ import type { AnyReport } from "@proofdesk/verifier";
 import { and, eq, gte, inArray, isNull, lt } from "drizzle-orm";
 import { ApiError } from "../errors.ts";
 import type { AgreementRow } from "./agreements.ts";
-import { reviewerStats } from "./case-file.ts";
 
 /**
  * Proof Desk's own revenue:
@@ -371,8 +370,53 @@ export interface PayoutRunResult {
 }
 
 /**
- * Pays each human reviewer for a closed period: a rate per decision and per dispute resolution
- * (PRICING.reviewer), transferred to their connected account. A payout is recorded once per
+ * Each reviewer's paid work in [start, end): human decisions and shadow reviews (an override is
+ * both a decision and a review, so it's counted once, as a review), and dispute resolutions.
+ */
+async function reviewerWork(db: Db, start: Date, end: Date) {
+  const decisions = await db
+    .select({ apiKeyId: schema.decisions.actorRef, kind: schema.decisions.kind })
+    .from(schema.decisions)
+    .where(
+      and(
+        eq(schema.decisions.decidedBy, "human"),
+        gte(schema.decisions.createdAt, start),
+        lt(schema.decisions.createdAt, end),
+      ),
+    );
+  const reviews = await db
+    .select({ apiKeyId: schema.decisionReviews.reviewerRef })
+    .from(schema.decisionReviews)
+    .where(
+      and(gte(schema.decisionReviews.createdAt, start), lt(schema.decisionReviews.createdAt, end)),
+    );
+  const byKey = new Map<string, { decisions: number; resolutions: number }>();
+  const entry = (k: string) => {
+    const e = byKey.get(k) ?? { decisions: 0, resolutions: 0 };
+    byKey.set(k, e);
+    return e;
+  };
+  for (const d of decisions) {
+    if (d.kind === "dispute_resolution") entry(d.apiKeyId).resolutions++;
+    else if (d.kind !== "review_override") entry(d.apiKeyId).decisions++;
+  }
+  for (const r of reviews) entry(r.apiKeyId).decisions++;
+  if (byKey.size === 0) return [];
+  const names = await db
+    .select({ id: schema.apiKeys.id, name: schema.accounts.name })
+    .from(schema.apiKeys)
+    .innerJoin(schema.accounts, eq(schema.accounts.id, schema.apiKeys.accountId))
+    .where(inArray(schema.apiKeys.id, [...byKey.keys()]));
+  return [...byKey].map(([apiKeyId, w]) => ({
+    apiKeyId,
+    reviewer: names.find((n) => n.id === apiKeyId)?.name ?? apiKeyId,
+    ...w,
+  }));
+}
+
+/**
+ * Pays each human reviewer for a closed period: a rate per decision or shadow review and per
+ * dispute resolution (`rates`, default PRICING.reviewer), transferred to their connected account. A payout is recorded once per
  * reviewer per period; a failed one (e.g. onboarding unfinished) is retried on the next run.
  */
 export async function payReviewers(
@@ -387,28 +431,10 @@ export async function payReviewers(
   const rates = p.rates ?? DEFAULT_REVIEWER_RATES;
   const currency = rates.currency;
   const result: PayoutRunResult = { period: p.period, paid: [], failed: [], skipped: [] };
-  const stats = await reviewerStats(db, start);
-  const inPeriod = await db
-    .select({
-      apiKeyId: schema.decisions.actorRef,
-      kind: schema.decisions.kind,
-    })
-    .from(schema.decisions)
-    .where(
-      and(
-        eq(schema.decisions.decidedBy, "human"),
-        gte(schema.decisions.createdAt, start),
-        lt(schema.decisions.createdAt, end),
-      ),
-    );
-  for (const s of stats) {
-    const mine = inPeriod.filter((d) => d.apiKeyId === s.apiKeyId);
-    const resolutions = mine.filter((d) => d.kind === "dispute_resolution").length;
-    const decisions = mine.length - resolutions;
-    if (mine.length === 0) continue;
-    const amount =
-      decisions * PRICING.reviewer.decisionCents +
-      resolutions * PRICING.reviewer.disputeResolutionCents;
+  const work = await reviewerWork(db, start, end);
+  for (const s of work) {
+    const { decisions, resolutions } = s;
+    const amount = decisions * rates.decision + resolutions * rates.disputeResolution;
 
     const [prior] = await db
       .select()
@@ -477,7 +503,7 @@ export async function payReviewers(
         amount,
         currency,
         destination: acct.stripeAccountId,
-        description: `Proof Desk reviews, ${p.period}: ${decisions} decisions, ${resolutions} dispute resolutions`,
+        description: `Proof Desk reviews, ${p.period}: ${decisions} decisions and reviews, ${resolutions} dispute resolutions`,
         idempotencyKey: `reviewer-payout:${s.apiKeyId}:${p.period}`,
       });
       await record({ status: "paid", transferId: t.id, destination: acct.stripeAccountId });

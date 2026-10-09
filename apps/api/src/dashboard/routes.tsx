@@ -174,7 +174,7 @@ export function dashboardRoutes(deps: AppDeps) {
         status,
       );
 
-    if (!["release", "refund", "partial"].includes(kind) || reason.length === 0) {
+    if (!["release", "refund", "partial", "confirm"].includes(kind) || reason.length === 0) {
       return render({ error: "Choose an outcome and give a reason." }, 400);
     }
     if (kind === "partial" && !(Number.isInteger(percent) && percent >= 1 && percent <= 99)) {
@@ -186,14 +186,19 @@ export function dashboardRoutes(deps: AppDeps) {
         : { kind: kind as "release" | "refund" };
     const actor = { role: "ops" as const, ref: s.apiKeyId };
     const current = (await loadCaseFile(db, id, {})).agreement;
+    const reviewing = current.status === "decided" && current.reviewPending;
+    if (kind === "confirm" && !reviewing) {
+      return render({ error: "There's no automatic decision waiting for review." }, 409);
+    }
     try {
       await applyEvent(db, {
         agreementId: id,
         scope: {},
         actor,
         now: now(),
-        event:
-          current.status === "disputed"
+        event: reviewing
+          ? { type: "REVIEW", outcome: kind === "confirm" ? null : outcome, reason }
+          : current.status === "disputed"
             ? { type: "RESOLVE_DISPUTE", outcome, reason }
             : { type: "DECIDE", outcome, decidedBy: "human", confidence: null, reason },
       });
@@ -201,9 +206,13 @@ export function dashboardRoutes(deps: AppDeps) {
       if (err instanceof TransitionError) return render({ error: err.message }, 409);
       throw err;
     }
+    const after = (await loadCaseFile(db, id, {})).agreement;
     return render({
-      ok:
-        current.status === "disputed"
+      ok: reviewing
+        ? after.decidedAt?.getTime() === current.decidedAt?.getTime()
+          ? "Automatic decision confirmed. It settles when the appeal window closes."
+          : "Overridden. The new outcome restarts the appeal window."
+        : current.status === "disputed"
           ? "Dispute resolved. This decision is final."
           : "Decision recorded.",
     });

@@ -20,6 +20,7 @@ export const ID_PREFIXES = {
   billingEvent: "bev",
   invoice: "inv",
   reviewerPayout: "rpo",
+  review: "rev",
 } as const;
 
 export type IdKind = keyof typeof ID_PREFIXES;

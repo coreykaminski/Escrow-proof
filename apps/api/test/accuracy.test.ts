@@ -12,7 +12,11 @@ afterEach(async () => {
 async function decided(
   key: string,
   vertical: string,
-  p: { action: "decide" | "escalate"; dispute?: "upheld" | "overturned" },
+  p: {
+    action: "decide" | "escalate";
+    dispute?: "upheld" | "overturned";
+    review?: "confirmed" | "overridden";
+  },
 ) {
   const agr = (
     await h.call(key, "POST", "/v1/agreements", {
@@ -45,8 +49,9 @@ async function decided(
     createdAt: at,
   });
   if (p.action !== "decide") return;
+  const autoId = newId("decision");
   await db.insert(schema.decisions).values({
-    id: newId("decision"),
+    id: autoId,
     agreementId: agr.id,
     kind: "verification",
     outcome: { kind: "release" },
@@ -56,6 +61,34 @@ async function decided(
     reason: "passed",
     createdAt: at,
   });
+  if (p.review) {
+    const overrideId = p.review === "overridden" ? newId("decision") : null;
+    if (overrideId) {
+      await db.insert(schema.decisions).values({
+        id: overrideId,
+        agreementId: agr.id,
+        kind: "review_override",
+        outcome: { kind: "refund" },
+        decidedBy: "human",
+        actorRef: "key_ops",
+        confidence: null,
+        reason: "reviewed",
+        createdAt: new Date(at.getTime() + 500),
+      });
+    }
+    await db.insert(schema.decisionReviews).values({
+      id: newId("review"),
+      agreementId: agr.id,
+      decisionId: autoId,
+      autoOutcome: { kind: "release" },
+      reviewedOutcome: overrideId ? { kind: "refund" } : { kind: "release" },
+      agreed: !overrideId,
+      overrideDecisionId: overrideId,
+      reviewerRef: "key_ops",
+      reason: "reviewed",
+      createdAt: new Date(at.getTime() + 500),
+    });
+  }
   if (!p.dispute) return;
   await db.insert(schema.decisions).values({
     id: newId("decision"),
@@ -103,5 +136,25 @@ describe("accuracy report", () => {
     expect(html).toContain("8.0%");
     expect(html).toContain("not enough data");
     expect(html).not.toMatch(/agr_|acct_/);
+  });
+
+  it("counts shadow reviews, and overrides as overturns (the last human word wins)", async () => {
+    h = await createHarness();
+    const live = h.keys.live;
+    await decided(live, "data", { action: "decide", review: "confirmed" });
+    await decided(live, "data", { action: "decide", review: "overridden" });
+    // Overridden on review, then restored on dispute: the automatic decision stood.
+    await decided(live, "data", { action: "decide", review: "overridden", dispute: "upheld" });
+    await decided(live, "data", { action: "decide" });
+    const report = (await h.call(null, "GET", "/accuracy.json")).body;
+    expect(report.verticals).toEqual([
+      expect.objectContaining({
+        vertical: "data",
+        auto_decisions: 4,
+        reviewed: 3,
+        disputed: 1,
+        overturned: 1,
+      }),
+    ]);
   });
 });

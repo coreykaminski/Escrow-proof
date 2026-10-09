@@ -127,6 +127,10 @@ export async function verifyAgreement(
     });
   };
 
+  const [account] = await db
+    .select({ shadowMode: schema.accounts.shadowMode })
+    .from(schema.accounts)
+    .where(eq(schema.accounts.id, agreement.accountId));
   const updated = await applyEvent(db, {
     agreementId: agreement.id,
     scope: all,
@@ -140,6 +144,7 @@ export async function verifyAgreement(
             decidedBy: "auto",
             confidence: decision.confidence,
             reason: decision.reason,
+            review: account?.shadowMode === true,
           }
         : { type: "ESCALATE", reason: decision.reason },
     afterTransition: (tx) => recordVerification(tx),

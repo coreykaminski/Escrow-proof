@@ -13,7 +13,9 @@
  *   verifying|escalated --DECIDE-->         decided     (auto only from verifying; human from either)
  *   decided        --OPEN_DISPUTE-->        disputed    (within appeal window, by the losing side)
  *   disputed       --RESOLVE_DISPUTE-->     decided     (final; no second appeal)
- *   decided        --SETTLE-->              settled     (after appeal window, or forced)
+ *   decided        --REVIEW-->              decided     (shadow mode: a human confirms or overrides)
+ *   decided        --SETTLE-->              settled     (after appeal window, or forced; never
+ *                                                        while a shadow review is pending)
  */
 
 export const AGREEMENT_STATES = [
@@ -49,6 +51,8 @@ export interface AgreementSnapshot {
   outcome: Outcome | null;
   decidedAt: Date | null;
   disputeResolved: boolean;
+  /** Shadow mode (pilots): an automatic decision waits for a human to confirm or override it. */
+  reviewPending: boolean;
 }
 
 export type AgreementEvent =
@@ -64,11 +68,15 @@ export type AgreementEvent =
       decidedBy: "auto" | "human";
       confidence: number | null;
       reason: string;
+      /** Hold an automatic decision for a human shadow review before it can settle. */
+      review?: boolean;
     }
   | { type: "MISS_DEADLINE" }
   | { type: "OPEN_DISPUTE"; reason: string }
   | { type: "RESOLVE_DISPUTE"; outcome: Outcome; reason: string }
-  | { type: "SETTLE"; settlementRef: string; force: boolean };
+  | { type: "SETTLE"; settlementRef: string; force: boolean }
+  /** Shadow review of an automatic decision: no outcome (or the same one) confirms it. */
+  | { type: "REVIEW"; outcome: Outcome | null; reason: string };
 
 export type EventType = AgreementEvent["type"];
 
@@ -83,7 +91,7 @@ export interface TransitionResult {
   to: AgreementState;
   /** Only these fields are ever changed by a transition; the rest of the snapshot is fixed. */
   patch: { status: AgreementState } & Partial<
-    Pick<AgreementSnapshot, "outcome" | "decidedAt" | "disputeResolved">
+    Pick<AgreementSnapshot, "outcome" | "decidedAt" | "disputeResolved" | "reviewPending">
   >;
 }
 
@@ -97,7 +105,9 @@ export type TransitionErrorCode =
   | "appeal_window_open"
   | "dispute_already_resolved"
   | "nothing_to_dispute"
-  | "invalid_outcome";
+  | "invalid_outcome"
+  | "no_review_pending"
+  | "review_pending";
 
 export class TransitionError extends Error {
   constructor(
@@ -127,6 +137,7 @@ export const RULES: Record<EventType, Rule> = {
   OPEN_DISPUTE: { from: ["decided"], actors: ["buyer", "seller"] },
   RESOLVE_DISPUTE: { from: ["disputed"], actors: ["ops"] },
   SETTLE: { from: ["decided"], actors: ["system", "ops"] },
+  REVIEW: { from: ["decided"], actors: ["ops"] },
 };
 
 const HOUR_MS = 3_600_000;
@@ -221,7 +232,12 @@ export function transition(
       return {
         from,
         to: "decided",
-        patch: { status: "decided", outcome: event.outcome, decidedAt: now },
+        patch: {
+          status: "decided",
+          outcome: event.outcome,
+          decidedAt: now,
+          reviewPending: event.review === true && event.decidedBy === "auto",
+        },
       };
     }
 
@@ -269,10 +285,36 @@ export function transition(
           outcome: event.outcome,
           decidedAt: now,
           disputeResolved: true,
+          // A human resolved the dispute, which settles any pending shadow review too.
+          reviewPending: false,
         },
       };
 
+    case "REVIEW": {
+      if (!s.reviewPending) {
+        throw new TransitionError("no_review_pending", "this decision isn't awaiting a review");
+      }
+      const next = event.outcome;
+      if (next === null || sameOutcome(next, s.outcome)) {
+        return { from, to: "decided", patch: { status: "decided", reviewPending: false } };
+      }
+      assertOutcome(next);
+      // An override is a new decision: the appeal window restarts for whoever now lost.
+      return {
+        from,
+        to: "decided",
+        patch: { status: "decided", outcome: next, decidedAt: now, reviewPending: false },
+      };
+    }
+
     case "SETTLE": {
+      // A pilot's unreviewed automatic decision never moves money, even when forced.
+      if (s.reviewPending) {
+        throw new TransitionError(
+          "review_pending",
+          "this automatic decision is awaiting a shadow review; confirm or override it first",
+        );
+      }
       // Money moves only once the decision is final, unless forced (e.g. a card hold about to expire).
       const ends = appealWindowEndsAt(s);
       const windowOpen = ends !== null && now.getTime() < ends.getTime();
@@ -285,6 +327,11 @@ export function transition(
       return { from, to: "settled", patch: { status: "settled" } };
     }
   }
+}
+
+export function sameOutcome(a: Outcome, b: Outcome | null): boolean {
+  if (!b || a.kind !== b.kind) return false;
+  return a.kind !== "partial" || a.releasePercent === (b as typeof a).releasePercent;
 }
 
 export function isTerminal(state: AgreementState): boolean {
