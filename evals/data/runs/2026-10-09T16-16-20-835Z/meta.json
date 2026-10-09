@@ -1,0 +1,13 @@
+{
+  "suite": "data",
+  "title": "Data/research verifier eval (deterministic)",
+  "layers": [
+    "schema, count and uniqueness checks",
+    "citations fetched and quotes matched"
+  ],
+  "model_layers": false,
+  "golden_sha256": "fc49a806924bb164626d3f4c780ac17db0cb0aca0c37ba8ebcd779aa57cd99e6",
+  "golden_items": 50,
+  "items_run": 50,
+  "created_at": "2026-10-09T16:16:20.835Z"
+}

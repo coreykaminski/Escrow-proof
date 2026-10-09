@@ -7,14 +7,14 @@
  *
  * Writes evals/code/runs/<timestamp>/{results.jsonl,summary.md}. Exits 1 if a target is missed.
  */
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { parseSpec } from "@proofdesk/core";
 import { ClaudeCaller, NodePermissionSandbox, verifyCode } from "@proofdesk/verifier";
 import { loadEnv } from "../../apps/api/src/load-env.ts";
-import { classify, type EvalRow, mapLimit, summarize } from "../shared/metrics.ts";
+import { classify, type EvalRow, mapLimit, summarize, writeRun } from "../shared/metrics.ts";
 import type { CodeGoldenItem } from "./build-golden.ts";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -93,14 +93,23 @@ async function main() {
     console.log(`${mark} ${row.id} → ${row.got}`);
     return row;
   });
-  const { summary, pass } = summarize(
-    `Code verifier eval${values.judge ? " (with model judge)" : " (sandbox + deterministic)"}`,
+  const title = `Code verifier eval${values.judge ? " (with model judge)" : " (sandbox + deterministic)"}`;
+  const { summary, pass } = summarize(title, rows);
+  writeRun(
+    here,
+    {
+      suite: "code",
+      title,
+      layers: [
+        "buyer's tests in the sandbox (signed results)",
+        "static scan",
+        ...(values.judge ? ["model judge"] : []),
+      ],
+      model_layers: values.judge === true,
+    },
     rows,
+    summary,
   );
-  const dir = join(here, "runs", new Date().toISOString().replace(/[:.]/g, "-"));
-  mkdirSync(dir, { recursive: true });
-  writeFileSync(join(dir, "results.jsonl"), `${rows.map((r) => JSON.stringify(r)).join("\n")}\n`);
-  writeFileSync(join(dir, "summary.md"), summary);
   console.log(`\n${summary}`);
   process.exit(pass ? 0 : 1);
 }

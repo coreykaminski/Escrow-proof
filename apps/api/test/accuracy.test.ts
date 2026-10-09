@@ -138,6 +138,22 @@ describe("accuracy report", () => {
     expect(html).not.toMatch(/agr_|acct_/);
   });
 
+  it("publishes the labelled test-set results (accuracy v0) before any live data", async () => {
+    h = await createHarness();
+    const report = (await h.call(null, "GET", "/accuracy.json")).body;
+    const code = report.golden_sets.suites.find((s: { suite: string }) => s.suite === "code");
+    expect(code.status).toBe("measured");
+    expect(code.runs[0]).toMatchObject({ items_run: 130, model_layers: false, pass: true });
+    const translation = report.golden_sets.suites.find(
+      (s: { suite: string }) => s.suite === "translation",
+    );
+    expect(translation.status).toBe("pending");
+    const html = await (await h.fetch("http://x/accuracy")).text();
+    expect(html).toContain("Before release: labelled test sets");
+    expect(html).toContain("130 labelled items");
+    expect(html).toContain("hasn&#39;t been measured yet");
+  });
+
   it("counts shadow reviews, and overrides as overturns (the last human word wins)", async () => {
     h = await createHarness();
     const live = h.keys.live;

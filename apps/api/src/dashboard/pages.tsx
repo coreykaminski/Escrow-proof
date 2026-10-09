@@ -1,4 +1,5 @@
 import type { CodeReport, DataReport } from "@proofdesk/verifier";
+import type { GOLDEN_RESULTS } from "../services/accuracy.ts";
 import type { AgreementRow } from "../services/agreements.ts";
 import type { CaseFile, reviewerStats, reviewQueue } from "../services/case-file.ts";
 import { Criteria, Flash, Ledger, money, OutcomePill, Page, Status, when } from "./ui.tsx";
@@ -870,6 +871,73 @@ export function PricingPage(p: {
   );
 }
 
+type GoldenSuite = (typeof GOLDEN_RESULTS)["suites"][number];
+
+const GOLDEN_METRICS = [
+  ["false_release", "Paid for bad work (false release)"],
+  ["false_refund", "Refused good work (false refund)"],
+  ["critical_recall", "Critical errors caught"],
+  ["adversarial", "Attacks never paid out"],
+  ["escalation_honest", "Honest work sent to a human"],
+] as const;
+
+function GoldenSuitePanel(p: { suite: GoldenSuite }) {
+  const pct = (n: number, d: number) => (d === 0 ? "n/a" : `${((100 * n) / d).toFixed(1)}%`);
+  return (
+    <div class="panel" style="margin-bottom:12px">
+      <h3 style="margin-top:0">{p.suite.name}</h3>
+      {p.suite.runs.length === 0 ? (
+        <p class="small muted">{p.suite.note}</p>
+      ) : (
+        p.suite.runs.map((r) => (
+          <>
+            <p class="small">
+              {r.items_run} labelled items · layers: {r.layers.join(", ")} · run{" "}
+              {r.run_at.slice(0, 10)} · test set{" "}
+              <span class="mono">{r.golden_sha256.slice(0, 12)}</span> ·{" "}
+              {r.pass ? (
+                <span class="pill pass">all targets met</span>
+              ) : (
+                <span class="pill fail">targets missed</span>
+              )}
+            </p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th>Result</th>
+                  <th>Target</th>
+                </tr>
+              </thead>
+              <tbody>
+                {GOLDEN_METRICS.map(([key, label]) => {
+                  const m = r.metrics[key];
+                  return (
+                    <tr>
+                      <td>{label}</td>
+                      <td>
+                        {pct(m.n, m.d)}{" "}
+                        <span class="muted small">
+                          ({m.n}/{m.d})
+                        </span>
+                      </td>
+                      <td>
+                        {m.direction === "max" ? "≤" : "≥"} {(m.target * 100).toFixed(0)}%{" "}
+                        {m.met ? "✓" : "✗"}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </>
+        ))
+      )}
+      {p.suite.runs.length > 0 && p.suite.note ? <p class="small muted">{p.suite.note}</p> : null}
+    </div>
+  );
+}
+
 export function AccuracyPage(p: {
   report: {
     since: string;
@@ -886,6 +954,7 @@ export function AccuracyPage(p: {
       overturn_rate: number | null;
       published: boolean;
     }[];
+    golden_sets: typeof GOLDEN_RESULTS;
   };
 }) {
   const pct = (x: number | null) => (x === null ? "—" : `${(x * 100).toFixed(1)}%`);
@@ -893,6 +962,22 @@ export function AccuracyPage(p: {
     <Page title="Accuracy">
       <h1>Verifier accuracy</h1>
       <p class="sub">
+        How often each verifier gets it wrong: first on labelled test sets before release, then on
+        live jobs.
+      </p>
+
+      <h2>Before release: labelled test sets (v0)</h2>
+      <p class="small muted">
+        Each test set mixes good work, flawed work and deliberate attacks, each with a known right
+        answer. A miss on any target blocks release. Numbers cover only the layers listed; the test
+        set hash identifies exactly which items were used.
+      </p>
+      {p.report.golden_sets.suites.map((s) => (
+        <GoldenSuitePanel suite={s} />
+      ))}
+
+      <h2>Live jobs</h2>
+      <p class="small muted">
         Live jobs since {p.report.since.slice(0, 10)}. An automatic decision counts as overturned
         when a human reviewer changed it, either in a pilot's shadow review (where a person checks
         every automatic decision before money moves) or on dispute. Rates are shown once a verifier
@@ -928,11 +1013,6 @@ export function AccuracyPage(p: {
           </tbody>
         </table>
       )}
-      <h2>Targets</h2>
-      <p class="small muted">
-        Every verifier is gated on a labelled golden set before release: false release ≤ 1%, false
-        refund ≤ 3%, critical-error recall ≥ 99%, every known attack never paid out.
-      </p>
     </Page>
   );
 }

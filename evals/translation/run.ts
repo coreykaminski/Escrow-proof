@@ -20,7 +20,7 @@ import {
 } from "@proofdesk/verifier";
 import { z } from "zod";
 import { loadEnv } from "../../apps/api/src/load-env.ts";
-import { type EvalRow, summarize } from "../shared/metrics.ts";
+import { type EvalRow, summarize, writeRun } from "../shared/metrics.ts";
 import { type GoldenItem, mulberry32, shuffle } from "./golden.ts";
 import { mapLimit } from "./llm.ts";
 
@@ -144,11 +144,19 @@ async function main() {
     }
   });
 
-  const { summary, pass } = summarize("Translation verifier eval", rows);
-  const out = join(here, "runs", new Date().toISOString().replace(/[:.]/g, "-"));
-  mkdirSync(out, { recursive: true });
-  writeFileSync(join(out, "results.jsonl"), `${rows.map((r) => JSON.stringify(r)).join("\n")}\n`);
-  writeFileSync(join(out, "summary.md"), summary);
+  const title = "Translation verifier eval";
+  const { summary, pass } = summarize(title, rows);
+  const out = writeRun(
+    here,
+    {
+      suite: "translation",
+      title,
+      layers: ["deterministic checks", "model error annotation", "model judge ensemble"],
+      model_layers: true,
+    },
+    rows,
+    summary,
+  );
   console.log(`\n${summary}\nWrote ${out}`);
   process.exitCode = pass ? 0 : 1;
 }

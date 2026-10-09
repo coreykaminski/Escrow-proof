@@ -36,7 +36,8 @@
     "eval:data": "tsx evals/data/run.ts",
     "worker": "tsx apps/api/src/worker.ts",
     "start": "tsx apps/api/src/server.ts",
-    "chain:deploy-anchor": "cd contracts && forge script script/DeployAnchor.s.sol --rpc-url \"$CHAIN_RPC_URL\" --private-key \"$DEPLOYER_PRIVATE_KEY\" --broadcast"
+    "chain:deploy-anchor": "cd contracts && forge script script/DeployAnchor.s.sol --rpc-url \"$CHAIN_RPC_URL\" --private-key \"$DEPLOYER_PRIVATE_KEY\" --broadcast",
+    "evals:publish": "tsx evals/shared/publish.ts && biome format --write apps/api/src/data/golden-results.json"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",

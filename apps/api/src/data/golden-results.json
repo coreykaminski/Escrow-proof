@@ -1,0 +1,148 @@
+{
+  "object": "golden_set_accuracy",
+  "version": "v0",
+  "targets": {
+    "false_release": 0.01,
+    "false_refund": 0.03,
+    "critical_recall": 0.99,
+    "escalation": 0.15,
+    "adversarial": 1,
+    "p95_latency_s": 90
+  },
+  "suites": [
+    {
+      "suite": "translation",
+      "name": "Translation",
+      "status": "pending",
+      "model_layers_measured": false,
+      "note": "The deterministic layer (numbers, dates, amounts, names, omitted clauses) is gated in CI on all 300 test items. The full verifier, with its model layers, hasn't been measured yet.",
+      "runs": []
+    },
+    {
+      "suite": "code",
+      "name": "Code",
+      "status": "measured",
+      "model_layers_measured": false,
+      "note": "Covers the layers that decide every code job: the buyer's tests in the sandbox and the static scan. The optional model-judge criterion hasn't been measured yet.",
+      "runs": [
+        {
+          "run_id": "2026-10-09T16-16-19-663Z",
+          "title": "Code verifier eval (sandbox + deterministic)",
+          "layers": ["buyer's tests in the sandbox (signed results)", "static scan"],
+          "model_layers": false,
+          "golden_sha256": "9bf2759d9564e66efee89ef070f033c06294c21ffd6b47a042eba3419e9d2c3d",
+          "golden_items": 130,
+          "items_run": 130,
+          "run_at": "2026-10-09T16:16:19.663Z",
+          "metrics": {
+            "false_release": {
+              "n": 0,
+              "d": 110,
+              "target": 0.01,
+              "direction": "max",
+              "met": true
+            },
+            "false_refund": {
+              "n": 0,
+              "d": 110,
+              "target": 0.03,
+              "direction": "max",
+              "met": true
+            },
+            "critical_recall": {
+              "n": 90,
+              "d": 90,
+              "target": 0.99,
+              "direction": "min",
+              "met": true
+            },
+            "escalation_honest": {
+              "n": 0,
+              "d": 50,
+              "target": 0.15,
+              "direction": "max",
+              "met": true
+            },
+            "adversarial": {
+              "n": 80,
+              "d": 80,
+              "target": 1,
+              "direction": "min",
+              "met": true
+            }
+          },
+          "escalation_all": {
+            "n": 20,
+            "d": 130
+          },
+          "p95_latency_s": 5,
+          "errors": 0,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "suite": "data",
+      "name": "Data and research",
+      "status": "measured",
+      "model_layers_measured": false,
+      "note": "Covers the layers that decide every data job: schema, count and uniqueness checks, fetched citations and verbatim quotes. The optional model-judge criterion hasn't been measured yet.",
+      "runs": [
+        {
+          "run_id": "2026-10-09T16-16-20-835Z",
+          "title": "Data/research verifier eval (deterministic)",
+          "layers": ["schema, count and uniqueness checks", "citations fetched and quotes matched"],
+          "model_layers": false,
+          "golden_sha256": "fc49a806924bb164626d3f4c780ac17db0cb0aca0c37ba8ebcd779aa57cd99e6",
+          "golden_items": 50,
+          "items_run": 50,
+          "run_at": "2026-10-09T16:16:20.835Z",
+          "metrics": {
+            "false_release": {
+              "n": 0,
+              "d": 44,
+              "target": 0.01,
+              "direction": "max",
+              "met": true
+            },
+            "false_refund": {
+              "n": 0,
+              "d": 44,
+              "target": 0.03,
+              "direction": "max",
+              "met": true
+            },
+            "critical_recall": {
+              "n": 38,
+              "d": 38,
+              "target": 0.99,
+              "direction": "min",
+              "met": true
+            },
+            "escalation_honest": {
+              "n": 0,
+              "d": 38,
+              "target": 0.15,
+              "direction": "max",
+              "met": true
+            },
+            "adversarial": {
+              "n": 12,
+              "d": 12,
+              "target": 1,
+              "direction": "min",
+              "met": true
+            }
+          },
+          "escalation_all": {
+            "n": 6,
+            "d": 50
+          },
+          "p95_latency_s": 0,
+          "errors": 0,
+          "pass": true
+        }
+      ]
+    }
+  ]
+}

@@ -5,7 +5,7 @@
 - [ ] Code sandbox host running with gVisor; one code job verified through it.
 - [ ] `/status.json` watched by an uptime monitor that pages Corey.
 - [ ] Ops keys: one per human reviewer; each reviewer has finished payout onboarding (`POST /v1/ops/reviewers/me/onboarding`).
-- [ ] Model evals run (needs Anthropic credits): `npm run eval:translation`, `eval:code -- --judge`, `eval:data -- --judge`. Every §6 target met, or those decision types set to escalate.
+- [ ] Model evals run (needs Anthropic credits): `npm run eval:translation`, `eval:code -- --judge`, `eval:data -- --judge`. Every §6 target met, or those decision types set to escalate. Then `npm run evals:publish` and commit, so `/accuracy` shows the new numbers.
 
 ## Before real money (live keys)
 - [ ] **Fintech lawyer sign-off** on the card flow, the stablecoin flow, wording ("conditional payment", never "escrow"), CA platform with US buyers (docs/validation/lawyer-brief.md).

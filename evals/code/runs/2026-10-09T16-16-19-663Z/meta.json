@@ -1,0 +1,13 @@
+{
+  "suite": "code",
+  "title": "Code verifier eval (sandbox + deterministic)",
+  "layers": [
+    "buyer's tests in the sandbox (signed results)",
+    "static scan"
+  ],
+  "model_layers": false,
+  "golden_sha256": "9bf2759d9564e66efee89ef070f033c06294c21ffd6b47a042eba3419e9d2c3d",
+  "golden_items": 130,
+  "items_run": 130,
+  "created_at": "2026-10-09T16:16:19.663Z"
+}
