@@ -48,7 +48,7 @@ describe("spec", () => {
 
   it.each([
     ["non-integer amount", { amount: { value: 10.5, currency: "usd" } }],
-    ["zero amount", { amount: { value: 0, currency: "usd" } }],
+    ["negative amount", { amount: { value: -1, currency: "usd" } }],
     ["uppercase currency", { amount: { value: 100, currency: "USD" } }],
     ["no criteria", { criteria: [] }],
     ["deadline without timezone", { delivery_due_at: "2026-10-10T17:00:00" }],
@@ -56,5 +56,9 @@ describe("spec", () => {
     ["unknown vertical", { vertical: "astrology" }],
   ])("rejects %s", (_name, patch) => {
     expect(() => parseSpec({ ...base, ...patch })).toThrow();
+  });
+
+  it("accepts a zero amount (verification-only jobs; funding rails refuse it)", () => {
+    expect(parseSpec({ ...base, amount: { value: 0, currency: "usd" } }).amount.value).toBe(0);
   });
 });

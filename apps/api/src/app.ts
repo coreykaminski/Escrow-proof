@@ -11,6 +11,7 @@ import { opsRoutes } from "./routes/ops.ts";
 import { reviewRoutes } from "./routes/reviews.ts";
 import { sellerRoutes } from "./routes/sellers.ts";
 import { testHelperRoutes } from "./routes/test-helpers.ts";
+import { verificationRoutes } from "./routes/verifications.ts";
 import { webhookEndpointRoutes } from "./routes/webhook-endpoints.ts";
 import { webhookRoutes } from "./routes/webhooks.ts";
 import { clientIp, MemoryRateLimitStore, rateLimit, securityHeaders } from "./security.ts";
@@ -103,6 +104,8 @@ export function createApp(deps: AppDeps) {
   app.use("/v1/agreements/*", requireScope("platform"));
   app.use("/v1/agreements", requireScope("platform"));
   app.use("/v1/sellers/*", requireScope("platform"));
+  app.use("/v1/verifications/*", requireScope("platform"));
+  app.use("/v1/verifications", requireScope("platform"));
   app.use("/v1/webhook-endpoints/*", requireScope("platform"));
   app.use("/v1/webhook-endpoints", requireScope("platform"));
   app.use("/v1/test_helpers/*", requireScope("platform"));
@@ -111,6 +114,7 @@ export function createApp(deps: AppDeps) {
 
   app.route("/v1/agreements", agreementRoutes(deps));
   app.route("/v1/sellers", sellerRoutes(deps));
+  app.route("/v1/verifications", verificationRoutes(deps));
   app.route("/v1/webhook-endpoints", webhookEndpointRoutes(deps));
   app.route("/v1/test_helpers", testHelperRoutes(deps));
   app.route("/v1/ops", opsRoutes(deps));

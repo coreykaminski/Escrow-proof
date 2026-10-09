@@ -41,7 +41,8 @@ export type Outcome =
   | { kind: "refund" }
   | { kind: "partial"; releasePercent: number };
 
-export type HoldRail = "test" | "card" | "onchain";
+/** "none": a verification-only job (Verify API); nothing is held and settling moves no money. */
+export type HoldRail = "test" | "card" | "onchain" | "none";
 
 export interface AgreementSnapshot {
   status: AgreementState;

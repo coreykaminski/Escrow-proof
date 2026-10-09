@@ -136,6 +136,22 @@ export interface Verification {
   created_at: string;
 }
 
+/** A Verify API job: work checked against criteria with no payment held. */
+export interface VerificationJob {
+  id: string;
+  object: "verification_job";
+  livemode: boolean;
+  /** "decided" when done; "escalated" while a human reviews; "settled" once closed. */
+  status: AgreementStatus;
+  outcome: Outcome | null;
+  decided_at: string | null;
+  review_pending: boolean;
+  spec_hash: string;
+  verification: Verification | null;
+  metadata: Record<string, string>;
+  created_at: string;
+}
+
 export interface Seller {
   id: string;
   object: "seller";

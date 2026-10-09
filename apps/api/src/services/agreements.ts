@@ -41,6 +41,9 @@ export function supportsPartial(row: Pick<AgreementRow, "holdRef">): boolean {
  * funded with a card hold or an on-chain job. Test mode is unrestricted.
  */
 export function assertDirectHoldAllowed(row: AgreementRow): void {
+  if (row.amountValue <= 0) {
+    throw new ApiError(422, "amount_required", "funding needs a spec amount above zero");
+  }
   if (!row.livemode) return;
   const { cents } = usdCents(row.amountValue, row.currency);
   if (cents > PRICING.directHoldMaxCents) {

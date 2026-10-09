@@ -720,7 +720,10 @@ export async function runDue(db: Db, rails: Rails, now: Date): Promise<DueResult
         agreementId: a.id,
         actor: SYSTEM,
         force,
-        settlementRef: a.holdRail === "test" || !a.holdRail ? `auto:${a.id}` : undefined,
+        settlementRef:
+          a.holdRail === "test" || a.holdRail === "none" || !a.holdRail
+            ? `auto:${a.id}`
+            : undefined,
         now,
       });
       result.settled.push(a.id);

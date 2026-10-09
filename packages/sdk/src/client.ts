@@ -13,6 +13,7 @@ import type {
   SellerWallet,
   SpecInput,
   Verification,
+  VerificationJob,
   WebhookEndpoint,
 } from "./types.ts";
 
@@ -244,6 +245,32 @@ export class ProofDesk {
       this.request<List<LedgerEntry>>("GET", `/v1/agreements/${enc(id)}/ledger`),
     verifications: (id: string) =>
       this.request<List<Verification>>("GET", `/v1/agreements/${enc(id)}/verifications`),
+  };
+
+  /** Verify API: check work against acceptance criteria without holding any payment. */
+  readonly verifications = {
+    /**
+     * `spec` is an agreement spec without the money terms (amount, deadline and appeal window
+     * are optional). Returns once the verifier decides or escalates to a human.
+     */
+    create: (p: {
+      spec: Omit<SpecInput, "amount" | "delivery_due_at" | "appeal_window_hours"> &
+        Partial<Pick<SpecInput, "amount" | "appeal_window_hours">>;
+      deliverable: Artifact[];
+      inputs?: Artifact[];
+      buyer_ref?: string;
+      seller_ref?: string;
+      metadata?: Record<string, string>;
+    }) => this.request<VerificationJob>("POST", "/v1/verifications", p),
+    retrieve: (id: string) => this.request<VerificationJob>("GET", `/v1/verifications/${enc(id)}`),
+    list: (p: { limit?: number } = {}) =>
+      this.request<List<VerificationJob>>(
+        "GET",
+        `/v1/verifications${p.limit ? `?limit=${p.limit}` : ""}`,
+      ),
+    /** Re-run a job the verifier couldn't finish (model or sandbox unavailable). */
+    retry: (id: string) =>
+      this.request<VerificationJob>("POST", `/v1/verifications/${enc(id)}/retry`),
   };
 
   readonly sellers = {

@@ -32,6 +32,7 @@ import {
   SettleBody,
 } from "./routes/schemas.ts";
 import { SimulateDecisionBody } from "./routes/test-helpers.ts";
+import { VerifyBody } from "./routes/verifications.ts";
 import { CreateEndpointBody } from "./routes/webhook-endpoints.ts";
 
 interface Op {
@@ -349,6 +350,36 @@ export const OPERATIONS: Op[] = [
       limit: "1-500, default 100",
     },
     scope: "ops",
+  },
+  // Verify API
+  {
+    method: "post",
+    path: "/v1/verifications",
+    tag: "Verify API",
+    summary: "Check a deliverable against acceptance criteria, with no payment held",
+    description:
+      "Runs the verifier for the spec's vertical (code, data, translation) and returns the verdict, or `escalated` when a human reviewer will decide (the result then arrives by webhook and on GET). Billed per check. On a verifier outage the error's details carry `verification_job_id` to retry.",
+    body: VerifyBody,
+    created: true,
+  },
+  {
+    method: "get",
+    path: "/v1/verifications",
+    tag: "Verify API",
+    summary: "Recent verification jobs",
+    query: { limit: "1-100, default 20" },
+  },
+  {
+    method: "get",
+    path: "/v1/verifications/{id}",
+    tag: "Verify API",
+    summary: "A verification job",
+  },
+  {
+    method: "post",
+    path: "/v1/verifications/{id}/retry",
+    tag: "Verify API",
+    summary: "Re-run a job the verifier couldn't finish",
   },
   // Sellers
   {

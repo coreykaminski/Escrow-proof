@@ -27,8 +27,11 @@ export const SpecSchema = z
     vertical: z.enum(VERTICALS),
     criteria: z.array(CriterionSchema).min(1).max(50),
     amount: z.object({
-      /** Integer minor units (cents for usd, 1e-6 for usdc). */
-      value: z.number().int().positive().max(1_000_000_000_00),
+      /**
+       * Integer minor units (cents for usd, 1e-6 for usdc). Zero only for verification-only
+       * jobs, where no money is held; every funding rail requires a positive amount.
+       */
+      value: z.number().int().nonnegative().max(1_000_000_000_00),
       currency: z.string().regex(/^[a-z]{3,10}$/, "lowercase currency code, e.g. usd or usdc"),
     }),
     /** Normalized to UTC ISO so "...+00:00" and "...Z" hash the same. */

@@ -92,6 +92,19 @@ The criteria drafting in `create_protected_purchase` and `sandbox_run_verificati
 
 ## 5. Going further
 
+- **Verify API (no payment):** check work against criteria without holding money, for agent output QA or a platform's own payment flow. Billed per check.
+
+  ```ts
+  const job = await pd.verifications.create({
+    spec: { version: 1, title: "isEven", request: "Write isEven(n)", vertical: "code",
+            criteria: [{ id: "tests-pass", description: "All tests pass", check: "deterministic", critical: true }] },
+    inputs: [{ name: "tests/even.test.mjs", media_type: "text/javascript", content: testsSource }],
+    deliverable: [{ name: "even.mjs", media_type: "text/javascript", content: agentOutput }],
+  });
+  job.outcome; // { kind: "release" } = passed, { kind: "refund" } = failed; status "escalated" = a human decides
+  ```
+
+  Agents can use the MCP tool `verify_work`.
 - **Drafted criteria:** with `ANTHROPIC_API_KEY` set, use `pd.agreements.createFromRequest({ request, amount, delivery_due_at, … })`. Proof Desk writes checkable acceptance criteria and lists open questions for the buyer.
 - **Translation verification:** attach the source with `pd.agreements.replaceInputs(id, [{ name, media_type: "text/plain", content }])` before approval. After delivery, `pd.testHelpers.verify(id)` runs the real verifier.
 - **Real cards (Stripe test mode):** set `STRIPE_SECRET_KEY=sk_test_…`, onboard the seller with `pd.sellers.startOnboarding(seller_ref, { email, country: "us" })` (they finish on Stripe's hosted page), then call `pd.agreements.createCardHold(id, { payment_method: "pm_card_visa" })`.

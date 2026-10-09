@@ -151,6 +151,80 @@ export function createServer(pd: ProofDesk): McpServer {
   );
 
   server.registerTool(
+    "verify_work",
+    {
+      title: "Check work against acceptance criteria",
+      description:
+        "Check a deliverable (code with the buyer's tests, a dataset against a schema, a research brief's citations, a translation) against acceptance criteria you give, with no payment involved. Returns the verdict with per-criterion evidence, or says a human reviewer will decide. Billed per check.",
+      inputSchema: {
+        title: z.string().min(1).max(200),
+        request: z.string().min(1).describe("What was asked for, in plain language"),
+        vertical: z.enum(["translation", "code", "data"]),
+        criteria: z
+          .array(
+            z.object({
+              id: z.string().describe("lowercase id, e.g. tests-pass"),
+              description: z.string(),
+              check: z.enum(["deterministic", "domain", "judge"]).default("judge"),
+              critical: z.boolean().default(false),
+            }),
+          )
+          .min(1),
+        deliverable: z
+          .array(
+            z.object({
+              name: z.string(),
+              content: z.string(),
+              media_type: z.string().default("text/plain"),
+            }),
+          )
+          .min(1)
+          .describe("The work to check"),
+        inputs: z
+          .array(
+            z.object({
+              name: z.string(),
+              content: z.string(),
+              media_type: z.string().default("text/plain"),
+            }),
+          )
+          .default([])
+          .describe("What it's judged against: source text, acceptance tests, a JSON schema"),
+      },
+    },
+    (args) =>
+      run(async () => {
+        const job = await pd.verifications.create({
+          spec: {
+            version: 1,
+            title: args.title,
+            request: args.request,
+            vertical: args.vertical,
+            criteria: args.criteria,
+          },
+          deliverable: args.deliverable,
+          inputs: args.inputs,
+        });
+        const report = job.verification?.report as
+          | {
+              decision?: { reason?: string };
+              criteria?: { criterion_id: string; verdict: string }[];
+            }
+          | undefined;
+        return {
+          verification_job_id: job.id,
+          status: job.status,
+          result:
+            job.status === "escalated"
+              ? "a human reviewer will decide; check back with the job id"
+              : (job.outcome?.kind ?? job.status),
+          reason: report?.decision?.reason,
+          criteria: report?.criteria?.map((c) => `${c.criterion_id}: ${c.verdict}`),
+        };
+      }),
+  );
+
+  server.registerTool(
     "approve_purchase_terms",
     {
       title: "Approve the purchase terms",

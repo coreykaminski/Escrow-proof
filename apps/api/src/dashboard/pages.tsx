@@ -192,7 +192,9 @@ export function CasePage(p: {
             <dd>
               {p.file.hold
                 ? `card hold · ${p.file.hold.status}${p.file.hold.captureBefore ? ` · capture by ${when(p.file.hold.captureBefore)}` : ""}`
-                : (a.holdRail ?? "not funded")}
+                : a.holdRail === "none"
+                  ? "verification only (no payment)"
+                  : (a.holdRail ?? "not funded")}
             </dd>
           </dl>
         </div>
