@@ -1,3 +1,4 @@
+import { templateCatalog } from "@proofdesk/spec-engine";
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import { dashboardRoutes, publicLinkRoutes } from "./dashboard/routes.tsx";
@@ -172,6 +173,8 @@ export function createApp(deps: AppDeps) {
   app.use("/v1/billing/*", requireScope("platform"));
   app.use("/v1/ops/*", requireScope("ops"));
 
+  /** Ready-made acceptance criteria for common jobs, with their params as JSON Schema. */
+  app.get("/v1/spec-templates", (c) => c.json({ object: "list", data: templateCatalog() }));
   app.route("/v1/agreements", agreementRoutes(deps));
   app.route("/v1/sellers", sellerRoutes(deps));
   app.route("/v1/verifications", verificationRoutes(deps));

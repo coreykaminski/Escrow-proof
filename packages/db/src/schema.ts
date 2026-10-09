@@ -54,6 +54,8 @@ export type ApiScope = "platform" | "ops";
 /** Provenance of an agreement's current spec; snake_case because it's returned as-is. */
 export type SpecSource =
   | { kind: "manual" }
+  /** Built from a ready-made template (spec-engine templates.ts). */
+  | { kind: "template"; template: string; version: number; edited?: boolean }
   | {
       kind: "drafted";
       model: string;

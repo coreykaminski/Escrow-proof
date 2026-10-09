@@ -1,3 +1,4 @@
+import { buildFromTemplate } from "@proofdesk/spec-engine";
 import { Hono } from "hono";
 import { z } from "zod";
 import { type AppDeps, type AppEnv, verifiersOf } from "../env.ts";
@@ -19,19 +20,44 @@ const file = z.object({
   content: z.string().max(1_000_000),
 });
 
-export const VerifyBody = z.object({
-  /**
-   * The acceptance criteria, as in an agreement spec. `amount`, `delivery_due_at` and
-   * `appeal_window_hours` are optional here: nothing is held, the delivery comes with the
-   * request, and there's no appeal window unless you ask for one.
-   */
-  spec: z.record(z.string(), z.unknown()),
-  inputs: z.array(file).max(20).default([]),
-  deliverable: z.array(file).min(1).max(20),
-  buyer_ref: z.string().min(1).max(255).default("verify_api_buyer"),
-  seller_ref: z.string().min(1).max(255).default("verify_api_seller"),
-  metadata: z.record(z.string().max(40), z.string().max(500)).default({}),
-});
+export const VerifyBody = z
+  .object({
+    /**
+     * The acceptance criteria, as in an agreement spec. `amount`, `delivery_due_at` and
+     * `appeal_window_hours` are optional here: nothing is held, the delivery comes with the
+     * request, and there's no appeal window unless you ask for one.
+     */
+    spec: z.record(z.string(), z.unknown()).optional(),
+    /** Instead of `spec`: a ready-made template (GET /v1/spec-templates) and its params. */
+    template: z
+      .object({
+        id: z.string().min(1).max(100),
+        params: z.record(z.string(), z.unknown()).default({}),
+      })
+      .optional(),
+    inputs: z.array(file).max(20).default([]),
+    deliverable: z.array(file).min(1).max(20),
+    buyer_ref: z.string().min(1).max(255).default("verify_api_buyer"),
+    seller_ref: z.string().min(1).max(255).default("verify_api_seller"),
+    metadata: z.record(z.string().max(40), z.string().max(500)).default({}),
+  })
+  .refine((b) => (b.spec === undefined) !== (b.template === undefined), {
+    message: "give either spec or template",
+  });
+
+/** The raw spec for a Verify API request: the caller's own, or built from a template. */
+export function rawVerifySpec(body: z.infer<typeof VerifyBody>): Record<string, unknown> {
+  if (body.spec) return body.spec;
+  const t = body.template as { id: string; params: Record<string, unknown> };
+  const built = buildFromTemplate(t.id, t.params);
+  return {
+    version: 1,
+    title: built.title,
+    request: built.request,
+    vertical: built.vertical,
+    criteria: built.criteria,
+  };
+}
 
 const ListQuery = z.object({ limit: z.coerce.number().int().min(1).max(100).default(20) });
 
@@ -65,7 +91,8 @@ export function verificationRoutes(deps: AppDeps) {
   r.post("/", async (c) => {
     const body = VerifyBody.parse(await c.req.json());
     const auth = c.get("auth");
-    const vertical = body.spec.vertical;
+    const raw = rawVerifySpec(body);
+    const vertical = raw.vertical;
     if (vertical === "general") {
       throw new ApiError(
         422,
@@ -76,7 +103,7 @@ export function verificationRoutes(deps: AppDeps) {
     const row = await createVerification(db, verifiers(), {
       accountId: auth.accountId,
       livemode: auth.mode === "live",
-      spec: verifyOnlySpec(body.spec, now()),
+      spec: verifyOnlySpec(raw, now()),
       inputs: body.inputs,
       deliverable: body.deliverable,
       buyerRef: body.buyer_ref,

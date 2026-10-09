@@ -1,5 +1,6 @@
+import { parseSpec } from "@proofdesk/core";
 import { listLedgerForAgreement } from "@proofdesk/db";
-import { importMandate } from "@proofdesk/spec-engine";
+import { buildFromTemplate, importMandate } from "@proofdesk/spec-engine";
 import { Hono } from "hono";
 import type { AppDeps, AppEnv } from "../env.ts";
 import { ApiError } from "../errors.ts";
@@ -46,6 +47,7 @@ import {
   ExternalJobBody,
   FromMandateBody,
   FromRequestBody,
+  FromTemplateBody,
   FundBody,
   InputsBody,
   LinkBody,
@@ -97,6 +99,39 @@ export function agreementRoutes(deps: AppDeps) {
         amount: body.amount,
         delivery_due_at: body.delivery_due_at,
         appeal_window_hours: body.appeal_window_hours,
+      },
+      metadata: body.metadata,
+      now: now(),
+    });
+    return c.json(agreementJson(row), 201);
+  });
+
+  /** A spec from a ready-made template (GET /v1/spec-templates); no model involved. */
+  r.post("/from-template", async (c) => {
+    const body = FromTemplateBody.parse(await c.req.json());
+    const auth = c.get("auth");
+    const built = buildFromTemplate(body.template, body.params);
+    const row = await createAgreement(db, {
+      accountId: auth.accountId,
+      livemode: auth.mode === "live",
+      buyerRef: body.buyer_ref,
+      sellerRef: body.seller_ref,
+      spec: parseSpec({
+        version: 1,
+        title: built.title,
+        request: built.request,
+        vertical: built.vertical,
+        criteria: built.criteria,
+        amount: body.amount,
+        delivery_due_at: body.delivery_due_at,
+        ...(body.appeal_window_hours === undefined
+          ? {}
+          : { appeal_window_hours: body.appeal_window_hours }),
+      }),
+      specSource: {
+        kind: "template",
+        template: built.template.id,
+        version: built.template.version,
       },
       metadata: body.metadata,
       now: now(),

@@ -157,9 +157,26 @@ export function createServer(pd: ProofDesk): McpServer {
       description:
         "Check a deliverable (code with the buyer's tests, a dataset against a schema, a research brief's citations, a translation) against acceptance criteria you give, with no payment involved. Returns the verdict with per-criterion evidence, or says a human reviewer will decide. Billed per check.",
       inputSchema: {
-        title: z.string().min(1).max(200),
-        request: z.string().min(1).describe("What was asked for, in plain language"),
-        vertical: z.enum(["translation", "code", "data"]),
+        template: z
+          .enum([
+            "code.acceptance-tests",
+            "data.dataset",
+            "research.cited-brief",
+            "translation.document",
+          ])
+          .optional()
+          .describe(
+            "A ready-made set of checkable criteria instead of writing your own; give its template_params",
+          ),
+        template_params: z
+          .record(z.string(), z.unknown())
+          .optional()
+          .describe(
+            'e.g. {"task": "…", "min_records": 100, "unique_key": "id"}; see GET /v1/spec-templates',
+          ),
+        title: z.string().min(1).max(200).optional(),
+        request: z.string().min(1).optional().describe("What was asked for, in plain language"),
+        vertical: z.enum(["translation", "code", "data"]).optional(),
         criteria: z
           .array(
             z.object({
@@ -169,7 +186,8 @@ export function createServer(pd: ProofDesk): McpServer {
               critical: z.boolean().default(false),
             }),
           )
-          .min(1),
+          .min(1)
+          .optional(),
         deliverable: z
           .array(
             z.object({
@@ -194,14 +212,24 @@ export function createServer(pd: ProofDesk): McpServer {
     },
     (args) =>
       run(async () => {
+        const own = args.title && args.request && args.vertical && args.criteria;
+        if (!args.template && !own) {
+          throw new Error(
+            "give a template (with template_params), or title, request, vertical and criteria",
+          );
+        }
         const job = await pd.verifications.create({
-          spec: {
-            version: 1,
-            title: args.title,
-            request: args.request,
-            vertical: args.vertical,
-            criteria: args.criteria,
-          },
+          ...(args.template
+            ? { template: { id: args.template, params: args.template_params ?? {} } }
+            : {
+                spec: {
+                  version: 1,
+                  title: args.title as string,
+                  request: args.request as string,
+                  vertical: args.vertical as "translation" | "code" | "data",
+                  criteria: args.criteria as NonNullable<typeof args.criteria>,
+                },
+              }),
           deliverable: args.deliverable,
           inputs: args.inputs,
         });

@@ -15,7 +15,7 @@ import { ApiError, toApiError } from "../errors.ts";
 import { outcomeToJson } from "../services/agreements.ts";
 import { listVerifications } from "../services/verification.ts";
 import { createVerification, getVerificationJob, verifyOnlySpec } from "../services/verify-only.ts";
-import { VerifyBody } from "./verifications.ts";
+import { rawVerifySpec, VerifyBody } from "./verifications.ts";
 
 export const A2A_PROTOCOL_VERSION = "1.0";
 const SKILL_ID = "verify-deliverable";
@@ -187,7 +187,8 @@ export function a2aRoutes(deps: AppDeps) {
         ),
       });
     }
-    if (parsed.data.spec.vertical === "general") {
+    const raw = rawVerifySpec(parsed.data);
+    if (raw.vertical === "general") {
       return c.json({
         message: agentText(
           'There\'s no automated verifier for "general" work; use code, data or translation.',
@@ -201,7 +202,7 @@ export function a2aRoutes(deps: AppDeps) {
       job = await createVerification(db, verifiersOf(deps), {
         accountId: auth.accountId,
         livemode: auth.mode === "live",
-        spec: verifyOnlySpec(parsed.data.spec, now()),
+        spec: verifyOnlySpec(raw, now()),
         inputs: parsed.data.inputs,
         deliverable: parsed.data.deliverable,
         buyerRef: parsed.data.buyer_ref,

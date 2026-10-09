@@ -1,6 +1,11 @@
 import { TransitionError, type TransitionErrorCode } from "@proofdesk/core";
 import { GatewayError } from "@proofdesk/payments";
-import { MandateError, SpecDraftError, type SpecDraftErrorCode } from "@proofdesk/spec-engine";
+import {
+  MandateError,
+  SpecDraftError,
+  type SpecDraftErrorCode,
+  TemplateError,
+} from "@proofdesk/spec-engine";
 import {
   ModelCallError,
   SandboxUnavailableError,
@@ -78,6 +83,14 @@ export function toApiError(err: unknown): ApiError {
       : new ApiError(502, "payment_processor_error", err.message, {
           processor_code: err.code ?? null,
         });
+  }
+  if (err instanceof TemplateError) {
+    return new ApiError(
+      err.code === "unknown_template" ? 404 : 400,
+      err.code,
+      err.message,
+      err.details,
+    );
   }
   if (err instanceof MandateError) {
     return new ApiError(err.code === "mandate_expired" ? 409 : 400, err.code, err.message);

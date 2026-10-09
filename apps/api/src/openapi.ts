@@ -18,6 +18,7 @@ import {
   ExternalJobBody,
   FromMandateBody,
   FromRequestBody,
+  FromTemplateBody,
   FundBody,
   InputsBody,
   LinkBody,
@@ -350,6 +351,20 @@ export const OPERATIONS: Op[] = [
       limit: "1-500, default 100",
     },
     scope: "ops",
+  },
+  {
+    method: "get",
+    path: "/v1/spec-templates",
+    tag: "Agreements",
+    summary: "Ready-made, checkable acceptance criteria for common jobs (params as JSON Schema)",
+  },
+  {
+    method: "post",
+    path: "/v1/agreements/from-template",
+    tag: "Agreements",
+    summary: "Create a draft agreement whose criteria come from a template (no model)",
+    body: FromTemplateBody,
+    created: true,
   },
   // Verify API
   {

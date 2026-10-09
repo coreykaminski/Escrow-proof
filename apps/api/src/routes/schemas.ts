@@ -39,6 +39,18 @@ export const FromMandateBody = z.object({
   amount: SpecSchema.shape.amount.optional(),
 });
 
+/** A spec from a ready-made template: the template sets the criteria, the caller the terms. */
+export const FromTemplateBody = z.object({
+  buyer_ref: ref,
+  seller_ref: ref,
+  template: z.string().min(1).max(100),
+  params: z.record(z.string(), z.unknown()).default({}),
+  amount: SpecSchema.shape.amount,
+  delivery_due_at: SpecSchema.shape.delivery_due_at,
+  appeal_window_hours: z.number().int().min(0).max(720).optional(),
+  metadata: z.record(z.string().max(40), z.string().max(500)).default({}),
+});
+
 export const ApproveSpecBody = z.object({
   /** The hash of the spec the buyer was shown; must equal the current spec hash. */
   spec_hash: z.string().regex(/^[0-9a-f]{64}$/),

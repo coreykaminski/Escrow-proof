@@ -156,6 +156,9 @@ export async function createAgreement(
 /** Provenance for the ledger: who/what drafted the spec, without the open questions. */
 function specSourceSummary(source: SpecSource): Record<string, unknown> {
   if (source.kind === "manual") return { kind: "manual" };
+  if (source.kind === "template") {
+    return { kind: "template", template: source.template, version: source.version };
+  }
   return {
     kind: "drafted",
     model: source.model,
@@ -166,7 +169,9 @@ function specSourceSummary(source: SpecSource): Record<string, unknown> {
 
 /** A drafted spec stays "drafted" after edits, flagged so we can measure how often buyers edit. */
 function editedSource(source: SpecSource | null): SpecSource {
-  return source?.kind === "drafted" ? { ...source, edited: true } : { kind: "manual" };
+  return source?.kind === "drafted" || source?.kind === "template"
+    ? { ...source, edited: true }
+    : { kind: "manual" };
 }
 
 /** Specs are editable only while in draft; each edit changes the hash the buyer must approve. */

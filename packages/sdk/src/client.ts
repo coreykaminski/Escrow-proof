@@ -139,6 +139,20 @@ export class ProofDesk {
       p: Terms & { request: string; amount: { value: number; currency: string } },
       opts?: RequestOpts,
     ) => this.request<Agreement>("POST", "/v1/agreements/from-request", p, opts?.idempotencyKey),
+    /** From a ready-made template (see `specTemplates.list()`): checkable criteria, no model. */
+    createFromTemplate: (
+      p: {
+        buyer_ref: string;
+        seller_ref: string;
+        template: string;
+        params?: Record<string, unknown>;
+        amount: { value: number; currency: string };
+        delivery_due_at: string;
+        appeal_window_hours?: number;
+        metadata?: Record<string, string>;
+      },
+      opts?: RequestOpts,
+    ) => this.request<Agreement>("POST", "/v1/agreements/from-template", p, opts?.idempotencyKey),
     /** Same, from an AP2 intent or cart mandate. */
     createFromMandate: (
       p: Terms & {
@@ -247,6 +261,22 @@ export class ProofDesk {
       this.request<List<Verification>>("GET", `/v1/agreements/${enc(id)}/verifications`),
   };
 
+  /** Ready-made acceptance criteria for common jobs. */
+  readonly specTemplates = {
+    list: () =>
+      this.request<
+        List<{
+          id: string;
+          version: number;
+          vertical: string;
+          name: string;
+          description: string;
+          inputs: string;
+          params: Record<string, unknown>;
+        }>
+      >("GET", "/v1/spec-templates"),
+  };
+
   /** Verify API: check work against acceptance criteria without holding any payment. */
   readonly verifications = {
     /**
@@ -254,8 +284,10 @@ export class ProofDesk {
      * are optional). Returns once the verifier decides or escalates to a human.
      */
     create: (p: {
-      spec: Omit<SpecInput, "amount" | "delivery_due_at" | "appeal_window_hours"> &
+      /** Your criteria, or `template` instead. */
+      spec?: Omit<SpecInput, "amount" | "delivery_due_at" | "appeal_window_hours"> &
         Partial<Pick<SpecInput, "amount" | "appeal_window_hours">>;
+      template?: { id: string; params?: Record<string, unknown> };
       deliverable: Artifact[];
       inputs?: Artifact[];
       buyer_ref?: string;
