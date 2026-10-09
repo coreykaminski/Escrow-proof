@@ -15,7 +15,9 @@ import { verificationRoutes } from "./routes/verifications.ts";
 import { webhookEndpointRoutes } from "./routes/webhook-endpoints.ts";
 import { webhookRoutes } from "./routes/webhooks.ts";
 import { clientIp, MemoryRateLimitStore, rateLimit, securityHeaders } from "./security.ts";
+import { lastAnchor } from "./services/anchoring.ts";
 import { evaluatorListing } from "./services/evaluator-listing.ts";
+import { consistencyProof, treeHead } from "./services/proofs.ts";
 
 /** Per-key and per-IP request limits (override with AppDeps.rateLimits). */
 export const DEFAULT_LIMITS = {
@@ -71,9 +73,36 @@ export function createApp(deps: AppDeps) {
   });
   app.use("/pay/*", publicLinks);
   app.use("/r/*", publicLinks);
+  app.use("/ledger/*", publicLinks);
 
   app.get("/health", (c) => c.json({ ok: true }));
   app.get("/openapi.json", (c) => c.json(openApiDocument(deps.publicUrl)));
+  // The ledger's current Merkle tree head and the last one anchored on-chain (public, no content).
+  app.get("/ledger/checkpoint.json", async (c) => {
+    const [head, anchor] = await Promise.all([treeHead(deps.db), lastAnchor(deps.db)]);
+    return c.json({
+      object: "ledger_checkpoint",
+      ...head,
+      anchored: anchor?.root
+        ? {
+            size: anchor.seq,
+            root: anchor.root,
+            chain_id: anchor.chain_id,
+            contract: anchor.contract,
+            tx_hash: anchor.tx_hash,
+            anchored_at: anchor.at.toISOString(),
+          }
+        : null,
+    });
+  });
+  app.get("/ledger/consistency.json", async (c) => {
+    const from = Number(c.req.query("from"));
+    const to = Number(c.req.query("to"));
+    if (!Number.isSafeInteger(from) || !Number.isSafeInteger(to)) {
+      throw new ApiError(400, "validation_error", "from and to must be tree sizes");
+    }
+    return c.json(await consistencyProof(deps.db, from, to));
+  });
   app.get("/.well-known/erc8183-evaluator.json", async (c) => {
     const listing = await evaluatorListing(deps);
     if (!listing)

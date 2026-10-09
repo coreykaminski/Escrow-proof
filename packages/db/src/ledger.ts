@@ -3,8 +3,9 @@ import {
   type ChainVerification,
   createChainVerifier,
   type LedgerEntry,
+  ledgerLeaf,
 } from "@proofdesk/core";
-import { asc, desc, eq, gt, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gt, lte, sql } from "drizzle-orm";
 import type { DbOrTx, Tx } from "./client.ts";
 import { ledgerEntries } from "./schema.ts";
 
@@ -58,4 +59,36 @@ export async function verifyLedger(db: DbOrTx, pageSize = 1000): Promise<ChainVe
     if (!last || rows.length < pageSize) return verifier.result();
     after = last.seq;
   }
+}
+
+/**
+ * The Merkle leaves (RFC 6962) of the first `size` entries (all of them when omitted), read in
+ * pages. Leaf i is entry seq i+1. O(size): fine at today's volume; cache inner nodes if needed.
+ */
+export async function ledgerLeaves(db: DbOrTx, size?: number, pageSize = 5000) {
+  const leaves: Uint8Array[] = [];
+  let after = 0;
+  while (true) {
+    const rows = await db
+      .select({ seq: ledgerEntries.seq, entryHash: ledgerEntries.entryHash })
+      .from(ledgerEntries)
+      .where(
+        size === undefined
+          ? gt(ledgerEntries.seq, after)
+          : and(gt(ledgerEntries.seq, after), lte(ledgerEntries.seq, size)),
+      )
+      .orderBy(asc(ledgerEntries.seq))
+      .limit(pageSize);
+    for (const r of rows) {
+      if (r.seq !== leaves.length + 1) throw new Error(`ledger gap before seq ${r.seq}`);
+      leaves.push(ledgerLeaf(r.entryHash));
+    }
+    const last = rows.at(-1);
+    if (!last || rows.length < pageSize) break;
+    after = last.seq;
+  }
+  if (size !== undefined && leaves.length !== size) {
+    throw new Error(`the ledger has ${leaves.length} entries, not ${size}`);
+  }
+  return leaves;
 }

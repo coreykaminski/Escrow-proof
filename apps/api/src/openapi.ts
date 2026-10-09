@@ -532,6 +532,29 @@ export const OPERATIONS: Op[] = [
   { method: "get", path: "/health", tag: "Meta", summary: "Health check", scope: "none" },
   {
     method: "get",
+    path: "/ledger/checkpoint.json",
+    tag: "Ledger",
+    summary: "Current Merkle tree head of the ledger (RFC 6962) and the last one anchored on-chain",
+    scope: "none",
+  },
+  {
+    method: "get",
+    path: "/ledger/consistency.json",
+    tag: "Ledger",
+    summary: "Consistency proof that a later tree head extends an earlier one",
+    query: { from: "Earlier tree size", to: "Later tree size" },
+    scope: "none",
+  },
+  {
+    method: "get",
+    path: "/v1/agreements/{id}/proof",
+    tag: "Ledger",
+    summary: "Inclusion proof of the agreement's ledger entries, verifiable offline",
+    description:
+      "Against the latest anchored tree head when it covers every entry, otherwise the current head. Check it with scripts/verify-proof.ts.",
+  },
+  {
+    method: "get",
     path: "/.well-known/erc8183-evaluator.json",
     tag: "Meta",
     summary:

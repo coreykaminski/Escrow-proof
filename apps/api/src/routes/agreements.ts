@@ -31,6 +31,7 @@ import {
   relayOnchainFunding,
 } from "../services/onchain.ts";
 import { createCardHold, getHold } from "../services/payments.ts";
+import { ledgerProof } from "../services/proofs.ts";
 import { createShareLink } from "../services/share-links.ts";
 import { draftAgreement, resolveMandateAmount } from "../services/spec-drafts.ts";
 import { listVerifications } from "../services/verification.ts";
@@ -372,6 +373,13 @@ export function agreementRoutes(deps: AppDeps) {
       now: now(),
     });
     return c.json({ job: onchainJobJson(row), agreement: agreementJson(agreement) }, 201);
+  });
+
+  /** A Merkle inclusion proof of this agreement's ledger entries, verifiable offline. */
+  r.get("/:id/proof", async (c) => {
+    const id = c.req.param("id");
+    await getAgreement(db, id, { accountId: c.get("auth").accountId });
+    return c.json(await ledgerProof(db, id));
   });
 
   r.get("/:id/hold", async (c) => {

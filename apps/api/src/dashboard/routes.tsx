@@ -21,6 +21,7 @@ import {
   termsOf,
 } from "../services/onchain.ts";
 import { getHold, syncHold } from "../services/payments.ts";
+import { ledgerProof } from "../services/proofs.ts";
 import {
   endSession,
   getSession,
@@ -258,8 +259,21 @@ export function publicLinkRoutes(deps: AppDeps) {
     if (!id) return c.html(<LinkGone />, 404);
     const file = await loadCaseFile(db, id, {});
     return c.html(
-      <ReportPage file={file} ledgerOk={await ledgerIntact(db)} anchor={await lastAnchor(db)} />,
+      <ReportPage
+        file={file}
+        ledgerOk={await ledgerIntact(db)}
+        anchor={await lastAnchor(db)}
+        proofUrl={`/r/${c.req.param("token")}/proof.json`}
+      />,
     );
+  });
+
+  /** The verdict's ledger proof, for checking offline (scripts/verify-proof.ts). */
+  r.get("/r/:token/proof.json", async (c) => {
+    const id = await resolveShareLink(db, c.req.param("token"), "report", now());
+    if (!id) throw new ApiError(404, "not_found", "this link has expired or doesn't exist");
+    c.header("Content-Disposition", `attachment; filename="proof-${id}.json"`);
+    return c.json(await ledgerProof(db, id));
   });
 
   r.get("/pay/assets/pay.js", (c) =>

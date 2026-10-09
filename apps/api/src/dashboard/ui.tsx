@@ -171,6 +171,8 @@ export function Criteria(p: {
 
 export function Ledger(p: {
   entries: { seq: number; type: string; createdAt: string; entryHash: string; payload: string }[];
+  /** Global sequence numbers reveal other agreements' activity; public reports number locally. */
+  globalSeq?: boolean;
 }) {
   return (
     <table>
@@ -184,12 +186,12 @@ export function Ledger(p: {
         </tr>
       </thead>
       <tbody>
-        {p.entries.map((e) => {
+        {p.entries.map((e, i) => {
           const actor =
             (JSON.parse(e.payload) as { actor?: { role: string } }).actor?.role ?? "system";
           return (
             <tr>
-              <td class="mono">{e.seq}</td>
+              <td class="mono">{p.globalSeq === false ? i + 1 : e.seq}</td>
               <td>{e.type.replace("agreement.", "")}</td>
               <td class="small muted">{actor}</td>
               <td class="small">{when(e.createdAt)}</td>

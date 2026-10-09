@@ -4,8 +4,9 @@ import { sha256Hex } from "./hash.ts";
 /**
  * Tamper-evident decision ledger: a single global hash chain. Each entry's hash covers its own
  * content plus the previous entry's hash, so editing, deleting or reordering any entry breaks
- * every hash after it. (Truncating the tail is caught by comparing against a published/anchored
- * head hash; on-chain anchoring is a later part.)
+ * every hash after it. On top of the chain, a Merkle tree over the entry hashes (merkle.ts,
+ * RFC 6962) gives per-entry inclusion proofs; its tree head is anchored on-chain daily, which
+ * also catches truncating the tail.
  */
 
 export const GENESIS_HASH = "0".repeat(64);

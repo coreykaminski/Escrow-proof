@@ -2,6 +2,8 @@ export * from "./canonical-json.ts";
 export * from "./hash.ts";
 export * from "./ids.ts";
 export * from "./ledger.ts";
+export * from "./ledger-proof.ts";
+export * from "./merkle.ts";
 export * from "./net.ts";
 export * from "./pricing.ts";
 export * from "./spec.ts";

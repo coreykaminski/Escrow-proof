@@ -410,6 +410,7 @@ export function ReportPage(p: {
   file: CaseFile;
   ledgerOk: boolean;
   anchor?: { seq: number; tx_hash: string; chain_id: number; contract: string; at: Date } | null;
+  proofUrl?: string;
 }) {
   const { agreement: a, verification: v } = p.file;
   const decision = p.file.decisions.at(-1);
@@ -460,10 +461,10 @@ export function ReportPage(p: {
             <>
               <dt>Anchored on-chain</dt>
               <dd class="small">
-                Ledger head #{p.anchor.seq} posted {when(p.anchor.at)} on chain {p.anchor.chain_id}{" "}
-                to <span class="mono">{p.anchor.contract}</span> (tx{" "}
-                <span class="mono">{p.anchor.tx_hash.slice(0, 18)}…</span>). Every entry above is
-                covered.
+                Ledger tree head posted {when(p.anchor.at)} on chain {p.anchor.chain_id} to{" "}
+                <span class="mono">{p.anchor.contract}</span> (tx{" "}
+                <span class="mono">{p.anchor.tx_hash.slice(0, 18)}…</span>). Every entry below is in
+                it.
               </dd>
             </>
           ) : null}
@@ -472,12 +473,21 @@ export function ReportPage(p: {
       <h2>Criteria</h2>
       <Criteria agreement={a} results={v?.report.criteria} showEvidence={true} />
       <h2>Ledger entries</h2>
-      <Ledger entries={p.file.ledger} />
+      <Ledger entries={p.file.ledger} globalSeq={false} />
       <p class="small muted" style="margin-top:16px">
         Each entry's hash covers the previous one, so any edit to the history breaks the chain.
         Hashes let either party prove which spec was approved and which files were delivered without
         revealing them.
       </p>
+      {p.proofUrl ? (
+        <p class="small">
+          <strong>Check it yourself:</strong> <a href={p.proofUrl}>download the proof</a> and run{" "}
+          <span class="mono">npx tsx scripts/verify-proof.ts proof.json --rpc &lt;RPC URL&gt;</span>
+          . It recomputes every entry, proves each one is in the ledger's Merkle tree (RFC 6962) and
+          compares the tree head with the one posted on-chain. It needs no other agreement's data
+          and doesn't trust Proof Desk.
+        </p>
+      ) : null}
     </Page>
   );
 }

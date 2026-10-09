@@ -1,17 +1,19 @@
 import type { AnchorGateway } from "@proofdesk/chain";
-import { appendLedgerEntry, type Db, schema, verifyLedger } from "@proofdesk/db";
-import { desc, eq, gt } from "drizzle-orm";
+import { MERKLE_SCHEME, rootOf, toHex } from "@proofdesk/core";
+import { appendLedgerEntry, type Db, ledgerLeaves, schema, verifyLedger } from "@proofdesk/db";
+import { desc, gt } from "drizzle-orm";
 import { getState, setState } from "./status.ts";
 
 export type AnchorResult =
   | { status: "empty" }
   | { status: "current"; seq: number }
-  | { status: "anchored"; seq: number; head_hash: string; tx_hash: string };
+  | { status: "anchored"; seq: number; root: string; tx_hash: string };
 
 /**
- * Posts the ledger head to the LedgerAnchor contract, after re-verifying the whole hash chain
- * (never vouch for a broken chain). The anchor is itself recorded on the ledger, so the next
- * anchor covers it too.
+ * Posts the ledger's Merkle tree head (RFC 6962: size + root over every entry hash) to the
+ * LedgerAnchor contract, after re-verifying the whole hash chain (never vouch for a broken
+ * chain). The contract's (seq, hash) slot holds (tree size, root). The anchor is itself
+ * recorded on the ledger, so the next anchor covers it too.
  */
 export async function anchorLedger(db: Db, gw: AnchorGateway, now: Date): Promise<AnchorResult> {
   const [head] = await db
@@ -36,9 +38,12 @@ export async function anchorLedger(db: Db, gw: AnchorGateway, now: Date): Promis
   if (!verified.ok) {
     throw new Error(`ledger verification failed at seq ${verified.seq}; not anchoring`);
   }
-  const { txHash } = await gw.anchor(verified.headSeq, verified.headHash);
+  const root = toHex(rootOf(await ledgerLeaves(db, verified.headSeq)));
+  const { txHash } = await gw.anchor(verified.headSeq, root);
   const record = {
+    scheme: MERKLE_SCHEME,
     seq: verified.headSeq,
+    root,
     head_hash: verified.headHash,
     tx_hash: txHash,
     chain_id: gw.chainId,
@@ -53,31 +58,27 @@ export async function anchorLedger(db: Db, gw: AnchorGateway, now: Date): Promis
       createdAt: now,
     });
   });
-  return {
-    status: "anchored",
-    seq: verified.headSeq,
-    head_hash: verified.headHash,
-    tx_hash: txHash,
-  };
+  return { status: "anchored", seq: verified.headSeq, root, tx_hash: txHash };
 }
 
-/** Checks every on-chain anchor against the database: the entry at that seq must have that hash. */
+/**
+ * Checks every on-chain anchor against the database: the Merkle root of the first `seq`
+ * entries must equal the anchored root. Matching every anchor also proves each later tree
+ * extends the earlier ones (nothing anchored was rewritten).
+ */
 export async function verifyAnchors(db: Db, gw: AnchorGateway) {
   const anchors = await gw.list();
+  const all = await ledgerLeaves(db);
   const results = [];
   for (const a of anchors) {
-    const [entry] = await db
-      .select({ entryHash: schema.ledgerEntries.entryHash })
-      .from(schema.ledgerEntries)
-      .where(eq(schema.ledgerEntries.seq, a.seq));
+    const present = a.seq <= all.length;
+    const root = present ? toHex(rootOf(all.slice(0, a.seq))) : null;
     results.push({
       seq: a.seq,
       anchored_at: new Date(a.timestamp * 1000).toISOString(),
-      ok: entry?.entryHash === a.headHash,
-      ...(entry ? {} : { problem: "no ledger entry at this seq" }),
-      ...(entry && entry.entryHash !== a.headHash
-        ? { problem: "hash differs from the anchor" }
-        : {}),
+      ok: root === a.headHash,
+      ...(present ? {} : { problem: "the ledger is shorter than this anchor" }),
+      ...(present && root !== a.headHash ? { problem: "root differs from the anchor" } : {}),
     });
   }
   return {
@@ -94,6 +95,8 @@ export async function lastAnchor(db: Db) {
   return s
     ? {
         seq: Number(s.value.seq),
+        /** Merkle root of the first `seq` entries (absent on anchors from before Merkle heads). */
+        root: typeof s.value.root === "string" ? s.value.root : null,
         tx_hash: String(s.value.tx_hash),
         chain_id: Number(s.value.chain_id),
         contract: String(s.value.contract),
