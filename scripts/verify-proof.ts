@@ -29,6 +29,18 @@ console.log(
   `${ok ? "✓" : "✗"} ${proof.entries.length} ledger entries of ${proof.agreement_id} are in tree head #${proof.tree.size} (root ${proof.tree.root.slice(0, 16)}…)`,
 );
 for (const p of problems) console.log(`  ✗ ${p}`);
+if (proof.verdict) {
+  const record = JSON.parse(proof.verdict.entry.payload) as {
+    subject: string;
+    outcome: { kind: string };
+  };
+  const bad = problems.some((p) => p.includes("verdict"));
+  console.log(
+    `${bad ? "✗" : "✓"} public verdict record ${record.subject.slice(0, 16)}… (${record.outcome.kind}) is this agreement's, sealed at ledger #${proof.verdict.entry.seq}`,
+  );
+} else {
+  console.log("- no public verdict record yet (sealed daily once the agreement is final)");
+}
 
 let anchored = true;
 const a = proof.tree.anchor;

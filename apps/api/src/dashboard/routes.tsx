@@ -31,6 +31,7 @@ import {
 } from "../services/sessions.ts";
 import { createShareLink, resolveShareLink } from "../services/share-links.ts";
 import { systemStatus } from "../services/status.ts";
+import { getSeal } from "../services/verdicts.ts";
 import {
   fundingJson,
   parsePaymentHeader,
@@ -264,6 +265,7 @@ export function publicLinkRoutes(deps: AppDeps) {
         ledgerOk={await ledgerIntact(db)}
         anchor={await lastAnchor(db)}
         proofUrl={`/r/${c.req.param("token")}/proof.json`}
+        seal={(await getSeal(db, id)) ?? null}
       />,
     );
   });

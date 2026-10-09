@@ -9,3 +9,4 @@ export * from "./pricing.ts";
 export * from "./spec.ts";
 export * from "./spec-lint.ts";
 export * from "./state-machine.ts";
+export * from "./verdict.ts";

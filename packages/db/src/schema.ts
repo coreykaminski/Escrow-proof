@@ -417,6 +417,21 @@ export const decisionReviews = pgTable(
   ],
 );
 
+/**
+ * Content-free verdict records sealed into the ledger (core/verdict.ts). The salt is secret:
+ * only the agreement's parties receive it, so only they can link the public record to a deal.
+ */
+export const verdictSeals = pgTable("verdict_seals", {
+  agreementId: text("agreement_id")
+    .primaryKey()
+    .references(() => agreements.id),
+  salt: text("salt").notNull(),
+  subject: text("subject").notNull().unique(),
+  /** The ledger entry ("verdict.sealed") holding the record. */
+  ledgerSeq: integer("ledger_seq").notNull(),
+  sealedAt: ts("sealed_at").notNull(),
+});
+
 export const disputes = pgTable(
   "disputes",
   {

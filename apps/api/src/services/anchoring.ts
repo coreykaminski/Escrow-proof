@@ -3,6 +3,7 @@ import { MERKLE_SCHEME, rootOf, toHex } from "@proofdesk/core";
 import { appendLedgerEntry, type Db, ledgerLeaves, schema, verifyLedger } from "@proofdesk/db";
 import { desc, gt } from "drizzle-orm";
 import { getState, setState } from "./status.ts";
+import { sealVerdicts } from "./verdicts.ts";
 
 export type AnchorResult =
   | { status: "empty" }
@@ -16,6 +17,8 @@ export type AnchorResult =
  * recorded on the ledger, so the next anchor covers it too.
  */
 export async function anchorLedger(db: Db, gw: AnchorGateway, now: Date): Promise<AnchorResult> {
+  // Seal the day's final verdicts first, so the anchored tree head covers their records.
+  await sealVerdicts(db, now);
   const [head] = await db
     .select({ seq: schema.ledgerEntries.seq })
     .from(schema.ledgerEntries)

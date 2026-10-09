@@ -11,11 +11,14 @@ import {
   MERKLE_SCHEME,
   rootOf,
   toHex,
+  VERDICT_SCHEME,
+  type VerdictRecord,
 } from "@proofdesk/core";
 import { type Db, ledgerLeaves, listLedgerForAgreement, schema } from "@proofdesk/db";
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { ApiError } from "../errors.ts";
 import { lastAnchor } from "./anchoring.ts";
+import { getSeal, verdictEntries } from "./verdicts.ts";
 
 export async function headSize(db: Db): Promise<number> {
   const [head] = await db
@@ -31,16 +34,16 @@ export async function treeHead(db: Db, size?: number) {
   return { scheme: MERKLE_SCHEME, size: leaves.length, root: toHex(rootOf(leaves)) };
 }
 
+type Entry = Awaited<ReturnType<typeof listLedgerForAgreement>>[number];
+
 /**
- * Proof of an agreement's entries against the latest anchored tree head when it covers them
+ * Inclusion proofs for `entries` against the latest anchored tree head when it covers them
  * all, otherwise against the current (not yet anchored) head.
  */
-export async function ledgerProof(db: Db, agreementId: string): Promise<LedgerProof> {
-  const entries = await listLedgerForAgreement(db, agreementId);
-  const last = entries.at(-1);
-  if (!last) throw new ApiError(404, "not_found", "no ledger entries for this agreement");
+async function prove(db: Db, entries: Entry[]) {
+  const maxSeq = Math.max(0, ...entries.map((e) => e.seq));
   const anchor = await lastAnchor(db);
-  const anchored = anchor && anchor.seq >= last.seq ? anchor : null;
+  const anchored = anchor?.root && anchor.seq >= maxSeq ? anchor : null;
   const size = anchored ? anchored.seq : await headSize(db);
   const leaves = await ledgerLeaves(db, size);
   const root = toHex(rootOf(leaves));
@@ -48,9 +51,6 @@ export async function ledgerProof(db: Db, agreementId: string): Promise<LedgerPr
     throw new ApiError(500, "ledger_mismatch", "the ledger no longer matches its anchored root");
   }
   return {
-    object: "ledger_proof",
-    scheme: MERKLE_SCHEME,
-    agreement_id: agreementId,
     tree: {
       size,
       root,
@@ -73,6 +73,48 @@ export async function ledgerProof(db: Db, agreementId: string): Promise<LedgerPr
       leaf_index: e.seq - 1,
       inclusion: inclusionPath(leaves, e.seq - 1).map(toHex),
     })),
+  };
+}
+
+/**
+ * Proof of an agreement's ledger entries and, once sealed, of its public verdict record, with
+ * the salt that links the two (for the parties only).
+ */
+export async function ledgerProof(db: Db, agreementId: string): Promise<LedgerProof> {
+  const entries = await listLedgerForAgreement(db, agreementId);
+  if (entries.length === 0) {
+    throw new ApiError(404, "not_found", "no ledger entries for this agreement");
+  }
+  const seal = await getSeal(db, agreementId);
+  const [sealed] = seal
+    ? await db
+        .select()
+        .from(schema.ledgerEntries)
+        .where(eq(schema.ledgerEntries.seq, seal.ledgerSeq))
+    : [];
+  const proved = await prove(db, sealed ? [...entries, sealed] : entries);
+  const verdictEntry = sealed ? proved.entries.pop() : undefined;
+  return {
+    object: "ledger_proof",
+    scheme: MERKLE_SCHEME,
+    agreement_id: agreementId,
+    tree: proved.tree,
+    entries: proved.entries,
+    ...(seal && verdictEntry ? { verdict: { salt: seal.salt, entry: verdictEntry } } : {}),
+  };
+}
+
+/** The public feed of sealed, content-free verdict records, with inclusion proofs. */
+export async function verdictFeed(db: Db, p: { after: number; limit: number }) {
+  const rows = await verdictEntries(db, p.after, p.limit);
+  const proved = await prove(db, rows);
+  return {
+    object: "verdict_feed",
+    scheme: MERKLE_SCHEME,
+    record_scheme: VERDICT_SCHEME,
+    tree: proved.tree,
+    data: proved.entries.map((e) => ({ ...e, record: JSON.parse(e.payload) as VerdictRecord })),
+    next_after: rows.at(-1)?.seq ?? null,
   };
 }
 

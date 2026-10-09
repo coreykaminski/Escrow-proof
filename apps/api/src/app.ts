@@ -17,7 +17,7 @@ import { webhookRoutes } from "./routes/webhooks.ts";
 import { clientIp, MemoryRateLimitStore, rateLimit, securityHeaders } from "./security.ts";
 import { lastAnchor } from "./services/anchoring.ts";
 import { evaluatorListing } from "./services/evaluator-listing.ts";
-import { consistencyProof, treeHead } from "./services/proofs.ts";
+import { consistencyProof, treeHead, verdictFeed } from "./services/proofs.ts";
 
 /** Per-key and per-IP request limits (override with AppDeps.rateLimits). */
 export const DEFAULT_LIMITS = {
@@ -74,6 +74,7 @@ export function createApp(deps: AppDeps) {
   app.use("/pay/*", publicLinks);
   app.use("/r/*", publicLinks);
   app.use("/ledger/*", publicLinks);
+  app.use("/verdicts.json", publicLinks);
 
   app.get("/health", (c) => c.json({ ok: true }));
   app.get("/openapi.json", (c) => c.json(openApiDocument(deps.publicUrl)));
@@ -94,6 +95,17 @@ export function createApp(deps: AppDeps) {
           }
         : null,
     });
+  });
+  // Content-free verdict records (verdict/1), with inclusion proofs: anyone can fold them into
+  // their own transparency log without learning who transacted.
+  app.get("/verdicts.json", async (c) => {
+    const after = Number(c.req.query("after") ?? 0);
+    const limit = Number(c.req.query("limit") ?? 100);
+    if (!Number.isSafeInteger(after) || after < 0 || !(limit >= 1 && limit <= 500)) {
+      throw new ApiError(400, "validation_error", "after must be a ledger seq, limit 1-500");
+    }
+    c.header("Access-Control-Allow-Origin", "*");
+    return c.json(await verdictFeed(deps.db, { after, limit: Math.floor(limit) }));
   });
   app.get("/ledger/consistency.json", async (c) => {
     const from = Number(c.req.query("from"));

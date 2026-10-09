@@ -411,6 +411,7 @@ export function ReportPage(p: {
   ledgerOk: boolean;
   anchor?: { seq: number; tx_hash: string; chain_id: number; contract: string; at: Date } | null;
   proofUrl?: string;
+  seal?: { subject: string; ledgerSeq: number; sealedAt: Date } | null;
 }) {
   const { agreement: a, verification: v } = p.file;
   const decision = p.file.decisions.at(-1);
@@ -470,6 +471,15 @@ export function ReportPage(p: {
           ) : null}
         </dl>
       </div>
+      {p.seal ? (
+        <div class="panel small" style="margin-top:12px">
+          <strong>Public verdict record.</strong> This verdict is in the public feed (
+          <a href="/verdicts.json">/verdicts.json</a>) as subject{" "}
+          <span class="mono">{p.seal.subject.slice(0, 16)}…</span>, sealed {when(p.seal.sealedAt)}.
+          The record holds only the outcome, who decided and the day: no names, amounts or
+          documents. Only the proof file links it to this agreement.
+        </div>
+      ) : null}
       <h2>Criteria</h2>
       <Criteria agreement={a} results={v?.report.criteria} showEvidence={true} />
       <h2>Ledger entries</h2>

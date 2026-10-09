@@ -12,6 +12,7 @@ import { anchorLedger } from "./services/anchoring.ts";
 import { invoicePeriod, payReviewers } from "./services/billing.ts";
 import { tick } from "./services/scheduler.ts";
 import { checkLedger, getState, setState } from "./services/status.ts";
+import { sealVerdicts } from "./services/verdicts.ts";
 
 /**
  * The background worker: one scheduler tick a minute (deadlines, settlements, early capture,
@@ -102,10 +103,16 @@ while (!stop.signal.aborted) {
       lastLedgerCheck = Date.now();
       if (!result.ok) console.error(`LEDGER CHECK FAILED at seq ${result.seq}: ${result.reason}`);
     }
-    if (anchor && Date.now() - lastAnchor > ANCHOR_MS) {
-      const a = await anchorLedger(db, anchor, now);
+    if (Date.now() - lastAnchor > ANCHOR_MS) {
+      // Daily: seal final verdicts as content-free records, then anchor the tree head.
+      if (anchor) {
+        const a = await anchorLedger(db, anchor, now);
+        if (a.status === "anchored") console.log(`ledger anchored at seq ${a.seq}: ${a.tx_hash}`);
+      } else {
+        const { sealed } = await sealVerdicts(db, now);
+        if (sealed) console.log(`sealed ${sealed} verdict records`);
+      }
       lastAnchor = Date.now();
-      if (a.status === "anchored") console.log(`ledger anchored at seq ${a.seq}: ${a.tx_hash}`);
     }
     await monthlyBilling(now);
   } catch (err) {

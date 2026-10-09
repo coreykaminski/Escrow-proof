@@ -539,6 +539,16 @@ export const OPERATIONS: Op[] = [
   },
   {
     method: "get",
+    path: "/verdicts.json",
+    tag: "Ledger",
+    summary: "Public feed of content-free verdict records (verdict/1) with inclusion proofs",
+    description:
+      "Each record has a salted subject, the outcome, who decided (auto or human) and the day it became final; nothing that identifies the transaction. Only the parties hold the salt that links a record to their agreement (in their proof bundle).",
+    query: { after: "Ledger seq to continue after (default 0)", limit: "1-500, default 100" },
+    scope: "none",
+  },
+  {
+    method: "get",
     path: "/ledger/consistency.json",
     tag: "Ledger",
     summary: "Consistency proof that a later tree head extends an earlier one",
