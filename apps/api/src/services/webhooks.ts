@@ -329,6 +329,9 @@ export async function replayEndpoint(
   return row;
 }
 
+/** A literal prefix for LIKE: %, _ and \\ match only themselves (Postgres's default escape). */
+const escapeLike = (s: string) => s.replace(/[\\%_]/g, (ch) => `\\${ch}`);
+
 /** This account's events (ledger entries of its agreements), oldest first, for backfill/polling. */
 export async function listEvents(
   db: Db,
@@ -342,7 +345,7 @@ export async function listEvents(
       and(
         eq(schema.agreements.accountId, p.accountId),
         gt(schema.ledgerEntries.seq, p.after),
-        ...(p.type ? [like(schema.ledgerEntries.type, `${p.type.replace(/[%_\\]/g, "")}%`)] : []),
+        ...(p.type ? [like(schema.ledgerEntries.type, `${escapeLike(p.type)}%`)] : []),
       ),
     )
     .orderBy(asc(schema.ledgerEntries.seq))

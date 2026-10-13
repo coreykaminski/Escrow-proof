@@ -114,8 +114,14 @@ describe("webhook tools", () => {
     const next = (await h.call(h.keys.platformA, "GET", `/v1/events?after=${page.next_after}`))
       .body;
     expect(next.data.map((e: { type: string }) => e.type)).toEqual(["agreement.approve_spec"]);
-    const filtered = (await h.call(h.keys.platformA, "GET", "/v1/events?type=agreement.approve"))
-      .body;
-    expect(filtered.data).toHaveLength(1);
+    // Full type names include underscores, which must match literally (not as LIKE wildcards).
+    for (const type of ["agreement.approve", "agreement.approve_spec"]) {
+      const filtered = (await h.call(h.keys.platformA, "GET", `/v1/events?type=${type}`)).body;
+      expect(filtered.data.map((e: { type: string }) => e.type)).toEqual([
+        "agreement.approve_spec",
+      ]);
+    }
+    const wildcard = (await h.call(h.keys.platformA, "GET", "/v1/events?type=agreement_")).body;
+    expect(wildcard.data).toEqual([]);
   });
 });
