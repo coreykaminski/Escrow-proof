@@ -72,3 +72,20 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+
+  # Python SDK: unit tests, plus a full purchase against the seeded test server.
+  python-sdk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Start the seeded test server
+        run: |
+          npx tsx e2e/server.ts &
+          for i in $(seq 1 60); do curl -sf localhost:8799/health && break; sleep 1; done
+      - run: cd packages/sdk-python && python3 -m unittest discover -s tests -v

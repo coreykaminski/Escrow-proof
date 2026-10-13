@@ -20,3 +20,9 @@ e2e/.state.json
 test-results/
 playwright-report/
 packages/sdk/publish/
+
+# python
+__pycache__/
+*.egg-info/
+packages/sdk-python/build/
+packages/sdk-python/dist/

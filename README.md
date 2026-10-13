@@ -66,6 +66,7 @@ Set `DATABASE_URL=postgres://…` to use a real server. The server and CLI read 
 | `contracts` | Foundry project: `ProofDeskJobs.sol` (ERC-8183 job escrow, Proof Desk as evaluator only), unit/fuzz/invariant tests, deploy script. |
 | `packages/payments` | Card rail: Stripe gateway (Connect Express, manual-capture holds, transfers, webhooks), settlement planning and fees, an in-memory Stripe simulator for tests. |
 | `packages/sdk` | `@proofdesk/sdk`: typed TypeScript client (auto idempotency keys, retries) and webhook signature verification. No dependencies. |
+| `packages/sdk-python` | Python client (standard library only), same surface as the TypeScript SDK. |
 | `apps/api` | Hono HTTP API, API-key auth, idempotency, agreement service, outbound webhooks, OpenAPI, CLI. |
 | `apps/mcp` | MCP server so AI agents can create, fund and track protected purchases (`create_protected_purchase` …). |
 | `examples` | The quickstart as a runnable script, and TaskHub: a sample marketplace integrating Proof Desk end to end ([guide](docs/integrations/marketplace-guide.md)). |
