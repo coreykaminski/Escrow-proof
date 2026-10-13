@@ -50,7 +50,9 @@ export function securityHeaders(publicUrl?: string): MiddlewareHandler {
     await next();
     c.header("X-Content-Type-Options", "nosniff");
     c.header("Referrer-Policy", "no-referrer");
-    c.header("X-Frame-Options", "DENY");
+    // Only routes whose own policy allows framing (the embed widget) may be framed.
+    const routeCsp = c.res.headers.get("Content-Security-Policy") ?? "";
+    if (!/frame-ancestors (?!'none')/.test(routeCsp)) c.header("X-Frame-Options", "DENY");
     c.header("Cross-Origin-Opener-Policy", "same-origin");
     c.header("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=(self)");
     if (isHttps(c, publicUrl)) {

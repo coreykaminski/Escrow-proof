@@ -1,6 +1,7 @@
 import { templateCatalog } from "@proofdesk/spec-engine";
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
+import { embedRoutes } from "./dashboard/embed.tsx";
 import { dashboardRoutes, publicLinkRoutes } from "./dashboard/routes.tsx";
 import type { AppDeps, AppEnv } from "./env.ts";
 import { ApiError, errorResponse } from "./errors.ts";
@@ -81,6 +82,7 @@ export function createApp(deps: AppDeps) {
   });
   app.use("/pay/*", publicLinks);
   app.use("/r/*", publicLinks);
+  app.use("/embed/*", publicLinks);
   app.use("/ledger/*", publicLinks);
   app.use("/verdicts.json", publicLinks);
 
@@ -141,6 +143,7 @@ export function createApp(deps: AppDeps) {
   });
   app.route("/webhooks", webhookRoutes(deps));
   app.route("/dashboard", dashboardRoutes(deps));
+  app.route("/embed", embedRoutes(deps));
   app.route("/", publicLinkRoutes(deps));
 
   app.use(

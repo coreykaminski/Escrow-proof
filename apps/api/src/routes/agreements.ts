@@ -292,7 +292,18 @@ export function agreementRoutes(deps: AppDeps) {
       now: now(),
     });
     const base = deps.publicUrl ?? new URL(c.req.url).origin;
-    return c.json({ url: `${base}/r/${token}`, expires_at: expiresAt.toISOString() }, 201);
+    return c.json(
+      {
+        url: `${base}/r/${token}`,
+        expires_at: expiresAt.toISOString(),
+        // Drop-in widget for the platform's own pages (docs/integrations/embed.md).
+        embed: {
+          iframe_url: `${base}/embed/r/${token}`,
+          html: `<script src="${base}/embed/v1.js" async></script>\n<div data-proofdesk-verdict="${token}"></div>`,
+        },
+      },
+      201,
+    );
   });
 
   /**

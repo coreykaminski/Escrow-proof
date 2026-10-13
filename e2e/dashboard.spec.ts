@@ -10,6 +10,7 @@ const state = () =>
     escalated: string;
     final: string;
     reportPath: string;
+    hostPage: string;
   };
 
 /**
@@ -118,5 +119,26 @@ test("public pages work without signing in: accuracy, pricing, status", async ({
   const status = await page.goto("/status");
   expect([200, 503]).toContain(status?.status());
   await expect(page.getByText(/operational|degraded/i).first()).toBeVisible();
+  expect(problems).toEqual([]);
+});
+
+test("a marketplace on another site embeds the verdict widget", async ({ page }) => {
+  const s = state();
+  const problems = watchConsole(page);
+  await page.goto(s.hostPage);
+  const frame = page.frameLocator('iframe[title="Proof Desk verdict"]');
+  await expect(frame.getByText("Brief on grid storage")).toBeVisible();
+  await expect(frame.getByText("Passed")).toBeVisible();
+  await expect(frame.getByText("Decided by a human reviewer")).toBeVisible();
+  // The iframe resized itself to fit (from the 160px placeholder).
+  const iframe = page.locator('iframe[title="Proof Desk verdict"]');
+  await expect.poll(async () => (await iframe.boundingBox())?.height ?? 0).not.toBe(160);
+  await expect(page.locator("#after")).toBeVisible();
+  // The full report opens in a new tab.
+  const [popup] = await Promise.all([
+    page.waitForEvent("popup"),
+    frame.getByRole("link", { name: /Full report and proof/ }).click(),
+  ]);
+  await expect(popup.getByText("hash chain intact")).toBeVisible();
   expect(problems).toEqual([]);
 });

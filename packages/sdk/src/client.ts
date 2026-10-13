@@ -235,13 +235,16 @@ export class ProofDesk {
         `/v1/agreements/${enc(id)}/payment-links`,
         p,
       ),
-    /** A public, read-only verdict report (never shows the documents). */
+    /**
+     * A public, read-only verdict report (never shows the documents), plus `embed.html`: a
+     * drop-in widget showing the verdict inside your own pages.
+     */
     createReportLink: (id: string, p: { expires_in_days?: number } = {}) =>
-      this.request<{ url: string; expires_at: string }>(
-        "POST",
-        `/v1/agreements/${enc(id)}/report-links`,
-        p,
-      ),
+      this.request<{
+        url: string;
+        expires_at: string;
+        embed: { iframe_url: string; html: string };
+      }>("POST", `/v1/agreements/${enc(id)}/report-links`, p),
     deliver: (id: string, artifacts: Artifact[]) =>
       this.request<{ delivery_id: string; manifest_hash: string; agreement: Agreement }>(
         "POST",

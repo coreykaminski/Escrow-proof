@@ -78,6 +78,23 @@ await call(ops.apiKey, "POST", `/v1/ops/agreements/${final}/decide`, {
 await call(ops.apiKey, "POST", `/v1/ops/agreements/${final}/settle`, { settlement_ref: "e2e" });
 const link = await call(platform.apiKey, "POST", `/v1/agreements/${final}/report-links`, {});
 
+// A stand-in for a customer's marketplace on another origin, embedding the verdict widget.
+const HOST_PORT = PORT - 1;
+const token = new URL(link.url).pathname.split("/").pop();
+serve({
+  port: HOST_PORT,
+  fetch: () =>
+    new Response(
+      `<!doctype html><html><head><meta charset="utf-8"><title>Marketplace</title></head><body>
+<h1>Order #1042</h1>
+<script src="http://localhost:${PORT}/embed/v1.js" async></script>
+<div data-proofdesk-verdict="${token}" data-theme="light"></div>
+<p id="after">More marketplace content</p>
+</body></html>`,
+      { headers: { "Content-Type": "text/html; charset=utf-8" } },
+    ),
+});
+
 serve({ fetch: app.fetch, port: PORT }, () => {
   writeFileSync(
     join(import.meta.dirname, ".state.json"),
@@ -88,6 +105,7 @@ serve({ fetch: app.fetch, port: PORT }, () => {
       escalated,
       final,
       reportPath: new URL(link.url).pathname,
+      hostPage: `http://localhost:${HOST_PORT}/`,
     }),
   );
   console.log(`e2e server on http://localhost:${PORT}`);
