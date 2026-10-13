@@ -27,7 +27,7 @@ const pkg = {
   files: ["dist", "README.md"],
   sideEffects: false,
   engines: { node: ">=18" },
-  keywords: ["proof desk", "conditional payments", "verification", "escrow alternative", "agents", "mcp"],
+  keywords: ["proof desk", "conditional payments", "verification", "agents", "mcp"],
 };
 writeFileSync(join(out, "package.json"), `${JSON.stringify(pkg, null, 2)}\n`);
 copyFileSync(join(dir, "README.md"), join(out, "README.md"));
