@@ -19,3 +19,4 @@ contracts/broadcast/*/31337/
 e2e/.state.json
 test-results/
 playwright-report/
+packages/sdk/publish/
