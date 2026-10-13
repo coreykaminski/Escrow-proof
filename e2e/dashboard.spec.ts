@@ -156,3 +156,15 @@ test("a developer signs up for a sandbox key and uses it to sign in", async ({ p
   await expect(page).toHaveURL(/\/dashboard\/?$/);
   expect(problems).toEqual([]);
 });
+
+test("a platform sees its usage and billing", async ({ page }) => {
+  const problems = watchConsole(page);
+  await signIn(page, state().platformKey);
+  await page.getByRole("link", { name: "Usage and billing" }).click();
+  await expect(page.getByRole("heading", { name: "Usage and billing" })).toBeVisible();
+  await expect(page.getByText("Test mode (free)")).toBeVisible();
+  await page.getByLabel("Invoices go to").fill("billing@acme.example");
+  await page.getByRole("button", { name: "Save" }).click();
+  await expect(page.getByText("Invoices will go to billing@acme.example.")).toBeVisible();
+  expect(problems).toEqual([]);
+});

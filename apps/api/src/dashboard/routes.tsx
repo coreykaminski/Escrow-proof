@@ -1,5 +1,5 @@
 import { authorizationNonce, networkName } from "@proofdesk/chain";
-import { AGREEMENT_STATES, PRICING, TransitionError } from "@proofdesk/core";
+import { AGREEMENT_STATES, billingPeriod, PRICING, TransitionError } from "@proofdesk/core";
 import { schema } from "@proofdesk/db";
 import { desc, eq } from "drizzle-orm";
 import { type Context, Hono } from "hono";
@@ -12,6 +12,7 @@ import { isHttps } from "../security.ts";
 import { accuracyReport } from "../services/accuracy.ts";
 import { applyEvent, listAgreements } from "../services/agreements.ts";
 import { lastAnchor } from "../services/anchoring.ts";
+import { usageReport } from "../services/billing.ts";
 import { ledgerIntact, loadCaseFile, reviewerStats, reviewQueue } from "../services/case-file.ts";
 import {
   confirmOnchainFunding,
@@ -42,6 +43,7 @@ import {
 import {
   AccuracyPage,
   AgreementsPage,
+  BillingPage,
   CasePage,
   LoginPage,
   ONCHAIN_JS,
@@ -219,6 +221,60 @@ export function dashboardRoutes(deps: AppDeps) {
           : "Decision recorded.",
     });
   });
+
+  r.get("/billing", async (c) => {
+    const s = c.get("session");
+    return c.html(await billingPage(s, c.req.query("period")));
+  });
+
+  r.post("/billing/settings", async (c) => {
+    const s = c.get("session");
+    const form = await c.req.parseBody();
+    const email = String(form.email ?? "").trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+      return c.html(
+        await billingPage(s, undefined, { error: "Enter a valid email address." }),
+        400,
+      );
+    }
+    await db
+      .update(schema.accounts)
+      .set({ billingEmail: email })
+      .where(eq(schema.accounts.id, s.accountId));
+    return c.html(await billingPage(s, undefined, { ok: `Invoices will go to ${email}.` }));
+  });
+
+  async function billingPage(
+    s: Session,
+    period: string | undefined,
+    flash?: { ok?: string; error?: string },
+  ) {
+    const current = billingPeriod(now());
+    const periods = Array.from({ length: 12 }, (_, i) => {
+      const d = new Date(Date.UTC(now().getUTCFullYear(), now().getUTCMonth() - i, 1));
+      return billingPeriod(d);
+    });
+    const chosen = period && periods.includes(period) ? period : current;
+    const [usage, invoices, [account]] = await Promise.all([
+      usageReport(db, s.accountId, chosen),
+      db
+        .select()
+        .from(schema.invoices)
+        .where(eq(schema.invoices.accountId, s.accountId))
+        .orderBy(desc(schema.invoices.period)),
+      db.select().from(schema.accounts).where(eq(schema.accounts.id, s.accountId)),
+    ]);
+    return (
+      <BillingPage
+        viewer={viewerOf(s)}
+        usage={usage}
+        invoices={invoices}
+        billingEmail={account?.billingEmail ?? null}
+        periods={periods}
+        {...(flash ? { flash } : {})}
+      />
+    );
+  }
 
   r.get("/review", async (c) => {
     const s = c.get("session");

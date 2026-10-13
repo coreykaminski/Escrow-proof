@@ -1,6 +1,8 @@
+import type { schema } from "@proofdesk/db";
 import type { CodeReport, DataReport } from "@proofdesk/verifier";
 import type { GOLDEN_RESULTS } from "../services/accuracy.ts";
 import type { AgreementRow } from "../services/agreements.ts";
+import type { usageReport } from "../services/billing.ts";
 import type { CaseFile, reviewerStats, reviewQueue } from "../services/case-file.ts";
 import { Criteria, Flash, Ledger, money, OutcomePill, Page, Status, when } from "./ui.tsx";
 
@@ -1034,6 +1036,169 @@ export function AccuracyPage(p: {
                 <td>{v.reviewed}</td>
                 <td>{v.disputed}</td>
                 <td>{v.published ? pct(v.overturn_rate) : "not enough data"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </Page>
+  );
+}
+
+type Usage = Awaited<ReturnType<typeof usageReport>>;
+
+/** A platform's own usage, fees and invoices (what Proof Desk bills it). */
+export function BillingPage(p: {
+  viewer: Viewer;
+  usage: Usage;
+  invoices: (typeof schema.invoices.$inferSelect)[];
+  billingEmail: string | null;
+  periods: string[];
+  flash?: { ok?: string; error?: string };
+}) {
+  const usd = (cents: number) => money(cents, "usd");
+  const u = p.usage;
+  return (
+    <Page title="Usage and billing" session={p.viewer}>
+      <Flash ok={p.flash?.ok} error={p.flash?.error} />
+      <h1>Usage and billing</h1>
+      <form method="get" class="row" style="margin-bottom:12px">
+        <label class="small" for="period">
+          Month
+        </label>
+        <select id="period" name="period">
+          {p.periods.map((m) => (
+            <option value={m} selected={m === u.period}>
+              {m}
+            </option>
+          ))}
+        </select>
+        <button type="submit">Show</button>
+        <span class="small muted">
+          Plan: {u.plan === "verify_only" ? "Verify API" : "Standard"}
+        </span>
+      </form>
+      <div class="grid2">
+        <div class="panel">
+          <h2 style="margin-top:0">Live, invoiced monthly</h2>
+          <dl class="kv">
+            <dt>Verification fees</dt>
+            <dd>{usd(u.live.verification_fees)}</dd>
+            <dt>Dispute fees</dt>
+            <dd>{usd(u.live.dispute_fees)}</dd>
+            {u.live.minimum_top_up > 0 ? (
+              <>
+                <dt>Monthly minimum top-up</dt>
+                <dd>{usd(u.live.minimum_top_up)}</dd>
+              </>
+            ) : null}
+            <dt>
+              <strong>To be invoiced</strong>
+            </dt>
+            <dd>
+              <strong>{usd(u.live.invoiced_total)}</strong>
+            </dd>
+            <dt>Conditional payment fees</dt>
+            <dd>
+              {usd(u.live.conditional_payment_fees_collected)}{" "}
+              <span class="small muted">(kept at settlement, not invoiced)</span>
+            </dd>
+          </dl>
+        </div>
+        <div class="panel">
+          <h2 style="margin-top:0">Test mode (free)</h2>
+          <dl class="kv">
+            <dt>Verification fees</dt>
+            <dd>{usd(u.test.verification_fees)}</dd>
+            <dt>Dispute fees</dt>
+            <dd>{usd(u.test.dispute_fees)}</dd>
+          </dl>
+          <form method="post" action="/dashboard/billing/settings" style="margin-top:14px">
+            <input type="hidden" name="csrf" value={p.viewer.csrfToken} />
+            <label class="small" for="billing-email">
+              Invoices go to
+            </label>
+            <div class="row">
+              <input
+                id="billing-email"
+                name="email"
+                type="email"
+                required
+                value={p.billingEmail ?? ""}
+                placeholder="billing@yourcompany.com"
+              />
+              <button type="submit">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <h2>Charges this month</h2>
+      {u.events.length === 0 ? (
+        <div class="panel empty">No charges in {u.period}.</div>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>When</th>
+              <th>What</th>
+              <th>Agreement</th>
+              <th>Amount</th>
+              <th>Mode</th>
+            </tr>
+          </thead>
+          <tbody>
+            {u.events
+              .slice()
+              .sort((a, b) => b.occurred_at.localeCompare(a.occurred_at))
+              .slice(0, 200)
+              .map((e) => (
+                <tr>
+                  <td class="small">{when(e.occurred_at)}</td>
+                  <td class="small">{e.description}</td>
+                  <td class="mono">
+                    {e.agreement_id ? (
+                      <a href={`/dashboard/agreements/${e.agreement_id}`}>{e.agreement_id}</a>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
+                  <td>{usd(e.amount)}</td>
+                  <td class="small muted">{e.livemode ? "live" : "test"}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      )}
+
+      <h2>Invoices</h2>
+      {p.invoices.length === 0 ? (
+        <div class="panel empty">No invoices yet.</div>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Status</th>
+              <th>Total</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {p.invoices.map((i) => (
+              <tr>
+                <td>{i.period}</td>
+                <td>
+                  <Status status={i.status} />
+                </td>
+                <td>{usd(i.total)}</td>
+                <td>
+                  {i.hostedUrl ? (
+                    <a href={i.hostedUrl} target="_blank" rel="noopener">
+                      View and pay ↗
+                    </a>
+                  ) : null}
+                </td>
               </tr>
             ))}
           </tbody>

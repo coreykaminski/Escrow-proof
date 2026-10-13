@@ -55,6 +55,7 @@ export function Page(p: {
             {p.session ? (
               <>
                 <a href="/dashboard">Agreements</a>
+                <a href="/dashboard/billing">Usage and billing</a>
                 {p.session.isOps ? (
                   <>
                     <a href="/dashboard/review">Review queue</a>
