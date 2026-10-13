@@ -28,6 +28,10 @@ export const accounts = pgTable("accounts", {
   shadowMode: boolean("shadow_mode").notNull().default(false),
   /** Days after an agreement is final before its documents are deleted; null = the default. */
   retentionDays: integer("retention_days"),
+  /** Signed up on its own for a sandbox (test keys only, daily quotas). */
+  selfServe: boolean("self_serve").notNull().default(false),
+  /** Who signed up (self-serve accounts). */
+  contactEmail: text("contact_email"),
   createdAt: ts("created_at").notNull().defaultNow(),
 });
 

@@ -21,6 +21,7 @@ import {
 } from "./agreements.ts";
 import { recordVerificationFee } from "./billing.ts";
 import { listInputs } from "./inputs.ts";
+import { assertSandboxQuota } from "./signup.ts";
 
 /** Runs the translation verifier; injected so tests can use a stubbed model caller. */
 export type TranslationVerifier = (input: TranslationInput) => Promise<VerificationReport>;
@@ -74,6 +75,8 @@ export async function verifyAgreement(
     );
   }
 
+  // Self-serve sandboxes have a daily allowance of verifier runs (they cost compute and models).
+  await assertSandboxQuota(db, agreement.accountId, "checks", params.now());
   const inputs = await listInputs(db, agreement.id);
   const [delivery] = await listDeliveries(db, agreement.id);
   if (!delivery) throw new ApiError(409, "no_delivery", "nothing has been delivered");

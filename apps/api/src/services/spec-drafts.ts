@@ -7,6 +7,7 @@ import {
 } from "@proofdesk/spec-engine";
 import { ApiError } from "../errors.ts";
 import { type AgreementRow, createAgreement } from "./agreements.ts";
+import { assertSandboxQuota } from "./signup.ts";
 
 export interface DraftAgreementInput {
   accountId: string;
@@ -35,6 +36,7 @@ export async function draftAgreement(
       "spec drafting isn't configured on this server (set ANTHROPIC_API_KEY)",
     );
   }
+  await assertSandboxQuota(db, input.accountId, "drafts", input.now);
   const { output, meta } = await drafter.draft({
     request: input.terms.request,
     vertical: input.terms.vertical,

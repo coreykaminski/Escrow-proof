@@ -46,6 +46,7 @@ export interface AppDeps {
   rateLimits?: Partial<{
     apiPerMinute: number;
     loginPer15Minutes: number;
+    signupsPerHour: number;
     publicPerMinute: number;
   }>;
   rateLimitStore?: RateLimitStore;
@@ -57,6 +58,8 @@ export interface AppDeps {
   metrics?: RequestMetrics;
   /** Pages a human on server errors (ALERT_WEBHOOK_URL). */
   alerter?: Alerter;
+  /** Self-serve sandbox sign-up at /signup (default on; SELF_SERVE_SIGNUP=off). */
+  selfServeSignup?: boolean;
 }
 
 export interface AuthContext {

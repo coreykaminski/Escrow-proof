@@ -142,3 +142,17 @@ test("a marketplace on another site embeds the verdict widget", async ({ page })
   await expect(popup.getByText("hash chain intact")).toBeVisible();
   expect(problems).toEqual([]);
 });
+
+test("a developer signs up for a sandbox key and uses it to sign in", async ({ page }) => {
+  const problems = watchConsole(page);
+  await page.goto("/signup");
+  await page.getByLabel("Your company or project").fill("Acme Agents");
+  await page.getByLabel("Email").fill("dev@acme.example");
+  await page.getByRole("button", { name: "Create my sandbox key" }).click();
+  await expect(page.getByRole("heading", { name: "Your sandbox key" })).toBeVisible();
+  const key = (await page.locator("pre").first().textContent())?.trim() as string;
+  expect(key).toMatch(/^pd_test_/);
+  await signIn(page, key);
+  await expect(page).toHaveURL(/\/dashboard\/?$/);
+  expect(problems).toEqual([]);
+});

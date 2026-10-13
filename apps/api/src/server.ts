@@ -46,6 +46,7 @@ const app = createApp({
   allowPrivateNetwork: allowPrivateNetworkFromEnv(),
   reviewerRates: reviewerRatesFromEnv(),
   trustProxy: process.env.TRUST_PROXY === "1" || Boolean(process.env.FLY_APP_NAME),
+  selfServeSignup: process.env.SELF_SERVE_SIGNUP !== "off",
   // Shared across instances unless RATE_LIMIT_STORE=memory (single-process development).
   ...(process.env.RATE_LIMIT_STORE === "memory"
     ? {}

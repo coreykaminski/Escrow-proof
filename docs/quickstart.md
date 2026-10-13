@@ -1,5 +1,7 @@
 # Proof Desk quickstart
 
+> Using a hosted Proof Desk? Get a sandbox key at `/signup` (or `POST /sandbox/signup` with `{name, email}`) and skip step 1.
+
 Get a payment that is only released when the work passes its checks, end to end in the sandbox, in about 15 minutes.
 
 **You'll need:** Node 22+ and git. No Stripe or Anthropic account is needed for the sandbox.

@@ -14,6 +14,7 @@ import { billingRoutes, opsBillingRoutes } from "./routes/billing.ts";
 import { opsRoutes } from "./routes/ops.ts";
 import { reviewRoutes } from "./routes/reviews.ts";
 import { sellerRoutes } from "./routes/sellers.ts";
+import { signupRoutes } from "./routes/signup.tsx";
 import { testHelperRoutes } from "./routes/test-helpers.ts";
 import { verificationRoutes } from "./routes/verifications.ts";
 import { webhookEndpointRoutes } from "./routes/webhook-endpoints.ts";
@@ -29,6 +30,8 @@ export const DEFAULT_LIMITS = {
   apiPerMinute: 600,
   /** Dashboard sign-in attempts per 15 minutes per IP. */
   loginPer15Minutes: 10,
+  /** Self-serve sandbox sign-ups per hour per IP. */
+  signupsPerHour: 5,
   /** Share and payment link requests per minute per IP. */
   publicPerMinute: 120,
 };
@@ -73,6 +76,15 @@ export function createApp(deps: AppDeps) {
     store,
   });
   app.use("/dashboard/login", login);
+  const signups = rateLimit({
+    name: "signup",
+    limit: limits.signupsPerHour,
+    windowMs: 3_600_000,
+    key: (c) => (c.req.method === "POST" ? ip(c) : null),
+    store,
+  });
+  app.use("/signup", signups);
+  app.use("/sandbox/signup", signups);
   const publicLinks = rateLimit({
     name: "public",
     limit: limits.publicPerMinute,
@@ -144,6 +156,7 @@ export function createApp(deps: AppDeps) {
   app.route("/webhooks", webhookRoutes(deps));
   app.route("/dashboard", dashboardRoutes(deps));
   app.route("/embed", embedRoutes(deps));
+  app.route("/", signupRoutes(deps));
   app.route("/", publicLinkRoutes(deps));
 
   app.use(

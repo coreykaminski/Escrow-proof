@@ -32,6 +32,7 @@ import {
   SellerWalletBody,
   SettleBody,
 } from "./routes/schemas.ts";
+import { SignupBody } from "./routes/signup.tsx";
 import { SimulateDecisionBody } from "./routes/test-helpers.ts";
 import { VerifyBody } from "./routes/verifications.ts";
 import { CreateEndpointBody } from "./routes/webhook-endpoints.ts";
@@ -552,6 +553,17 @@ export const OPERATIONS: Op[] = [
     scope: "ops",
   },
   { method: "get", path: "/health", tag: "Meta", summary: "Health check", scope: "none" },
+  {
+    method: "post",
+    path: "/sandbox/signup",
+    tag: "Meta",
+    summary: "Self-serve sandbox account: returns a test-mode API key, shown once",
+    description:
+      "Test keys only, with daily limits on verifications and AI spec drafts. Rate-limited per IP. Live keys are set up with Proof Desk.",
+    body: SignupBody,
+    scope: "none",
+    created: true,
+  },
   {
     method: "get",
     path: "/ledger/checkpoint.json",
