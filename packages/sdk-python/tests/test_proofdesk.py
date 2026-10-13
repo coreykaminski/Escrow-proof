@@ -125,6 +125,14 @@ class IntegrationTests(unittest.TestCase):
         with self.assertRaises(ProofDeskError) as ctx:
             pd.agreements.approve_spec(agr["id"], "0" * 64)
         self.assertEqual(ctx.exception.status, 409)
+        # A verify-only key for an agent: it can list templates but not agreements.
+        created = pd.api_keys.create(name="py-agent", scopes=["verify"])
+        agent = ProofDesk(api_key=created["key"], base_url=pd.base_url)
+        self.assertTrue(agent.spec_templates.list()["data"])
+        with self.assertRaises(ProofDeskError) as denied:
+            agent.agreements.list()
+        self.assertEqual(denied.exception.code, "insufficient_scope")
+        self.assertEqual(pd.api_keys.revoke(created["id"])["status"], "revoked")
 
 
 if __name__ == "__main__":

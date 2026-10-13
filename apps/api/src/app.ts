@@ -10,6 +10,7 @@ import { RequestMetrics, requestObservability, silentLogger } from "./observabil
 import { DOCS_CSP, DOCS_HTML, openApiDocument } from "./openapi.ts";
 import { a2aRoutes, agentCard } from "./routes/a2a.ts";
 import { agreementRoutes } from "./routes/agreements.ts";
+import { apiKeyRoutes } from "./routes/api-keys.ts";
 import { billingRoutes, opsBillingRoutes } from "./routes/billing.ts";
 import { opsRoutes } from "./routes/ops.ts";
 import { reviewRoutes } from "./routes/reviews.ts";
@@ -181,14 +182,16 @@ export function createApp(deps: AppDeps) {
       key: (c) => (c.get("auth") as { apiKeyId: string }).apiKeyId,
       store,
     }),
-    requireScope("platform"),
+    requireScope("platform", "verify"),
   );
   app.route("/a2a", a2aRoutes(deps));
   app.use("/v1/agreements/*", requireScope("platform"));
   app.use("/v1/agreements", requireScope("platform"));
   app.use("/v1/sellers/*", requireScope("platform"));
-  app.use("/v1/verifications/*", requireScope("platform"));
-  app.use("/v1/verifications", requireScope("platform"));
+  app.use("/v1/verifications/*", requireScope("platform", "verify"));
+  app.use("/v1/verifications", requireScope("platform", "verify"));
+  app.use("/v1/api-keys/*", requireScope("platform", "ops"));
+  app.use("/v1/api-keys", requireScope("platform", "ops"));
   app.use("/v1/webhook-endpoints/*", requireScope("platform"));
   app.use("/v1/webhook-endpoints", requireScope("platform"));
   app.use("/v1/test_helpers/*", requireScope("platform"));
@@ -199,6 +202,7 @@ export function createApp(deps: AppDeps) {
   app.get("/v1/spec-templates", (c) => c.json({ object: "list", data: templateCatalog() }));
   app.route("/v1/agreements", agreementRoutes(deps));
   app.route("/v1/sellers", sellerRoutes(deps));
+  app.route("/v1/api-keys", apiKeyRoutes(deps));
   app.route("/v1/verifications", verificationRoutes(deps));
   app.route("/v1/webhook-endpoints", webhookEndpointRoutes(deps));
   app.route("/v1/test_helpers", testHelperRoutes(deps));

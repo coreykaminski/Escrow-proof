@@ -1,5 +1,6 @@
 import type { z } from "zod";
 import { z as zod } from "zod";
+import { CreateKeyBody, RollKeyBody } from "./routes/api-keys.ts";
 import {
   BillingSettingsBody,
   PeriodBody,
@@ -294,6 +295,32 @@ export const OPERATIONS: Op[] = [
     body: ReviewerOnboardingBody,
     scope: "ops",
     created: true,
+  },
+  // API keys
+  { method: "get", path: "/v1/api-keys", tag: "API keys", summary: "This account's API keys" },
+  {
+    method: "post",
+    path: "/v1/api-keys",
+    tag: "API keys",
+    summary: "Create a key (shown once); scopes no wider than the calling key's",
+    description:
+      'Scope "verify" makes a key that can only use the Verify API, A2A and templates: safe to give to an agent.',
+    body: CreateKeyBody,
+    created: true,
+  },
+  {
+    method: "post",
+    path: "/v1/api-keys/{id}/roll",
+    tag: "API keys",
+    summary: "Replace a key; the old one keeps working for a grace period (default 24 h)",
+    body: RollKeyBody,
+    created: true,
+  },
+  {
+    method: "delete",
+    path: "/v1/api-keys/{id}",
+    tag: "API keys",
+    summary: "Revoke a key (not the one making the request)",
   },
   // Shadow mode (pilots)
   {

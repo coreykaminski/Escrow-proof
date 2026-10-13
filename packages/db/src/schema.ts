@@ -51,11 +51,19 @@ export const apiKeys = pgTable(
     createdAt: ts("created_at").notNull().defaultNow(),
     lastUsedAt: ts("last_used_at"),
     revokedAt: ts("revoked_at"),
+    /** A label the platform chose ("production server", "agent-7"). */
+    name: text("name"),
+    /** After this the key stops working (a rolled key's grace period); null = no expiry. */
+    expiresAt: ts("expires_at"),
   },
   (t) => [index("api_keys_account_idx").on(t.accountId)],
 );
 
-export type ApiScope = "platform" | "ops";
+/**
+ * platform: the full platform API. ops: Proof Desk staff. verify: only the Verify API, A2A and
+ * templates (a key safe to hand to an agent: it can't move money or touch agreements).
+ */
+export type ApiScope = "platform" | "ops" | "verify";
 
 /** Provenance of an agreement's current spec; snake_case because it's returned as-is. */
 export type SpecSource =

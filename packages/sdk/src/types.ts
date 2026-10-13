@@ -138,6 +138,22 @@ export interface Verification {
   created_at: string;
 }
 
+export interface ApiKey {
+  id: string;
+  object: "api_key";
+  name: string | null;
+  prefix: string;
+  mode: "test" | "live";
+  scopes: ("platform" | "ops" | "verify")[];
+  status: "active" | "expired" | "revoked";
+  /** The key making this request. */
+  current: boolean;
+  created_at: string;
+  last_used_at: string | null;
+  expires_at: string | null;
+  revoked_at: string | null;
+}
+
 /** A Verify API job: work checked against criteria with no payment held. */
 export interface VerificationJob {
   id: string;

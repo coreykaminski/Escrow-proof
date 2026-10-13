@@ -1,6 +1,7 @@
 import type {
   Agreement,
   AgreementStatus,
+  ApiKey,
   Artifact,
   Delivery,
   Hold,
@@ -262,6 +263,23 @@ export class ProofDesk {
       this.request<List<LedgerEntry>>("GET", `/v1/agreements/${enc(id)}/ledger`),
     verifications: (id: string) =>
       this.request<List<Verification>>("GET", `/v1/agreements/${enc(id)}/verifications`),
+  };
+
+  /** This account's API keys. New and rolled keys are returned in `key`, once. */
+  readonly apiKeys = {
+    list: () => this.request<List<ApiKey>>("GET", "/v1/api-keys"),
+    /** scopes: ["verify"] makes a key that can only check work (safe for an agent). */
+    create: (
+      p: { name?: string; scopes?: ("platform" | "ops" | "verify")[]; mode?: "test" | "live" } = {},
+    ) => this.request<ApiKey & { key: string }>("POST", "/v1/api-keys", p),
+    /** A new key with the same settings; the old one works for `expire_old_in_hours` (24). */
+    roll: (id: string, p: { expire_old_in_hours?: number } = {}) =>
+      this.request<{ key: ApiKey & { key: string }; old_key: ApiKey }>(
+        "POST",
+        `/v1/api-keys/${enc(id)}/roll`,
+        p,
+      ),
+    revoke: (id: string) => this.request<ApiKey>("DELETE", `/v1/api-keys/${enc(id)}`),
   };
 
   /** Ready-made acceptance criteria for common jobs. */

@@ -163,6 +163,24 @@ class _Sellers(_Namespace):
         return self._c.request("PUT", f"/v1/sellers/{_enc(seller_ref)}/wallet", {"address": address})
 
 
+class _ApiKeys(_Namespace):
+    """This account's API keys. New and rolled keys are returned in `key`, once."""
+
+    def list(self) -> Json:
+        return self._c.request("GET", "/v1/api-keys")
+
+    def create(self, *, name: Optional[str] = None, scopes: Optional[List[str]] = None, mode: Optional[str] = None) -> Json:
+        """scopes=["verify"] makes a key that can only check work (safe to give an agent)."""
+        body = {k: v for k, v in {"name": name, "scopes": scopes, "mode": mode}.items() if v is not None}
+        return self._c.request("POST", "/v1/api-keys", body)
+
+    def roll(self, key_id: str, *, expire_old_in_hours: int = 24) -> Json:
+        return self._c.request("POST", f"/v1/api-keys/{_enc(key_id)}/roll", {"expire_old_in_hours": expire_old_in_hours})
+
+    def revoke(self, key_id: str) -> Json:
+        return self._c.request("DELETE", f"/v1/api-keys/{_enc(key_id)}")
+
+
 class _TestHelpers(_Namespace):
     """Sandbox only (pd_test_ keys): drive an agreement without Proof Desk ops."""
 
@@ -199,6 +217,7 @@ class ProofDesk:
         self.spec_templates = _SpecTemplates(self)
         self.webhook_endpoints = _WebhookEndpoints(self)
         self.sellers = _Sellers(self)
+        self.api_keys = _ApiKeys(self)
         self.test_helpers = _TestHelpers(self)
 
     @property

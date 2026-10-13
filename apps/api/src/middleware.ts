@@ -1,14 +1,14 @@
 import { sha256Hex } from "@proofdesk/core";
 import { type ApiScope, schema } from "@proofdesk/db";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, gt, isNull, or } from "drizzle-orm";
 import type { MiddlewareHandler } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { hashApiKey } from "./accounts.ts";
 import type { AppDeps, AppEnv } from "./env.ts";
 import { ApiError } from "./errors.ts";
 
-/** The active (unrevoked) key matching a plaintext API key, or undefined. */
-export async function findApiKey(db: AppDeps["db"], key: string) {
+/** The active key (not revoked, not past its expiry) matching a plaintext API key. */
+export async function findApiKey(db: AppDeps["db"], key: string, now: Date = new Date()) {
   const [row] = await db
     .select({
       id: schema.apiKeys.id,
@@ -17,7 +17,13 @@ export async function findApiKey(db: AppDeps["db"], key: string) {
       scopes: schema.apiKeys.scopes,
     })
     .from(schema.apiKeys)
-    .where(and(eq(schema.apiKeys.keyHash, hashApiKey(key)), isNull(schema.apiKeys.revokedAt)))
+    .where(
+      and(
+        eq(schema.apiKeys.keyHash, hashApiKey(key)),
+        isNull(schema.apiKeys.revokedAt),
+        or(isNull(schema.apiKeys.expiresAt), gt(schema.apiKeys.expiresAt, now)),
+      ),
+    )
     .limit(1);
   return row;
 }
@@ -30,7 +36,7 @@ export function authenticate({ db, now }: AppDeps): MiddlewareHandler<AppEnv> {
       throw new ApiError(401, "unauthenticated", "missing or malformed API key");
     }
 
-    const row = await findApiKey(db, match[1]);
+    const row = await findApiKey(db, match[1], now());
     if (!row) throw new ApiError(401, "unauthenticated", "invalid or revoked API key");
 
     await db.update(schema.apiKeys).set({ lastUsedAt: now() }).where(eq(schema.apiKeys.id, row.id));
@@ -45,10 +51,16 @@ export function authenticate({ db, now }: AppDeps): MiddlewareHandler<AppEnv> {
   };
 }
 
-export function requireScope(scope: ApiScope): MiddlewareHandler<AppEnv> {
+/** Requires one of `scopes` (e.g. the Verify API takes a "platform" or a "verify" key). */
+export function requireScope(...scopes: ApiScope[]): MiddlewareHandler<AppEnv> {
   return async (c, next) => {
-    if (!c.get("auth").scopes.includes(scope)) {
-      throw new ApiError(403, "insufficient_scope", `this API key lacks the "${scope}" scope`);
+    const has = c.get("auth").scopes;
+    if (!scopes.some((s) => has.includes(s))) {
+      throw new ApiError(
+        403,
+        "insufficient_scope",
+        `this API key needs the ${scopes.map((s) => `"${s}"`).join(" or ")} scope`,
+      );
     }
     await next();
   };

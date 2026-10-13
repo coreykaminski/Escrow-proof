@@ -15,9 +15,10 @@ export interface Session extends AuthContext {
 /** Exchanges an API key for a dashboard session. Returns the cookie value, or null. */
 export async function startSession(db: Db, apiKey: string, now: Date): Promise<string | null> {
   const key = /^pd_(test|live)_[A-Za-z0-9_-]+$/.test(apiKey.trim())
-    ? await findApiKey(db, apiKey.trim())
+    ? await findApiKey(db, apiKey.trim(), now)
     : undefined;
-  if (!key) return null;
+  // Verify-only keys are for machines; the dashboard shows agreements they can't see.
+  if (!key?.scopes.some((s) => s === "platform" || s === "ops")) return null;
   const id = randomBytes(32).toString("base64url");
   await db.insert(schema.dashboardSessions).values({
     idHash: sha256Hex(id),
@@ -47,8 +48,9 @@ export async function getSession(
       ),
     )
     .limit(1);
-  // A revoked key ends its sessions too.
+  // A revoked or expired key ends its sessions too.
   if (!row || row.key.revokedAt) return null;
+  if (row.key.expiresAt && row.key.expiresAt.getTime() <= now.getTime()) return null;
   return {
     accountId: row.key.accountId,
     apiKeyId: row.key.id,
