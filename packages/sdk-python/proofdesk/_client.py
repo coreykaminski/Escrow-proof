@@ -151,6 +151,21 @@ class _WebhookEndpoints(_Namespace):
     def delete(self, endpoint_id: str) -> Json:
         return self._c.request("DELETE", f"/v1/webhook-endpoints/{_enc(endpoint_id)}")
 
+    def test(self, endpoint_id: str) -> Json:
+        """Send a signed `webhook.test` event now; returns what your endpoint answered."""
+        return self._c.request("POST", f"/v1/webhook-endpoints/{_enc(endpoint_id)}/test")
+
+    def replay(self, endpoint_id: str, from_event: Any) -> Json:
+        """Re-send events from `from_event` ("evt_123" or 123) onward; re-enables the endpoint."""
+        return self._c.request("POST", f"/v1/webhook-endpoints/{_enc(endpoint_id)}/replay", {"from_event": from_event})
+
+
+class _Events(_Namespace):
+    def list(self, *, after: Optional[str] = None, limit: Optional[int] = None, type: Optional[str] = None) -> Json:
+        """The events webhooks deliver, oldest first: backfill after an outage, or poll."""
+        q = {k: v for k, v in {"after": after, "limit": limit, "type": type}.items() if v is not None}
+        return self._c.request("GET", "/v1/events" + (f"?{urlencode(q)}" if q else ""))
+
 
 class _Sellers(_Namespace):
     def start_onboarding(self, seller_ref: str, *, email: str, country: str = "us") -> Json:
@@ -218,6 +233,7 @@ class ProofDesk:
         self.webhook_endpoints = _WebhookEndpoints(self)
         self.sellers = _Sellers(self)
         self.api_keys = _ApiKeys(self)
+        self.events = _Events(self)
         self.test_helpers = _TestHelpers(self)
 
     @property

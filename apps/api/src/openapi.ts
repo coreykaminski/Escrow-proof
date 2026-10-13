@@ -36,7 +36,7 @@ import {
 import { SignupBody } from "./routes/signup.tsx";
 import { SimulateDecisionBody } from "./routes/test-helpers.ts";
 import { VerifyBody } from "./routes/verifications.ts";
-import { CreateEndpointBody } from "./routes/webhook-endpoints.ts";
+import { CreateEndpointBody, ReplayBody } from "./routes/webhook-endpoints.ts";
 
 interface Op {
   method: "get" | "post" | "put" | "delete";
@@ -295,6 +295,31 @@ export const OPERATIONS: Op[] = [
     body: ReviewerOnboardingBody,
     scope: "ops",
     created: true,
+  },
+  // Webhook tools and events
+  {
+    method: "post",
+    path: "/v1/webhook-endpoints/{id}/test",
+    tag: "Webhooks",
+    summary: "Send a signed webhook.test event now and report the receiver's answer",
+  },
+  {
+    method: "post",
+    path: "/v1/webhook-endpoints/{id}/replay",
+    tag: "Webhooks",
+    summary: "Re-send events from a given one onward; re-enables a disabled endpoint",
+    body: ReplayBody,
+  },
+  {
+    method: "get",
+    path: "/v1/events",
+    tag: "Webhooks",
+    summary: "This account's events (what webhooks deliver), oldest first: backfill or poll",
+    query: {
+      after: 'Continue after this event ("evt_123")',
+      limit: "1-200, default 50",
+      type: 'Event type prefix, e.g. "agreement.decide"',
+    },
   },
   // API keys
   { method: "get", path: "/v1/api-keys", tag: "API keys", summary: "This account's API keys" },

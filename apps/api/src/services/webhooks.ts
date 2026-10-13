@@ -1,7 +1,7 @@
 import { createHmac, randomBytes } from "node:crypto";
 import { checkOutboundUrl, newId, safeRequest } from "@proofdesk/core";
 import { type Db, schema } from "@proofdesk/db";
-import { and, asc, desc, eq, gt, isNull, lte, or } from "drizzle-orm";
+import { and, asc, desc, eq, gt, isNull, like, lte, or } from "drizzle-orm";
 import { ApiError } from "../errors.ts";
 
 export type EndpointRow = typeof schema.webhookEndpoints.$inferSelect;
@@ -233,4 +233,119 @@ export async function recentAttempts(db: Db, endpointId: string, limit = 20) {
     .where(eq(schema.webhookAttempts.endpointId, endpointId))
     .orderBy(desc(schema.webhookAttempts.createdAt))
     .limit(limit);
+}
+
+/** Sends one signed `webhook.test` event to an endpoint right now, and reports the result. */
+export async function sendTestEvent(
+  db: Db,
+  p: {
+    accountId: string;
+    endpointId: string;
+    now: Date;
+    fetch?: typeof fetch;
+    allowPrivate?: boolean;
+  },
+) {
+  const [endpoint] = await db
+    .select()
+    .from(schema.webhookEndpoints)
+    .where(
+      and(
+        eq(schema.webhookEndpoints.id, p.endpointId),
+        eq(schema.webhookEndpoints.accountId, p.accountId),
+      ),
+    );
+  if (!endpoint) throw new ApiError(404, "not_found", "webhook endpoint not found");
+  const send: typeof fetch = p.fetch ?? (p.allowPrivate ? fetch : guardedFetch);
+  const body = JSON.stringify({
+    id: `evt_test_${randomBytes(8).toString("hex")}`,
+    object: "event",
+    type: "webhook.test",
+    created_at: p.now.toISOString(),
+    agreement_id: null,
+    data: { message: "A test event from Proof Desk. Verify the signature, then answer 2xx." },
+    ledger: null,
+  });
+  const started = Date.now();
+  try {
+    const res = await send(endpoint.url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "User-Agent": "ProofDesk-Webhooks/1",
+        "Proofdesk-Signature": signPayload(
+          endpoint.secret,
+          body,
+          Math.floor(p.now.getTime() / 1000),
+        ),
+      },
+      body,
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+    return {
+      object: "webhook_test",
+      ok: res.ok,
+      status_code: res.status,
+      error: res.ok ? null : `HTTP ${res.status}`,
+      duration_ms: Date.now() - started,
+    };
+  } catch (err) {
+    return {
+      object: "webhook_test",
+      ok: false,
+      status_code: null,
+      error: err instanceof Error ? err.message : String(err),
+      duration_ms: Date.now() - started,
+    };
+  }
+}
+
+/**
+ * Re-sends events from `fromSeq` onward (in ledger order) on the next delivery run, and
+ * re-enables an endpoint that was disabled after repeated failures.
+ */
+export async function replayEndpoint(
+  db: Db,
+  p: { accountId: string; endpointId: string; fromSeq: number; now: Date },
+) {
+  const [row] = await db
+    .update(schema.webhookEndpoints)
+    .set({
+      cursorSeq: Math.max(0, p.fromSeq - 1),
+      enabled: true,
+      failureCount: 0,
+      nextAttemptAt: null,
+      lastError: null,
+      updatedAt: p.now,
+    })
+    .where(
+      and(
+        eq(schema.webhookEndpoints.id, p.endpointId),
+        eq(schema.webhookEndpoints.accountId, p.accountId),
+      ),
+    )
+    .returning();
+  if (!row) throw new ApiError(404, "not_found", "webhook endpoint not found");
+  return row;
+}
+
+/** This account's events (ledger entries of its agreements), oldest first, for backfill/polling. */
+export async function listEvents(
+  db: Db,
+  p: { accountId: string; after: number; limit: number; type?: string },
+) {
+  const rows = await db
+    .select({ entry: schema.ledgerEntries })
+    .from(schema.ledgerEntries)
+    .innerJoin(schema.agreements, eq(schema.agreements.id, schema.ledgerEntries.agreementId))
+    .where(
+      and(
+        eq(schema.agreements.accountId, p.accountId),
+        gt(schema.ledgerEntries.seq, p.after),
+        ...(p.type ? [like(schema.ledgerEntries.type, `${p.type.replace(/[%_\\]/g, "")}%`)] : []),
+      ),
+    )
+    .orderBy(asc(schema.ledgerEntries.seq))
+    .limit(p.limit);
+  return rows.map((r) => eventBody(r.entry));
 }

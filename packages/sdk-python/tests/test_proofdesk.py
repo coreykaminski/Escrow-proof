@@ -133,6 +133,9 @@ class IntegrationTests(unittest.TestCase):
             agent.agreements.list()
         self.assertEqual(denied.exception.code, "insufficient_scope")
         self.assertEqual(pd.api_keys.revoke(created["id"])["status"], "revoked")
+        # The same events webhooks deliver, filtered and paged.
+        events = pd.events.list(type="agreement.approve_spec", limit=200)
+        self.assertIn(agr["id"], [e["agreement_id"] for e in events["data"]])
 
 
 if __name__ == "__main__":

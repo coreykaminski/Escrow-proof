@@ -12,6 +12,7 @@ import { a2aRoutes, agentCard } from "./routes/a2a.ts";
 import { agreementRoutes } from "./routes/agreements.ts";
 import { apiKeyRoutes } from "./routes/api-keys.ts";
 import { billingRoutes, opsBillingRoutes } from "./routes/billing.ts";
+import { eventRoutes } from "./routes/events.ts";
 import { opsRoutes } from "./routes/ops.ts";
 import { reviewRoutes } from "./routes/reviews.ts";
 import { sellerRoutes } from "./routes/sellers.ts";
@@ -194,6 +195,7 @@ export function createApp(deps: AppDeps) {
   app.use("/v1/api-keys", requireScope("platform", "ops"));
   app.use("/v1/webhook-endpoints/*", requireScope("platform"));
   app.use("/v1/webhook-endpoints", requireScope("platform"));
+  app.use("/v1/events", requireScope("platform"));
   app.use("/v1/test_helpers/*", requireScope("platform"));
   app.use("/v1/billing/*", requireScope("platform"));
   app.use("/v1/ops/*", requireScope("ops"));
@@ -203,6 +205,7 @@ export function createApp(deps: AppDeps) {
   app.route("/v1/agreements", agreementRoutes(deps));
   app.route("/v1/sellers", sellerRoutes(deps));
   app.route("/v1/api-keys", apiKeyRoutes(deps));
+  app.route("/v1/events", eventRoutes(deps));
   app.route("/v1/verifications", verificationRoutes(deps));
   app.route("/v1/webhook-endpoints", webhookEndpointRoutes(deps));
   app.route("/v1/test_helpers", testHelperRoutes(deps));

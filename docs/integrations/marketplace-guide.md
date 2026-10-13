@@ -68,6 +68,8 @@ In the sandbox you trigger it with `pd.testHelpers.verify(id)`, and `pd.testHelp
   - `agreement.settle`: money moved
   - `agreement.content_deleted`: the retention period passed
 
+Full event list: [events.md](events.md). To check your receiver, use `pd.webhookEndpoints.test(id)`. After an outage, use `pd.webhookEndpoints.replay(id, "evt_…")` or page through `pd.events.list({ after })`.
+
 ## 7. Show the verdict
 `pd.agreements.createReportLink(id)` returns `embed.html`. Paste it into your order page for a self-sizing verdict card (see [embed.md](embed.md)), or link to `url` for the full report with the downloadable proof.
 

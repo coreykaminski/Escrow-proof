@@ -16,6 +16,7 @@ import type {
   Verification,
   VerificationJob,
   WebhookEndpoint,
+  WebhookEvent,
 } from "./types.ts";
 
 export interface ProofDeskOptions {
@@ -352,6 +353,19 @@ export class ProofDesk {
     list: () => this.request<List<WebhookEndpoint>>("GET", "/v1/webhook-endpoints"),
     delete: (id: string) =>
       this.request<{ deleted: true }>("DELETE", `/v1/webhook-endpoints/${enc(id)}`),
+    /** Sends a signed `webhook.test` event now and reports what your endpoint answered. */
+    test: (id: string) =>
+      this.request<{
+        ok: boolean;
+        status_code: number | null;
+        error: string | null;
+        duration_ms: number;
+      }>("POST", `/v1/webhook-endpoints/${enc(id)}/test`),
+    /** Re-sends events from `from_event` onward; re-enables a disabled endpoint. */
+    replay: (id: string, from_event: string | number) =>
+      this.request<WebhookEndpoint>("POST", `/v1/webhook-endpoints/${enc(id)}/replay`, {
+        from_event,
+      }),
     attempts: (id: string) =>
       this.request<
         List<{
@@ -361,6 +375,21 @@ export class ProofDesk {
           created_at: string;
         }>
       >("GET", `/v1/webhook-endpoints/${enc(id)}/attempts`),
+  };
+
+  /** The events webhooks deliver, for backfilling after an outage or polling instead. */
+  readonly events = {
+    list: (p: { after?: string; limit?: number; type?: string } = {}) => {
+      const q = new URLSearchParams(
+        Object.entries(p)
+          .filter(([, v]) => v !== undefined)
+          .map(([k, v]) => [k, String(v)]),
+      ).toString();
+      return this.request<List<WebhookEvent> & { next_after: string | null }>(
+        "GET",
+        `/v1/events${q ? `?${q}` : ""}`,
+      );
+    },
   };
 
   /** Sandbox only (pd_test_ keys): drive an agreement without Proof Desk ops. */

@@ -8,6 +8,8 @@ import {
   deleteEndpoint,
   listEndpoints,
   recentAttempts,
+  replayEndpoint,
+  sendTestEvent,
 } from "../services/webhooks.ts";
 
 export const CreateEndpointBody = z.object({
@@ -16,9 +18,41 @@ export const CreateEndpointBody = z.object({
   event_types: z.array(z.string().min(1).max(100)).max(50).default([]),
 });
 
+export const ReplayBody = z.object({
+  /** Re-send events from this one onward ("evt_123" or its ledger seq 123). */
+  from_event: z.union([z.string().regex(/^evt_\d+$/), z.number().int().min(1)]),
+});
+
 /** Where a platform receives events about its agreements. */
-export function webhookEndpointRoutes({ db, now, allowPrivateNetwork }: AppDeps) {
+export function webhookEndpointRoutes({ db, now, allowPrivateNetwork, fetch }: AppDeps) {
   const r = new Hono<AppEnv>();
+
+  /** Sends a signed `webhook.test` event now, to check the receiver end to end. */
+  r.post("/:id/test", async (c) =>
+    c.json(
+      await sendTestEvent(db, {
+        accountId: c.get("auth").accountId,
+        endpointId: c.req.param("id"),
+        now: now(),
+        allowPrivate: allowPrivateNetwork === true,
+        ...(fetch ? { fetch } : {}),
+      }),
+    ),
+  );
+
+  /** Re-sends events from a point (after an outage), and re-enables a disabled endpoint. */
+  r.post("/:id/replay", async (c) => {
+    const body = ReplayBody.parse(await c.req.json());
+    const fromSeq =
+      typeof body.from_event === "number" ? body.from_event : Number(body.from_event.slice(4));
+    const row = await replayEndpoint(db, {
+      accountId: c.get("auth").accountId,
+      endpointId: c.req.param("id"),
+      fromSeq,
+      now: now(),
+    });
+    return c.json(webhookEndpointJson(row));
+  });
 
   r.post("/", async (c) => {
     const body = CreateEndpointBody.parse(await c.req.json());
