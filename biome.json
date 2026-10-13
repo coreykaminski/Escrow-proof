@@ -11,7 +11,10 @@
       "!contracts/out",
       "!contracts/cache",
       "!contracts/broadcast",
-      "!evals/*/runs"
+      "!evals/*/runs",
+      "!e2e/.state.json",
+      "!test-results",
+      "!playwright-report"
     ]
   },
   "formatter": {

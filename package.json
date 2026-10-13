@@ -39,10 +39,12 @@
     "chain:deploy-anchor": "cd contracts && forge script script/DeployAnchor.s.sol --rpc-url \"$CHAIN_RPC_URL\" --private-key \"$DEPLOYER_PRIVATE_KEY\" --broadcast",
     "evals:publish": "tsx evals/shared/publish.ts && biome format --write apps/api/src/data/golden-results.json",
     "verify-proof": "tsx scripts/verify-proof.ts",
-    "test:postgres": "TEST_DB=postgres vitest run"
+    "test:postgres": "TEST_DB=postgres vitest run",
+    "test:e2e": "playwright test"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",
+    "@playwright/test": "^1.64.0",
     "@types/node": "^26.6.4",
     "embedded-postgres": "^18.4.0-beta.17",
     "tsx": "^4.23.15",

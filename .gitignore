@@ -14,3 +14,8 @@ evals/**/.cache/
 contracts/out/
 contracts/cache/
 contracts/broadcast/*/31337/
+
+# browser tests
+e2e/.state.json
+test-results/
+playwright-report/

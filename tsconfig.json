@@ -25,6 +25,8 @@
     "apps/*/test",
     "evals",
     "vitest.config.ts",
-    "vitest.postgres.ts"
+    "vitest.postgres.ts",
+    "e2e",
+    "playwright.config.ts"
   ]
 }

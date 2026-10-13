@@ -8,6 +8,7 @@ import { type ExternalJob, FakeChainGateway } from "@proofdesk/chain";
 import type { VerificationReport } from "@proofdesk/verifier";
 import { type Address, getAddress } from "viem";
 import { afterEach, describe, expect, it } from "vitest";
+import { reviewQueue } from "../src/services/case-file.ts";
 import { createHarness, type Harness, HOUR, specFixture } from "./harness.ts";
 
 const BUDGET = 250_000_000; // 250 USDC
@@ -233,6 +234,9 @@ describe("external ERC-8183 jobs", () => {
     expect(verified.status).toBe(200);
     expect(verified.body.agreement.status).toBe("escalated");
     expect(verified.body.verification.action).toBe("escalate");
+    // The review queue shows why it was escalated, not the verifier's original reason.
+    const queue = await reviewQueue(h.handle.db);
+    expect(queue.find((q) => q.agreement.id === id)?.reason).toContain("can't settle");
 
     const partial = await h.call(O(), "POST", `/v1/ops/agreements/${id}/decide`, {
       outcome: { kind: "partial", release_percent: 50 },

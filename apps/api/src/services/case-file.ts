@@ -77,7 +77,7 @@ export async function reviewQueue(db: Db) {
     )
     .orderBy(asc(schema.agreements.updatedAt));
   const ids = rows.map((r) => r.id);
-  const [openDisputes, verifications] = ids.length
+  const [openDisputes, verifications, escalations] = ids.length
     ? await Promise.all([
         db
           .select()
@@ -90,12 +90,32 @@ export async function reviewQueue(db: Db) {
           .from(schema.verifications)
           .where(inArray(schema.verifications.agreementId, ids))
           .orderBy(desc(schema.verifications.createdAt)),
+        db
+          .select({
+            agreementId: schema.ledgerEntries.agreementId,
+            payload: schema.ledgerEntries.payload,
+          })
+          .from(schema.ledgerEntries)
+          .where(
+            and(
+              inArray(schema.ledgerEntries.agreementId, ids),
+              eq(schema.ledgerEntries.type, "agreement.escalate"),
+            ),
+          )
+          .orderBy(desc(schema.ledgerEntries.seq)),
       ])
-    : [[], []];
+    : [[], [], []];
   return rows.map((a) => {
     const dispute = openDisputes.find((d) => d.agreementId === a.id);
     const verification = verifications.find((v) => v.agreementId === a.id);
-    const verifierReason = (verification?.report as BaseReport | undefined)?.decision.reason;
+    // Why it was escalated, as recorded (e.g. a partial verdict an ERC-8183 job can't settle),
+    // falling back to the verifier's own reason.
+    const escalation = escalations.find((e) => e.agreementId === a.id);
+    const escalatedBecause = escalation
+      ? (JSON.parse(escalation.payload) as { reason?: string }).reason
+      : undefined;
+    const verifierReason =
+      escalatedBecause ?? (verification?.report as BaseReport | undefined)?.decision.reason;
     const reason = dispute
       ? `Dispute by ${dispute.openedBy}: ${dispute.reason}`
       : a.reviewPending
