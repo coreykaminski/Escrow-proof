@@ -4,7 +4,7 @@ Conditional payments + verification for agent purchases: money is held, the deli
 checked against the approved spec, then released or refunded. Every decision goes on a
 tamper-evident ledger. See [MASTER_PLAN.md](MASTER_PLAN.md) for the strategy and build plan.
 
-**New here? Start with the [quickstart](docs/quickstart.md)** (sandbox, ~15 minutes). The API
+**New here? Start with the [quickstart](docs/quickstart.md)** (sandbox, ~15 minutes), then the [marketplace integration guide](docs/integrations/marketplace-guide.md). The API
 reference is served at `/docs` (OpenAPI at `/openapi.json`).
 
 **Status:** Parts 1–9 and the engineering parts of 10 are built and tested (694 Vitest tests,
@@ -68,7 +68,7 @@ Set `DATABASE_URL=postgres://…` to use a real server. The server and CLI read 
 | `packages/sdk` | `@proofdesk/sdk`: typed TypeScript client (auto idempotency keys, retries) and webhook signature verification. No dependencies. |
 | `apps/api` | Hono HTTP API, API-key auth, idempotency, agreement service, outbound webhooks, OpenAPI, CLI. |
 | `apps/mcp` | MCP server so AI agents can create, fund and track protected purchases (`create_protected_purchase` …). |
-| `examples` | The quickstart as a runnable script. |
+| `examples` | The quickstart as a runnable script, and TaskHub: a sample marketplace integrating Proof Desk end to end ([guide](docs/integrations/marketplace-guide.md)). |
 | `evals/spec-engine` | 50 sample requests, eval runner and human-rating scorer for the Part 2 gate. |
 | `evals/translation` | Golden set (300 labelled translation items) builders, deterministic CI gate, model eval harness. |
 | `evals/code`, `evals/data` | Golden sets (130 code, 50 data/research items, attacks included), CI gates, eval runners (`--judge` for the model layer). |

@@ -114,7 +114,18 @@ export function opsRoutes(deps: AppDeps) {
    * deliver webhooks.
    */
   r.post("/run-due", async (c) => {
-    return c.json(await tick(db, { payments, chain, ...(fetch ? { fetch } : {}) }, now()));
+    return c.json(
+      await tick(
+        db,
+        {
+          payments,
+          chain,
+          allowPrivateNetwork: deps.allowPrivateNetwork === true,
+          ...(fetch ? { fetch } : {}),
+        },
+        now(),
+      ),
+    );
   });
 
   /**

@@ -97,6 +97,17 @@ describe("outbound webhooks", () => {
     expect(rx.received.map((r) => r.body.type)).toEqual(["agreement.approve_spec"]);
   });
 
+  it("delivers to a localhost endpoint in development when ops runs the scheduler", async () => {
+    const rx = receiver();
+    h = await createHarness({ fetch: rx.fetchFn }); // development: private network allowed
+    await h.call(h.keys.platformA, "POST", "/v1/webhook-endpoints", {
+      url: "http://localhost:3000/webhooks/proofdesk",
+    });
+    await newAgreement();
+    expect((await tick()).body.webhooks.delivered).toBe(1);
+    expect(rx.received[0]?.url).toBe("http://localhost:3000/webhooks/proofdesk");
+  });
+
   it("retries a failing endpoint with backoff and redelivers the same event", async () => {
     const rx = receiver();
     h = await createHarness({ fetch: rx.fetchFn });

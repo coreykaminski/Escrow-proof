@@ -40,7 +40,8 @@
     "evals:publish": "tsx evals/shared/publish.ts && biome format --write apps/api/src/data/golden-results.json",
     "verify-proof": "tsx scripts/verify-proof.ts",
     "test:postgres": "TEST_DB=postgres vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "example:marketplace": "tsx examples/marketplace/server.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",

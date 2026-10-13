@@ -27,6 +27,7 @@
     "vitest.config.ts",
     "vitest.postgres.ts",
     "e2e",
+    "examples",
     "playwright.config.ts"
   ]
 }
