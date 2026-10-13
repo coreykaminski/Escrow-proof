@@ -33,6 +33,7 @@ import {
 } from "../services/onchain.ts";
 import { createCardHold, getHold } from "../services/payments.ts";
 import { ledgerProof } from "../services/proofs.ts";
+import { deleteAgreementContent } from "../services/retention.ts";
 import { createShareLink } from "../services/share-links.ts";
 import { draftAgreement, resolveMandateAmount } from "../services/spec-drafts.ts";
 import { listVerifications } from "../services/verification.ts";
@@ -408,6 +409,20 @@ export function agreementRoutes(deps: AppDeps) {
       now: now(),
     });
     return c.json({ job: onchainJobJson(row), agreement: agreementJson(agreement) }, 201);
+  });
+
+  /**
+   * Delete this agreement's documents now (delivered files, inputs, report evidence), e.g. for
+   * a data-subject request. Only once it's final; hashes and the ledger stay.
+   */
+  r.delete("/:id/content", async (c) => {
+    const row = await deleteAgreementContent(db, {
+      agreementId: c.req.param("id"),
+      scope: { accountId: c.get("auth").accountId },
+      reason: "request",
+      now: now(),
+    });
+    return c.json(agreementJson(row));
   });
 
   /** A Merkle inclusion proof of this agreement's ledger entries, verifiable offline. */

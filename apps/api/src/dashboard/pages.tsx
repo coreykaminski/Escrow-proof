@@ -480,6 +480,12 @@ export function ReportPage(p: {
           documents. Only the proof file links it to this agreement.
         </div>
       ) : null}
+      {a.contentDeletedAt ? (
+        <div class="panel small" style="margin-top:12px">
+          The documents and the evidence quoted from them were deleted on {when(a.contentDeletedAt)}{" "}
+          under the retention policy. Their hashes remain, so everything below still verifies.
+        </div>
+      ) : null}
       <h2>Criteria</h2>
       <Criteria agreement={a} results={v?.report.criteria} showEvidence={true} />
       <h2>Ledger entries</h2>

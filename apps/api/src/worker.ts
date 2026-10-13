@@ -12,6 +12,7 @@ import { alerterFromEnv, loggerFromEnv } from "./observability.ts";
 import { sweepRateLimits } from "./security.ts";
 import { anchorLedger } from "./services/anchoring.ts";
 import { invoicePeriod, payReviewers } from "./services/billing.ts";
+import { deleteExpiredContent, retentionDaysFromEnv } from "./services/retention.ts";
 import { tick } from "./services/scheduler.ts";
 import { checkLedger, getState, setState } from "./services/status.ts";
 import { sealVerdicts } from "./services/verdicts.ts";
@@ -123,6 +124,12 @@ while (!stop.signal.aborted) {
       } else {
         const { sealed } = await sealVerdicts(db, now);
         if (sealed) logger.info("verdicts sealed", { count: sealed });
+      }
+      // Daily too: delete documents past their retention period (hashes stay).
+      const retention = retentionDaysFromEnv();
+      if (retention !== null) {
+        const { deleted } = await deleteExpiredContent(db, { now, defaultDays: retention });
+        if (deleted.length) logger.info("documents deleted (retention)", { count: deleted.length });
       }
       lastAnchor = Date.now();
     }

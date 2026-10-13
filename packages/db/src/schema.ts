@@ -26,6 +26,8 @@ export const accounts = pgTable("accounts", {
   plan: text("plan").$type<"standard" | "verify_only">().notNull().default("standard"),
   /** Pilot shadow mode: every automatic decision waits for a human review before it settles. */
   shadowMode: boolean("shadow_mode").notNull().default(false),
+  /** Days after an agreement is final before its documents are deleted; null = the default. */
+  retentionDays: integer("retention_days"),
   createdAt: ts("created_at").notNull().defaultNow(),
 });
 
@@ -98,6 +100,8 @@ export const agreements = pgTable(
     disputeResolved: boolean("dispute_resolved").notNull().default(false),
     /** An automatic decision awaiting its shadow review (pilot accounts). */
     reviewPending: boolean("review_pending").notNull().default(false),
+    /** When delivered files, inputs and report evidence were deleted (hashes are kept). */
+    contentDeletedAt: ts("content_deleted_at"),
     settledAt: ts("settled_at"),
     settlementRef: text("settlement_ref"),
     cancelledAt: ts("cancelled_at"),

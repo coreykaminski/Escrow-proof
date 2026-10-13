@@ -72,6 +72,8 @@ export interface Agreement {
   /** Shadow mode (pilots): an automatic decision waiting for a human review before it settles. */
   review_pending: boolean;
   settled_at: string | null;
+  /** When the documents were deleted under the retention policy (hashes remain). */
+  content_deleted_at: string | null;
   settlement_ref: string | null;
   cancelled_at: string | null;
   metadata: Record<string, string>;

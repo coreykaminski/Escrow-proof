@@ -1,6 +1,9 @@
+import { schema } from "@proofdesk/db";
+import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { z } from "zod";
 import type { AppDeps, AppEnv } from "../env.ts";
+import { ApiError } from "../errors.ts";
 import { agreementJson } from "../serialize.ts";
 import {
   goldenCandidates,
@@ -14,6 +17,7 @@ import {
 import { OutcomeBody } from "./schemas.ts";
 
 export const ShadowModeBody = z.object({ enabled: z.boolean() });
+export const RetentionBody = z.object({ days: z.number().int().min(1).max(3650).nullable() });
 export const ReviewBody = z.object({
   /** Omit to confirm the automatic decision; give a different outcome to override it. */
   outcome: OutcomeBody.optional(),
@@ -35,6 +39,23 @@ export function reviewRoutes({ db, now }: AppDeps) {
     const body = ShadowModeBody.parse(await c.req.json());
     const row = await setShadowMode(db, c.req.param("id"), body.enabled);
     return c.json({ id: row.id, object: "account", name: row.name, shadow_mode: row.shadowMode });
+  });
+
+  /** Days after an agreement is final before its documents are deleted (null = default). */
+  r.put("/accounts/:id/retention", async (c) => {
+    const body = RetentionBody.parse(await c.req.json());
+    const [row] = await db
+      .update(schema.accounts)
+      .set({ retentionDays: body.days })
+      .where(eq(schema.accounts.id, c.req.param("id")))
+      .returning();
+    if (!row) throw new ApiError(404, "not_found", "account not found");
+    return c.json({
+      id: row.id,
+      object: "account",
+      name: row.name,
+      retention_days: row.retentionDays,
+    });
   });
 
   r.post("/agreements/:id/review", async (c) => {

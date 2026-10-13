@@ -31,6 +31,8 @@ export function agreementJson(row: AgreementRow) {
     /** Shadow mode: an automatic decision a human must confirm or override before it settles. */
     review_pending: row.reviewPending,
     settled_at: iso(row.settledAt),
+    /** When the documents were deleted under the retention policy (hashes remain). */
+    content_deleted_at: iso(row.contentDeletedAt),
     settlement_ref: row.settlementRef,
     cancelled_at: iso(row.cancelledAt),
     metadata: row.metadata,

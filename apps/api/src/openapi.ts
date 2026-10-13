@@ -6,7 +6,7 @@ import {
   PlanBody,
   ReviewerOnboardingBody,
 } from "./routes/billing.ts";
-import { ReviewBody, ShadowModeBody } from "./routes/reviews.ts";
+import { RetentionBody, ReviewBody, ShadowModeBody } from "./routes/reviews.ts";
 import {
   ApproveSpecBody,
   CancelBody,
@@ -576,6 +576,21 @@ export const OPERATIONS: Op[] = [
     summary: "Consistency proof that a later tree head extends an earlier one",
     query: { from: "Earlier tree size", to: "Later tree size" },
     scope: "none",
+  },
+  {
+    method: "delete",
+    path: "/v1/agreements/{id}/content",
+    tag: "Agreements",
+    summary: "Delete the agreement's documents now (final agreements only; hashes and ledger stay)",
+  },
+  {
+    method: "put",
+    path: "/v1/ops/accounts/{id}/retention",
+    tag: "Ops",
+    summary:
+      "Days after an agreement is final before its documents are deleted (null = default 90)",
+    body: RetentionBody,
+    scope: "ops",
   },
   {
     method: "get",
