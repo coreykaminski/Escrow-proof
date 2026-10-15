@@ -36,14 +36,14 @@ export function parseGlossary(csv: string): GlossaryEntry[] {
 }
 
 const norm = (s: string) => s.normalize("NFKC").toLocaleLowerCase();
-const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
+const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
 
 /** The term as a whole word or phrase. */
 const exact = (term: string) =>
-  new RegExp(`(?<![\\p{L}\\p{N}])${escape(norm(term))}(?![\\p{L}\\p{N}])`, "u");
+  new RegExp(`(?<![\\p{L}\\p{N}])${escapeRegex(norm(term))}(?![\\p{L}\\p{N}])`, "u");
 /** The term, allowing up to 3 letters of inflection on its last word. */
 const inflected = (term: string) =>
-  new RegExp(`(?<![\\p{L}\\p{N}])${escape(norm(term))}\\p{L}{0,3}(?![\\p{L}\\p{N}])`, "u");
+  new RegExp(`(?<![\\p{L}\\p{N}])${escapeRegex(norm(term))}\\p{L}{0,3}(?![\\p{L}\\p{N}])`, "u");
 
 export function checkGlossary(
   source: string,
