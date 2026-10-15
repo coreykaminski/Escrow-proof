@@ -7,6 +7,8 @@ import {
   type CodeReport,
   type DataInput,
   type DataReport,
+  isGlossaryFile,
+  parseGlossary,
   type TranslationInput,
   type VerificationReport,
 } from "@proofdesk/verifier";
@@ -184,7 +186,10 @@ async function prepareRun(
   const spec = agreement.spec;
   switch (spec.vertical) {
     case "translation": {
-      const source = inputs.filter((i) => isText(i.mediaType));
+      // A glossary is a checklist, not part of the text to translate.
+      const glossaryFiles = inputs.filter((i) => isGlossaryFile(i));
+      const glossary = glossaryFiles.flatMap((g) => parseGlossary(g.content));
+      const source = inputs.filter((i) => isText(i.mediaType) && !isGlossaryFile(i));
       if (source.length === 0) {
         throw new ApiError(
           422,
@@ -202,6 +207,7 @@ async function prepareRun(
           spec,
           source: source.map((i) => i.content).join("\n\n"),
           target: target.map((a) => a.content).join("\n\n"),
+          ...(glossary.length ? { glossary } : {}),
         });
     }
     case "code": {

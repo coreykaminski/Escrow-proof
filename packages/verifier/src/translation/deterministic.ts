@@ -1,4 +1,5 @@
 import type { Finding, Lang } from "../types.ts";
+import { checkGlossary, type GlossaryEntry } from "./glossary.ts";
 import { extract, missingFrom } from "./numbers.ts";
 import { detectLang, injectionPhrases, paragraphs, words } from "./text.ts";
 
@@ -20,6 +21,7 @@ export function runDeterministic(input: {
   target: string;
   sourceLang?: Lang;
   targetLang?: Lang;
+  glossary?: GlossaryEntry[];
 }): DeterministicResult {
   const src = paragraphs(input.source);
   const tgt = paragraphs(input.target);
@@ -76,6 +78,9 @@ export function runDeterministic(input: {
   if (sourceLang && targetLang) {
     findings.push(...compareValues(src, tgt, sourceLang, targetLang));
   }
+
+  if (input.glossary?.length)
+    findings.push(...checkGlossary(input.source, input.target, input.glossary));
 
   const injected = injectionPhrases(input.target, input.source);
   if (injected.length > 0) {

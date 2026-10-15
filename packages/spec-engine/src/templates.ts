@@ -153,7 +153,8 @@ const translation = {
   name: "Faithful document translation",
   description:
     "Released only if every number, date, amount and name survives, nothing is omitted or added, meaning is preserved, and the text is entirely in the target language; register is judged when requested. Meaning and register need the model layers.",
-  inputs: "Attach the source document as a text input (text/plain or text/markdown).",
+  inputs:
+    "Attach the source document as a text input (text/plain or text/markdown). For glossary checks, also attach glossary.csv with columns source,target (alternatives in target separated by |).",
   params: z.object({
     task: task.optional(),
     title,
@@ -163,6 +164,12 @@ const translation = {
       .enum(["legal", "formal", "neutral"])
       .optional()
       .describe("Adds a model-judged register criterion"),
+    glossary: z
+      .boolean()
+      .default(false)
+      .describe(
+        "Require the approved term translations in an attached glossary.csv (source,target)",
+      ),
   }),
   build: (p: {
     task?: string | undefined;
@@ -170,6 +177,7 @@ const translation = {
     source_language: string;
     target_language: string;
     register?: "legal" | "formal" | "neutral" | undefined;
+    glossary: boolean;
   }) => {
     const from = LANGUAGES[p.source_language];
     const to = LANGUAGES[p.target_language];
@@ -211,6 +219,17 @@ const translation = {
           check: "deterministic",
           critical: false,
         },
+        ...(p.glossary
+          ? [
+              {
+                id: "glossary-terms",
+                description:
+                  "Every glossary term in the source uses its approved translation from the attached glossary",
+                check: "deterministic" as const,
+                critical: true,
+              },
+            ]
+          : []),
         ...(p.register
           ? [
               {
@@ -231,6 +250,7 @@ const translation = {
   source_language: string;
   target_language: string;
   register?: "legal" | "formal" | "neutral" | undefined;
+  glossary: boolean;
 }>;
 
 export const SPEC_TEMPLATES = [codeTests, dataset, research, translation] as const;

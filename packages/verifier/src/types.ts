@@ -19,6 +19,7 @@ export interface Finding {
     | "untranslated_segment"
     | "injection_suspected"
     | "empty_deliverable"
+    | "glossary_violation"
     // code
     | "tests_failed"
     | "tests_not_run"
@@ -51,6 +52,8 @@ export interface TranslationInput {
   target: string;
   sourceLang?: Lang;
   targetLang?: Lang;
+  /** The buyer's approved term translations (from a glossary.csv input). */
+  glossary?: { source: string; targets: string[] }[];
 }
 
 export type Verdict = "pass" | "fail" | "uncertain";

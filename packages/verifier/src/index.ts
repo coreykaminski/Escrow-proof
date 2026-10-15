@@ -13,6 +13,7 @@ export * from "./llm/claude.ts";
 export * from "./policy.ts";
 export * from "./translation/deterministic.ts";
 export * from "./translation/ensemble.ts";
+export * from "./translation/glossary.ts";
 export * from "./translation/numbers.ts";
 export * from "./translation/review.ts";
 export * from "./translation/text.ts";

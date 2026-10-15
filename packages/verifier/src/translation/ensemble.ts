@@ -28,6 +28,7 @@ const FINDING_ROUTE: Partial<Record<Finding["kind"], string>> = {
   untranslated_segment: "untranslated",
   injection_suspected: "addition",
   empty_deliverable: "omission",
+  glossary_violation: "terminology",
 };
 
 const CATEGORY_ROUTE: Record<Annotation["errors"][number]["category"], string> = {
