@@ -46,7 +46,8 @@
     "load-test": "tsx scripts/load-test.ts",
     "db:backup": "tsx scripts/db-backup.ts",
     "db:restore": "tsx scripts/db-restore.ts",
-    "backup-drill": "tsx scripts/backup-drill.ts"
+    "backup-drill": "tsx scripts/backup-drill.ts",
+    "demo": "tsx scripts/demo.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",

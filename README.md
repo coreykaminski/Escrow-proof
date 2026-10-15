@@ -37,6 +37,10 @@ reference is served at `/docs` (OpenAPI at `/openapi.json`).
 Still open: the model evals and the go-live gates (lawyer, pen test, contract audit). See
 [docs/launch/runbook.md](docs/launch/runbook.md).
 
+## Demo
+
+`npm run demo` runs the whole product locally (API, dashboard, sample marketplace and a customer site with the verdict widget), seeded with realistic data. See [docs/demo.md](docs/demo.md) for a 10-minute walkthrough.
+
 ## Quickstart
 
 ```bash
