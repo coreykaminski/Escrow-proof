@@ -42,7 +42,8 @@
     "test:postgres": "TEST_DB=postgres vitest run",
     "test:e2e": "playwright test",
     "example:marketplace": "tsx examples/marketplace/server.ts",
-    "sdk:build": "tsx scripts/build-sdk.ts"
+    "sdk:build": "tsx scripts/build-sdk.ts",
+    "load-test": "tsx scripts/load-test.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",
