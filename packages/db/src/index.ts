@@ -1,3 +1,4 @@
+export * from "./backup.ts";
 export * from "./client.ts";
 export * from "./ledger.ts";
 export type { ApiScope, Artifact, HoldStatus, SpecSource } from "./schema.ts";

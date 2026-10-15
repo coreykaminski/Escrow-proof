@@ -43,7 +43,10 @@
     "test:e2e": "playwright test",
     "example:marketplace": "tsx examples/marketplace/server.ts",
     "sdk:build": "tsx scripts/build-sdk.ts",
-    "load-test": "tsx scripts/load-test.ts"
+    "load-test": "tsx scripts/load-test.ts",
+    "db:backup": "tsx scripts/db-backup.ts",
+    "db:restore": "tsx scripts/db-restore.ts",
+    "backup-drill": "tsx scripts/backup-drill.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",

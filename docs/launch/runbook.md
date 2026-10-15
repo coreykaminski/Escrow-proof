@@ -28,6 +28,17 @@
 - Daily: check `/status` and `GET /v1/ops/metrics` (errors, verification latency and cost), the review queue (escalations and disputes older than 24 h), webhook failures, and the worker log for `errors`.
 - Weekly: accuracy (auto decisions vs human review), escalation rate, cost per job, GMV, fees.
 
+## Backups and restore
+- **Primary:** Neon point-in-time restore (set retention to at least 7 days). A restore creates a branch: point a staging app at it first, and verify before switching production.
+- **Off-site copy, daily** (the destination still needs choosing: encrypted object storage outside Neon):
+  - `DATABASE_URL=… npm run db:backup -- <dir>` writes every table in key order plus `manifest.json` (counts, checksums, ledger head, Merkle root).
+  - It refuses to back up a broken ledger.
+- **Restore a copy:** `RESTORE_DATABASE_URL=<empty database> npm run db:restore -- <dir>`.
+  - It migrates, loads, then checks every table byte for byte, the hash chain, the head and Merkle root, and that the ledger is still append-only.
+  - It refuses a non-empty target, and exits non-zero on any mismatch.
+- **After any restore:** run `GET /v1/ops/ledger/anchors`. An anchor flagged "the ledger is shorter than this anchor" means the restore lost entries that were already published. Recover them from a newer backup or the Neon branch; never re-anchor over the gap.
+- **Drill quarterly:** `npm run backup-drill` (last run: docs/ops/backup-drill-2026-10-15.md).
+
 ## Incidents
 | Symptom | First moves |
 |---|---|
