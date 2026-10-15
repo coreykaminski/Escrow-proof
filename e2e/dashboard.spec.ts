@@ -168,3 +168,19 @@ test("a platform sees its usage and billing", async ({ page }) => {
   await expect(page.getByText("Invoices will go to billing@acme.example.")).toBeVisible();
   expect(problems).toEqual([]);
 });
+
+test("a developer creates a verify-only key and sees it once", async ({ page }) => {
+  const problems = watchConsole(page);
+  await signIn(page, state().platformKey);
+  await page.getByRole("link", { name: "Developers" }).click();
+  await page.getByLabel("New key").fill("agent-7");
+  await page.getByLabel("Scope").selectOption("verify");
+  await page.getByRole("button", { name: "Create key" }).click();
+  const key = (await page.locator("pre").first().textContent())?.trim() as string;
+  expect(key).toMatch(/^pd_test_/);
+  // A fresh visit (not a form resubmission) lists the key by name only.
+  await page.goto("/dashboard/developers");
+  await expect(page.getByText(key)).toHaveCount(0);
+  await expect(page.getByRole("cell", { name: "agent-7" })).toBeVisible();
+  expect(problems).toEqual([]);
+});

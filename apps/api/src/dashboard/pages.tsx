@@ -1207,3 +1207,292 @@ export function BillingPage(p: {
     </Page>
   );
 }
+
+type KeyRowView = typeof schema.apiKeys.$inferSelect;
+type EndpointView = typeof schema.webhookEndpoints.$inferSelect & {
+  attempts: (typeof schema.webhookAttempts.$inferSelect)[];
+};
+
+/** Keys and webhooks, managed by the platform's developers. */
+export function DevelopersPage(p: {
+  viewer: Viewer;
+  keys: KeyRowView[];
+  currentKeyId: string;
+  endpoints: EndpointView[] | null;
+  now: Date;
+  /** Shown once: a new key, or a new endpoint's signing secret. */
+  secret?: { label: string; value: string };
+  flash?: { ok?: string; error?: string };
+}) {
+  const status = (k: KeyRowView) =>
+    k.revokedAt
+      ? "revoked"
+      : k.expiresAt && k.expiresAt.getTime() <= p.now.getTime()
+        ? "expired"
+        : k.expiresAt
+          ? `expires ${when(k.expiresAt)}`
+          : "active";
+  const csrf = <input type="hidden" name="csrf" value={p.viewer.csrfToken} />;
+  return (
+    <Page title="Developers" session={p.viewer}>
+      <Flash ok={p.flash?.ok} error={p.flash?.error} />
+      <h1>Developers</h1>
+      {p.secret ? (
+        <div class="panel" style="margin-bottom:16px">
+          <strong>{p.secret.label}</strong> Copy it now; it won't be shown again.
+          <pre class="doc mono" style="margin-top:8px">
+            {p.secret.value}
+          </pre>
+        </div>
+      ) : null}
+
+      <h2>API keys</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Key</th>
+            <th>Scopes</th>
+            <th>Last used</th>
+            <th>Status</th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>
+          {p.keys.map((k) => (
+            <tr>
+              <td>
+                {k.name ?? <span class="muted">unnamed</span>}
+                {k.id === p.currentKeyId ? <span class="pill">this session</span> : null}
+              </td>
+              <td class="mono">{k.prefix}…</td>
+              <td class="small">{k.scopes.join(", ")}</td>
+              <td class="small">{k.lastUsedAt ? when(k.lastUsedAt) : "never"}</td>
+              <td class="small">{status(k)}</td>
+              <td>
+                {!k.revokedAt ? (
+                  <div class="row">
+                    <form method="post" action={`/dashboard/developers/keys/${k.id}/roll`}>
+                      {csrf}
+                      <button type="submit" class="small">
+                        Roll (24 h overlap)
+                      </button>
+                    </form>
+                    {k.id !== p.currentKeyId ? (
+                      <form method="post" action={`/dashboard/developers/keys/${k.id}/revoke`}>
+                        {csrf}
+                        <button type="submit" class="small">
+                          Revoke
+                        </button>
+                      </form>
+                    ) : null}
+                  </div>
+                ) : null}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <form
+        method="post"
+        action="/dashboard/developers/keys"
+        class="panel row"
+        style="margin-top:10px"
+      >
+        {csrf}
+        <label class="small" for="key-name">
+          New key
+        </label>
+        <input
+          id="key-name"
+          name="name"
+          placeholder="name, e.g. production server"
+          maxlength={100}
+        />
+        <select name="scope" aria-label="Scope">
+          <option value="platform">Full platform access</option>
+          <option value="verify">Verify only (safe for an agent)</option>
+        </select>
+        <button class="primary" type="submit">
+          Create key
+        </button>
+      </form>
+
+      {p.endpoints ? (
+        <>
+          <h2>Webhook endpoints</h2>
+          {p.endpoints.length === 0 ? (
+            <div class="panel empty">No endpoints yet.</div>
+          ) : (
+            p.endpoints.map((e) => (
+              <div class="panel" style="margin-bottom:10px">
+                <div class="row" style="justify-content:space-between">
+                  <div>
+                    <span class="mono">{e.url}</span>{" "}
+                    {e.enabled ? (
+                      e.failureCount > 0 ? (
+                        <span class="pill uncertain">failing ({e.failureCount})</span>
+                      ) : (
+                        <span class="pill pass">healthy</span>
+                      )
+                    ) : (
+                      <span class="pill fail">disabled</span>
+                    )}
+                    <div class="small muted">
+                      {e.eventTypes.length ? `Events: ${e.eventTypes.join(", ")}` : "All events"}
+                      {e.lastError ? ` · last error: ${e.lastError}` : ""}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <form method="post" action={`/dashboard/developers/webhooks/${e.id}/test`}>
+                      {csrf}
+                      <button type="submit" class="small">
+                        Send test event
+                      </button>
+                    </form>
+                    <form
+                      method="post"
+                      action={`/dashboard/developers/webhooks/${e.id}/replay`}
+                      class="row"
+                    >
+                      {csrf}
+                      <input
+                        name="from_event"
+                        placeholder="evt_123"
+                        pattern="evt_[0-9]+"
+                        required
+                        style="width:110px"
+                        aria-label="Replay from event"
+                      />
+                      <button type="submit" class="small">
+                        Replay
+                      </button>
+                    </form>
+                    <form method="post" action={`/dashboard/developers/webhooks/${e.id}/delete`}>
+                      {csrf}
+                      <button type="submit" class="small">
+                        Delete
+                      </button>
+                    </form>
+                  </div>
+                </div>
+                {e.attempts.length ? (
+                  <table style="margin-top:8px">
+                    <tbody>
+                      {e.attempts.map((a) => (
+                        <tr>
+                          <td class="mono small">evt_{a.eventSeq}</td>
+                          <td class="small">{when(a.createdAt)}</td>
+                          <td class="small">
+                            {a.error ? (
+                              <span class="pill fail">{a.error}</span>
+                            ) : (
+                              <span class="pill pass">{a.statusCode ?? "ok"}</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : null}
+              </div>
+            ))
+          )}
+          <form method="post" action="/dashboard/developers/webhooks" class="panel row">
+            {csrf}
+            <label class="small" for="hook-url">
+              New endpoint
+            </label>
+            <input
+              id="hook-url"
+              name="url"
+              type="url"
+              required
+              placeholder="https://yourapp.com/webhooks/proofdesk"
+              style="flex:1"
+            />
+            <input
+              name="event_types"
+              placeholder="all events, or e.g. agreement.decide, hold."
+              aria-label="Event types"
+            />
+            <button class="primary" type="submit">
+              Add endpoint
+            </button>
+          </form>
+          <p class="small">
+            <a href="/dashboard/events">Browse events →</a>
+          </p>
+        </>
+      ) : null}
+    </Page>
+  );
+}
+
+/** The account's events (what webhooks deliver), newest page first by type filter. */
+export function EventsPage(p: {
+  viewer: Viewer;
+  events: {
+    id: string;
+    type: string;
+    agreement_id: string | null;
+    created_at: string;
+    data: unknown;
+  }[];
+  type: string;
+  nextAfter: string | null;
+}) {
+  return (
+    <Page title="Events" session={p.viewer}>
+      <h1>Events</h1>
+      <form method="get" class="row" style="margin-bottom:12px">
+        <input
+          name="type"
+          value={p.type}
+          placeholder="type prefix, e.g. agreement.decide"
+          aria-label="Type prefix"
+        />
+        <button type="submit">Filter</button>
+      </form>
+      {p.events.length === 0 ? (
+        <div class="panel empty">No events.</div>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Event</th>
+              <th>Type</th>
+              <th>Agreement</th>
+              <th>When</th>
+            </tr>
+          </thead>
+          <tbody>
+            {p.events.map((e) => (
+              <tr>
+                <td class="mono small">{e.id}</td>
+                <td class="small">{e.type}</td>
+                <td class="mono small">
+                  {e.agreement_id ? (
+                    <a href={`/dashboard/agreements/${e.agreement_id}`}>{e.agreement_id}</a>
+                  ) : (
+                    "—"
+                  )}
+                </td>
+                <td class="small">{when(e.created_at)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      {p.nextAfter ? (
+        <p>
+          <a
+            href={`/dashboard/events?after=${p.nextAfter}${p.type ? `&type=${encodeURIComponent(p.type)}` : ""}`}
+          >
+            Next page →
+          </a>
+        </p>
+      ) : null}
+    </Page>
+  );
+}

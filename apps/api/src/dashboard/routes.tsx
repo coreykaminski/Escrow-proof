@@ -12,6 +12,7 @@ import { isHttps } from "../security.ts";
 import { accuracyReport } from "../services/accuracy.ts";
 import { applyEvent, listAgreements } from "../services/agreements.ts";
 import { lastAnchor } from "../services/anchoring.ts";
+import { createKey, listKeys, revokeKey, rollKey } from "../services/api-keys.ts";
 import { usageReport } from "../services/billing.ts";
 import { ledgerIntact, loadCaseFile, reviewerStats, reviewQueue } from "../services/case-file.ts";
 import {
@@ -34,6 +35,15 @@ import { createShareLink, resolveShareLink } from "../services/share-links.ts";
 import { systemStatus } from "../services/status.ts";
 import { getSeal } from "../services/verdicts.ts";
 import {
+  createEndpoint,
+  deleteEndpoint,
+  listEndpoints,
+  listEvents,
+  recentAttempts,
+  replayEndpoint,
+  sendTestEvent,
+} from "../services/webhooks.ts";
+import {
   fundingJson,
   parsePaymentHeader,
   paymentRequired,
@@ -45,6 +55,8 @@ import {
   AgreementsPage,
   BillingPage,
   CasePage,
+  DevelopersPage,
+  EventsPage,
   LoginPage,
   ONCHAIN_JS,
   OnchainPayPage,
@@ -220,6 +232,204 @@ export function dashboardRoutes(deps: AppDeps) {
           ? "Dispute resolved. This decision is final."
           : "Decision recorded.",
     });
+  });
+
+  // --- Developers: API keys, webhook endpoints, events ---
+
+  const isPlatform = (s: Session) => s.scopes.includes("platform");
+  async function developersPage(
+    s: Session,
+    extra: {
+      secret?: { label: string; value: string };
+      flash?: { ok?: string; error?: string };
+    } = {},
+  ) {
+    const keys = await listKeys(db, s.accountId);
+    const endpoints = isPlatform(s)
+      ? await Promise.all(
+          (await listEndpoints(db, s.accountId)).map(async (e) => ({
+            ...e,
+            attempts: await recentAttempts(db, e.id, 5),
+          })),
+        )
+      : null;
+    return (
+      <DevelopersPage
+        viewer={viewerOf(s)}
+        keys={keys}
+        currentKeyId={s.apiKeyId}
+        endpoints={endpoints}
+        now={now()}
+        {...extra}
+      />
+    );
+  }
+  /** Runs an action, showing an ApiError as a flash instead of an error page. */
+  async function attempt(s: Session, action: () => Promise<Parameters<typeof developersPage>[1]>) {
+    try {
+      return await developersPage(s, await action());
+    } catch (err) {
+      if (err instanceof ApiError) return developersPage(s, { flash: { error: err.message } });
+      throw err;
+    }
+  }
+
+  r.get("/developers", async (c) => c.html(await developersPage(c.get("session"))));
+
+  r.post("/developers/keys", async (c) => {
+    const s = c.get("session");
+    const form = await c.req.parseBody();
+    const name =
+      String(form.name ?? "")
+        .trim()
+        .slice(0, 100) || null;
+    const scope = form.scope === "verify" ? "verify" : "platform";
+    return c.html(
+      await attempt(s, async () => {
+        const { row, key } = await createKey(db, s, { name, scopes: [scope], now: now() });
+        return {
+          secret: {
+            label: `New ${scope === "verify" ? "verify-only " : ""}key "${row.name ?? row.prefix}".`,
+            value: key,
+          },
+        };
+      }),
+    );
+  });
+
+  r.post("/developers/keys/:id/roll", async (c) => {
+    const s = c.get("session");
+    return c.html(
+      await attempt(s, async () => {
+        const { created } = await rollKey(db, s, {
+          id: c.req.param("id"),
+          expireOldInHours: 24,
+          now: now(),
+        });
+        return {
+          secret: {
+            label: "Replacement key. The old one keeps working for 24 hours.",
+            value: created.key,
+          },
+        };
+      }),
+    );
+  });
+
+  r.post("/developers/keys/:id/revoke", async (c) => {
+    const s = c.get("session");
+    return c.html(
+      await attempt(s, async () => {
+        await revokeKey(db, s, { id: c.req.param("id"), now: now() });
+        return { flash: { ok: "Key revoked. It stopped working immediately." } };
+      }),
+    );
+  });
+
+  r.post("/developers/webhooks", async (c) => {
+    const s = c.get("session");
+    if (!isPlatform(s)) throw new ApiError(403, "insufficient_scope", "platform keys only");
+    const form = await c.req.parseBody();
+    const eventTypes = String(form.event_types ?? "")
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean)
+      .slice(0, 50);
+    return c.html(
+      await attempt(s, async () => {
+        let url: string;
+        try {
+          url = new URL(String(form.url ?? "")).toString();
+        } catch {
+          throw new ApiError(
+            400,
+            "validation_error",
+            "Enter a full URL, e.g. https://yourapp.com/webhooks",
+          );
+        }
+        const row = await createEndpoint(db, {
+          accountId: s.accountId,
+          url,
+          eventTypes,
+          now: now(),
+          allowPrivate: deps.allowPrivateNetwork === true,
+        });
+        return { secret: { label: `Signing secret for ${row.url}.`, value: row.secret } };
+      }),
+    );
+  });
+
+  r.post("/developers/webhooks/:id/test", async (c) => {
+    const s = c.get("session");
+    return c.html(
+      await attempt(s, async () => {
+        const res = await sendTestEvent(db, {
+          accountId: s.accountId,
+          endpointId: c.req.param("id"),
+          now: now(),
+          allowPrivate: deps.allowPrivateNetwork === true,
+          ...(deps.fetch ? { fetch: deps.fetch } : {}),
+        });
+        return res.ok
+          ? {
+              flash: {
+                ok: `Test event delivered: HTTP ${res.status_code} in ${res.duration_ms} ms.`,
+              },
+            }
+          : { flash: { error: `Test event failed: ${res.error}` } };
+      }),
+    );
+  });
+
+  r.post("/developers/webhooks/:id/replay", async (c) => {
+    const s = c.get("session");
+    const form = await c.req.parseBody();
+    const from = /^evt_(\d+)$/.exec(String(form.from_event ?? ""));
+    return c.html(
+      await attempt(s, async () => {
+        if (!from) throw new ApiError(400, "validation_error", "Enter an event id like evt_123.");
+        await replayEndpoint(db, {
+          accountId: s.accountId,
+          endpointId: c.req.param("id"),
+          fromSeq: Number(from[1]),
+          now: now(),
+        });
+        return {
+          flash: { ok: `Events from evt_${from[1]} will be re-sent on the next delivery run.` },
+        };
+      }),
+    );
+  });
+
+  r.post("/developers/webhooks/:id/delete", async (c) => {
+    const s = c.get("session");
+    return c.html(
+      await attempt(s, async () => {
+        await deleteEndpoint(db, s.accountId, c.req.param("id"));
+        return { flash: { ok: "Endpoint deleted." } };
+      }),
+    );
+  });
+
+  r.get("/events", async (c) => {
+    const s = c.get("session");
+    if (!isPlatform(s)) return c.redirect("/dashboard/developers");
+    const type = (c.req.query("type") ?? "").trim().slice(0, 100);
+    const after = /^evt_(\d+)$/.exec(c.req.query("after") ?? "");
+    const events = await listEvents(db, {
+      accountId: s.accountId,
+      after: after ? Number(after[1]) : 0,
+      limit: 50,
+      ...(type ? { type } : {}),
+    });
+    return c.html(
+      <EventsPage
+        viewer={viewerOf(s)}
+        events={events as never}
+        type={type}
+        nextAfter={events.length === 50 ? (events.at(-1)?.id ?? null) : null}
+      />,
+    );
   });
 
   r.get("/billing", async (c) => {
