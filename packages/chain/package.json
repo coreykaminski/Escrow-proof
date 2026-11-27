@@ -11,6 +11,6 @@
     "viem": "^2.57.4"
   },
   "devDependencies": {
-    "@noble/curves": "^1.9.1"
+    "@noble/curves": "^2.4.0"
   }
 }
